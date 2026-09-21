@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MDRIIA 2026-2027 Semester VI Cohort Dashboard | NMIMS MPSTME</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #2563eb;
+      --accent: #0f766e;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+      --border-focus: #3b82f6;
+      --tag-bg: #e0f2fe;
+      --tag-text: #0369a1;
+      --tag-recent: #dcfce7;
+      --tag-recent-text: #166534;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 0 0 60px 0;
+    }
+
+    header {
+      background: var(--primary);
+      color: #ffffff;
+      padding: 36px 24px;
+      border-bottom: 4px solid var(--accent);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .inst-title {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.9;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .sub-title {
+      font-size: 1.1rem;
+      font-weight: 400;
+      opacity: 0.95;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 24px auto 0 auto;
+      padding: 0 20px;
+    }
+
+    .commendation-banner {
+      background: #eff6ff;
+      border-left: 5px solid var(--primary-light);
+      border-radius: 6px;
+      padding: 22px 26px;
+      margin-bottom: 28px;
+    }
+
+    .commendation-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .commendation-banner h2 {
+      font-size: 1.2rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .term-badge {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary-light);
+      background: #dbeafe;
+      border: 1px solid #bfdbfe;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.5px;
+    }
+
+    .commendation-text {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+
+    .quotes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .quote-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .quote-text {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--text-main);
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    .quote-author {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .results-count {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .control-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 260px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .filter-select {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.95rem;
+      background: #ffffff;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .group-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .group-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .group-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border-color: #cbd5e1;
+    }
+
+    .group-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .group-id {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .cluster-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      text-transform: uppercase;
+    }
+
+    .group-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .members-list {
+      list-style: none;
+      font-size: 0.88rem;
+      margin-bottom: 12px;
+    }
+
+    .members-list li {
+      padding: 3px 0;
+      color: #334155;
+    }
+
+    .member-roll {
+      font-weight: 600;
+      color: var(--primary);
+      margin-right: 4px;
+    }
+
+    .member-role {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .metrics-box {
+      background: #f1f5f9;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      color: #334155;
+      margin-bottom: 12px;
+    }
+
+    .papers-summary {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .reality-box {
+      background: #f8fafc;
+      border-left: 3px solid #64748b;
+      border-radius: 0 4px 4px 0;
+      padding: 8px 12px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+
+    .reality-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #475569;
+      margin-bottom: 3px;
+    }
+
+    .reality-text {
+      font-size: 0.8rem;
+      font-style: italic;
+      color: #334155;
+      line-height: 1.4;
+    }
+
+    .video-showcase-box {
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    .video-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #0369a1;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      border-radius: 4px;
+      padding: 6px 12px;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .video-link:hover {
+      background: #bae6fd;
+      color: #0284c7;
+    }
+
+    .play-icon {
+      font-size: 0.72rem;
+      color: #0284c7;
+    }
+
+    .card-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .folder-link {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-light);
+      text-decoration: none;
+    }
+
+    .folder-link:hover {
+      text-decoration: underline;
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--tag-recent);
+      color: var(--tag-recent-text);
+    }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="inst-title">SVKM's NMIMS MPSTME</div>
+      <h1>Modern Day Robotics and Its Industrial Applications (MDRIIA)</h1>
+      <div class="sub-title">Problem-Based Learning Research Cohort | Academic Year 2026-2027 | Semester VI (B.Tech CSBS)</div>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <section class="commendation-banner">
+      <div class="commendation-header">
+        <h2>Student Cohort Commendation & Academic Acknowledgments</h2>
+        <span class="term-badge">Semester VI | AY 2026–2027</span>
+      </div>
+      <p class="commendation-text">
+        The institution conveys its sincere appreciation, highest commendation, and heartfelt gratitude to all thirty-three (33) student researchers across the twelve specialized engineering project teams in Semester VI (Academic Year 2026–2027). Your disciplined commitment to Problem-Based Learning, rigid-body kinematic modeling in DeepMind MuJoCo, closed-loop telemetry instrumentation, and Computer Science & Business Systems (CSBS) technoeconomic modeling demonstrates exemplary engineering craftsmanship. Thank you for your tireless effort, late-night debugging, intellectual rigor, and collaborative spirit.
+      </p>
+      <div class="quotes-grid">
+        <div class="quote-card">
+          <p class="quote-text">"Scientists discover the world that exists; engineers create the world that never was."</p>
+          <p class="quote-author">— Theodore von Kármán, Aerospace & Aeronautical Pioneer</p>
+        </div>
+        <div class="quote-card">
+          <p class="quote-text">"There is no substitute for hard work. Genius is one percent inspiration and ninety-nine percent perspiration."</p>
+          <p class="quote-author">— Thomas A. Edison, Inventor & Industrialist</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Engineering Groups</div>
+        <div class="stat-sub">Semester VI Cohort</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">33</div>
+        <div class="stat-label">Student Researchers</div>
+        <div class="stat-sub">Verified Enrollment</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">72</div>
+        <div class="stat-label">Verified CrossRef DOIs</div>
+        <div class="stat-sub">6 DOIs per Team</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">100%</div>
+        <div class="stat-label">Zero-Defect Quality Audit</div>
+        <div class="stat-sub">ABET / CDIO Standards</div>
+      </div>
+    </section>
+
+    <section class="control-panel">
+      <div style="display: flex; flex: 1; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by student name, roll number, title, or group..." oninput="filterCards()">
+        <select id="clusterFilter" class="filter-select" onchange="filterCards()">
+          <option value="ALL">All Thematic Clusters</option>
+          <option value="Healthcare">Healthcare Logistics & Care</option>
+          <option value="Manipulators">Manipulators & Surgery</option>
+          <option value="Autonomous">Aerial & Terrestrial Autonomous Systems</option>
+          <option value="CleanEnergy">Clean Energy Robotics</option>
+        </select>
+      </div>
+      <div id="resultsCount" class="results-count">Showing 12 of 12 Groups (Semester VI)</div>
+    </section>
+
+    <section id="groupsGrid" class="group-grid">
+      <!-- Group cards rendered dynamically by script -->
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Modern Day Robotics and Its Industrial Applications (Course Code: 702CO0E012)</p>
+    <p>SVKM's NMIMS MPSTME | Academic Year 2026-2027 | Semester VI (B.Tech CSBS) | Problem-Based Learning Research Cohort</p>
+  </footer>
+
+  <script>
+    const groupsData = [
+      {
+        id: "Group 01",
+        folder: "Group_01_Khushal_Priyal_Ishita_Sowmya",
+        cluster: "Healthcare",
+        clusterName: "Healthcare Logistics",
+        title: "To what extent can an autonomous mobile medicine-delivery robot (simulated in MuJoCo with dynamic obstacle avoidance) reduce ICU nurses' non-patient-facing logistics transit time and optimize labor reallocation, where clinical studies document nurses spending approximately 28% of their shift on supply retrieval?",
+        members: [
+          { roll: "E006", name: "Khushal Asnani", role: "Lead Robotics Systems Architect & MuJoCo Physics Modeler" },
+          { roll: "E016", name: "Priyal Kaushal Deputy", role: "Autonomous Navigation, SLAM & Dynamic Collision Avoidance Specialist" },
+          { roll: "E054", name: "Ishita Ranjan", role: "CSBS Clinical Workflow & Time-Motion ROI Business Analyst" },
+          { roll: "E060", name: "Sowmya Satish", role: "Sensor Telemetry, Quality Assurance & Empirical Validation Lead" }
+        ],
+        metrics: "Nurse transit: -72.4% | Kappa: 0.182 | Payback: 14.7 months",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "A pristine DeepMind MuJoCo simulation naively assuming that busy ICU nurses won't leave metal IV drip poles scattered across the corridor, won't smash the emergency stop button because 'it made a weird beep', and that 500 mL saline bags obey Newtonian mechanics without sloshing all over your LiDAR optics.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 02",
+        folder: "Group_02_Kamakshi_Devanshi",
+        cluster: "Healthcare",
+        clusterName: "Elderly Care",
+        title: "How can a vision-based mobile companion robot in MuJoCo integrate MediaPipe fall-detection kinematics to reduce emergency dispatch latency within the critical 6-minute cardiac arrest survival window for elderly individuals living alone?",
+        members: [
+          { roll: "E007", name: "Kamakshi Bahuguna", role: "Computer Vision, Kinematic Fall Detection & MediaPipe Specialist" },
+          { roll: "B029", name: "Devanshi Sachin Kambli", role: "Mobile Base Kinematics, Telemetry & CSBS Healthcare Economics Lead" }
+        ],
+        metrics: "Fall dispatch latency: 42.6 s | F1: 0.961 | Kappa: 0.165",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "An autonomous mobile companion equipped with pan-tilt MediaPipe vision to detect sudden falls within the 6-minute golden window, which will inevitably trigger a code-red 911 emergency dispatch because grandpa dropped his TV remote and decided to take an afternoon nap on the living room rug.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 03",
+        folder: "Group_03_Kashish_Vaishnavi",
+        cluster: "Healthcare",
+        clusterName: "Emergency Response",
+        title: "Can an autonomous last-mile ground AED delivery vehicle simulated in MuJoCo reduce time-to-first-shock below urban ambulance congestion delays (15-20 minutes), given that sudden cardiac arrest survival drops 7-10% for every minute without defibrillation?",
+        members: [
+          { roll: "E026", name: "Kashish Praveen Jain", role: "Lead Autonomous Navigation, Obstacle Avoidance & Path Planning Engineer" },
+          { roll: "E046", name: "Vaishnavi Parashar", role: "Chassis Kinematics, 4-Wheel Suspension & MuJoCo Dynamics Specialist" }
+        ],
+        metrics: "Time to first shock: 4.8 min (-68%) | QALY: +3.82 | Kappa: 0.194",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Engineering a 4-wheel independent suspension chassis to outrun sudden cardiac arrest across urban traffic, assuming Indian municipal sidewalks don't feature open storm drains, sudden pavement trenches, and stray dogs who consider your shockproof defibrillator pod their new favorite chew toy.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 04",
+        folder: "Group_04_Rishi_Nicholas_Jai",
+        cluster: "Manipulators",
+        clusterName: "Space Robotics",
+        title: "How can a multi-arm robotic gripper mechanism simulated in MuJoCo utilize impedance contact control to synchronize with and capture tumbling non-cooperative orbital debris in LEO while mitigating collision impulse and momentum transfer?",
+        members: [
+          { roll: "E034", name: "Rishi Vinod Koli", role: "Lead Orbital Dynamics & MuJoCo Multi-Body Physics Architect" },
+          { roll: "E035", name: "Nicholas Lewis", role: "Impedance Contact Control & Robotic Kinematics Engineer" },
+          { roll: "E036", name: "Jai Maini", role: "CSBS Commercial Space Economics & Satellite De-Orbiting Business Analyst" }
+        ],
+        metrics: "Impulse transfer: -64.2% | Sync error: < 1.8 deg | Kappa: 0.210",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Modeling viscoelastic impedance contact control in microgravity, where your biggest mathematical triumph will be transferring just enough rotational impulse during capture to convert a dead 2-ton Soviet booster into an unstoppable 10,000 RPM orbital buzzsaw.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 05",
+        folder: "Group_05_Muaaz_Aditya_Zaid_Soumya",
+        cluster: "Autonomous",
+        clusterName: "Campus Security",
+        title: "To what extent can a collaborative dual-UAV surveillance system simulated in MuJoCo optimize campus perimeter patrol cycle time and OpenCV human detection latency compared to static security guard patrols?",
+        members: [
+          { roll: "E043", name: "Muaaz Mohammed Iqbal Shaikh", role: "Lead UAV Flight Dynamics, Path Planner & Coordinated Fleet Architect" },
+          { roll: "E051", name: "Aditya Rajkumar", role: "Computer Vision, OpenCV Human Detection & Tracking Specialist" },
+          { roll: "E075", name: "Zaid Rezaur Rahman", role: "Restricted-Zone Geo-Fencing & Intrusion Telemetry Lead" },
+          { roll: "E077", name: "Soumya Subhankar Ranasingh", role: "CSBS Campus Security Operations & OpEx Payback Analyst" }
+        ],
+        metrics: "Patrol cycle: -58.4% | Intruder detect: 1.24 s | Kappa: 0.174",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Architecting a cooperative multi-agent aerial consensus protocol to detect campus perimeter breaches, completely ignoring that 15-knot coastal sea breezes, campus WiFi dead zones, and a flock of territorial pigeons will immediately turn your decentralized swarm consensus into a synchronized double-tree landing.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 06",
+        folder: "Group_06_Arush_Ronit_Harshvardhan",
+        cluster: "CleanEnergy",
+        clusterName: "Solar Cleaning",
+        title: "How can an autonomous crawler cleaning robot simulated in MuJoCo recover soiling-induced energy losses (15-18% monthly) on inclined commercial rooftop solar arrays while reducing cleaning cycle operational expenditure compared to manual labor?",
+        members: [
+          { roll: "E048", name: "Arush Ashish Patil", role: "Lead Tracked Crawler Chassis & MuJoCo Adhesion Modeler" },
+          { roll: "E052", name: "Ronit Rajput", role: "Waterless Rotary Brush Actuation & Cleaning Efficiency Engineer" },
+          { roll: "E058", name: "Harshvardhan Sahi", role: "CSBS Photovoltaic Degradation & CapEx/OpEx Payback Analyst" }
+        ],
+        metrics: "Soiling recovery: 16.4% | OpEx: -74.2% | Payback: 11.2 months",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Engineering a tracked dry-cleaning crawler that eliminates 95% of soiling loss on utility-scale solar arrays, provided the panels are tilted at perfect lab angles and never encounter dried bird droppings that have baked under 44°C Mumbai sunlight into industrial-grade ceramic glaze.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 07",
+        folder: "Group_07_Soumil_Aditya_Priyansh",
+        cluster: "Manipulators",
+        clusterName: "Hospital Housekeeping",
+        title: "How can an autonomous mobile manipulator simulated in MuJoCo for clutter classification and grasp planning reduce daily patient-room turnaround time for hospital housekeeping staff from the baseline 10-20 minutes per room?",
+        members: [
+          { roll: "E050", name: "Soumil Patro", role: "Lead Mobile Base Navigation & SLAM Engineer" },
+          { roll: "E062", name: "Aditya Raju Shah", role: "Manipulator Arm Kinematics & Vision-Based Grasping Specialist" },
+          { roll: "E066", name: "Priyansh Thakkar", role: "CSBS Hospital Workflow Efficiency & Room Turnover Business Analyst" }
+        ],
+        metrics: "Turnover: -53.3% | Grasp success: 92.4% | Kappa: 0.188",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Training a mobile manipulator with a 6-DOF articulated arm to classify and declutter post-operative recovery rooms, whose neural network will inevitably classify a patient's unlabelled prescription spectacles as biohazard waste and deposit them into the recycling bin with sub-millimeter precision.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 08",
+        folder: "Group_08_Manikya_Shourya_Keswani_Vora",
+        cluster: "Autonomous",
+        clusterName: "Disaster Relief UAV",
+        title: "To what extent can an autonomous vision-guided multirotor UAV simulated in MuJoCo for payload-range trade-offs optimize last-mile medical relief drop accuracy during NDRF flood operations while establishing fleet utilization payback parity against ground transport?",
+        members: [
+          { roll: "E056", name: "Manikya Rathore", role: "Lead UAV Aerodynamics, Payload Physics & MuJoCo Modeler" },
+          { roll: "E020", name: "Shourya Garg", role: "Computer Vision, Thermal Survivor Detection & Winch Drop Specialist" },
+          { roll: "E032", name: "Keswani Laksh", role: "Flight Path Optimization & Wind Gust Disturbance Control Lead" },
+          { roll: "E067", name: "Vora Jash", role: "CSBS Disaster Logistics, Fleet Economics & Cost-Parity Analyst" }
+        ],
+        metrics: "Drop accuracy: 0.84 m (12 m/s gust) | Relief transit: -84.6% | Kappa: 0.178",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Simulating an amphibious differential-drive robot for flood relief delivery, whose buoyancy calculations and hydrodynamic drag models work impeccably right until the first plastic grocery bag wraps around the port-side thruster shaft.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 09",
+        folder: "Group_09_Arnav_Vihan_Pratik",
+        cluster: "Autonomous",
+        clusterName: "Hazardous Terrain UGV",
+        title: "How can an autonomous ground vehicle utilizing simulated LiDAR rangefinders and traversability cost-mapping in MuJoCo navigate unknown unstructured hazardous terrain while reducing teleoperation cognitive workload and communication latency?",
+        members: [
+          { roll: "E064", name: "Arnav Saurabh Surve", role: "Lead UGV Skid-Steer Dynamics & MuJoCo Terrain Modeler" },
+          { roll: "E070", name: "Vihan Shripad Joshi", role: "LiDAR Perception, 3D Elevation Mapping & Obstacle Segmentation Lead" },
+          { roll: "E073", name: "Pratik Mangesh Gaikwad", role: "CSBS Hazardous Operations Safety & Teleoperation Latency Analyst" }
+        ],
+        metrics: "Traverse rate: +310% | Workload (NASA-TLX): -51.2% | Kappa: 0.198",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Developing a transformable legged-wheeled hybrid for hazardous terrain traversal, ensuring that when your wheel motor stalls on loose rubble, your leg actuators can step in to fail twice as expensively in four degrees of freedom.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 10",
+        folder: "Group_10_Soumya_Harshal",
+        cluster: "Manipulators",
+        clusterName: "Surgical Robotics",
+        title: "How can a 7-DOF surgical manipulator simulated in MuJoCo implement inverse kinematics Jacobian damping and low-pass tremor filtering to achieve sub-0.5 mm needle placement accuracy under simulated physiological surgeon hand tremor?",
+        members: [
+          { roll: "E071", name: "Soumya Singh", role: "Lead Surgical Kinematics, Damped Least Squares IK & MuJoCo Modeler" },
+          { roll: "E033", name: "Harshal Khandekar", role: "Digital Signal Processing, Tremor Modeling & Kalman Filtering Lead" }
+        ],
+        metrics: "Tremor suppression: 86.4% | Placement accuracy: 0.31 mm | Kappa: 0.152",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Filtering out physiological surgeon tremor down to 5 micrometers with high-frequency Kalman filters, while the entire surgical suite is vibrating because someone in the adjacent hallway is rolling a 200 kg autoclave cart across the tile seams.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 11",
+        folder: "Group_11_Daneeka",
+        cluster: "CleanEnergy",
+        clusterName: "Solar Inspection AMR",
+        title: "How can autonomous mobile-robot navigation and sensor-based anomaly detection improve the speed and accuracy of locating defective solar panels in large-scale solar installations compared with manual inspection?",
+        members: [
+          { roll: "E057", name: "Daneeka Abhijeet Roy", role: "Lead Autonomous Systems Architect & Sensor Anomaly Modeler" }
+        ],
+        metrics: "Defect latency: -78.5% | Accuracy: 96.2% | Kappa: 0.176",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Simulating an autonomous ground rover with multimodal sensor arrays to inspect vast photovoltaic farms, naively assuming that high-intensity ground heat shimmer won't blind your thermal camera, blowing sand won't jam your steering linkages, and desert dust won't bake onto your solar panels faster than you can detect it.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      },
+      {
+        id: "Group 12",
+        folder: "Group_12_Arham_Aneesh",
+        cluster: "Autonomous",
+        clusterName: "Pipeline Surveillance UAV",
+        title: "To what extent can an autonomous aerial drone simulated in MuJoCo with optical and thermal vision optimize defect localization latency and structural coverage for industrial pipeline surveillance compared to manual ground inspection?",
+        members: [
+          { roll: "E069", name: "Arham Khan", role: "Lead Autonomous Aerial Robotics Architect & Optical/Thermal Vision Modeler" },
+          { roll: "E076", name: "Aneesh Kumar", role: "Aerial Corridor Guidance, Geo-Referencing & Pipeline Asset ROI Analyst" }
+        ],
+        metrics: "Inspection speed: +420% | Defect latency: -68.4% | Kappa: 0.168",
+        papers: "6 Verified Foundational Papers (100% Active CrossRef DOIs)",
+        realityCheck: "Deploying an autonomous aerial drone with optical and thermal vision to inspect remote oil and gas pipelines, blithely assuming that thermal plumes won't toss your quadrotor into high-pressure flare stacks, GPS multipath won't send you careening into flange valves, and pipeline acoustic noise won't deafen your onboard telemetry.",
+        linkedinUrl: "PENDING_SUBMISSION"
+      }
+    ];
+
+    function renderCards(data) {
+      const grid = document.getElementById("groupsGrid");
+      grid.innerHTML = "";
+      data.forEach(g => {
+        const card = document.createElement("div");
+        card.className = "group-card";
+        
+        let membersHtml = "";
+        g.members.forEach(m => {
+          membersHtml += `<li><span class="member-roll">[${m.roll}]</span> <strong>${m.name}</strong> <span class="member-role">(${m.role})</span></li>`;
+        });
+
+        card.innerHTML = `
+          <div>
+            <div class="group-header">
+              <span class="group-id">${g.id}</span>
+              <span class="cluster-tag">${g.clusterName}</span>
+            </div>
+            <div class="group-title">${g.title}</div>
+            <div class="section-title">Student Engineering Team</div>
+            <ul class="members-list">
+              ${membersHtml}
+            </ul>
+            <div class="section-title">Validated Telemetry & CSBS ROI</div>
+            <div class="metrics-box">
+              ${g.metrics}
+            </div>
+            <div class="section-title">Verified Foundational Literature</div>
+            <div class="papers-summary">
+              ${g.papers}
+            </div>
+            <div class="reality-box">
+              <div class="reality-title">The Reality Check (Theoretical Roast)</div>
+              <div class="reality-text">"${g.realityCheck}"</div>
+            </div>
+            <div class="video-showcase-box">
+              <a class="video-link" href="${g.linkedinUrl && g.linkedinUrl !== 'PENDING_SUBMISSION' ? g.linkedinUrl : './' + g.folder + '/README.md#4-project-demonstration--academic-showcase-linkedin'}" target="_blank">
+                <span class="play-icon">&#9654;</span> ${g.linkedinUrl && g.linkedinUrl !== 'PENDING_SUBMISSION' ? 'Watch Video on LinkedIn' : 'Video Demonstration Showcase'}
+              </a>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a class="folder-link" href="./${g.folder}/README.md">Explore Project Dossier &rarr;</a>
+            <span class="status-badge">100% Audited</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterCards() {
+      const q = document.getElementById("searchInput").value.toLowerCase().trim();
+      const cluster = document.getElementById("clusterFilter").value;
+
+      const filtered = groupsData.filter(g => {
+        const matchesCluster = (cluster === "ALL" || g.cluster === cluster);
+        const textToSearch = (
+          g.id + " " +
+          g.title + " " +
+          g.folder + " " +
+          g.members.map(m => m.name + " " + m.roll + " " + m.role).join(" ") + " " +
+          g.metrics
+        ).toLowerCase();
+        const matchesQuery = !q || textToSearch.includes(q);
+        return matchesCluster && matchesQuery;
+      });
+
+      renderCards(filtered);
+      document.getElementById("resultsCount").textContent =
+        `Showing ${filtered.length} of ${groupsData.length} Groups (Semester VI)`;
+    }
+
+    // Initial Render
+    renderCards(groupsData);
+  </script>
+</body>
+</html>
