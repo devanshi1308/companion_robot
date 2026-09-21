@@ -1,0 +1,9 @@
+mujoco>=3.1.0
+numpy>=1.24.0
+scipy>=1.10.0
+matplotlib>=3.7.0
+pandas>=2.0.0
+
+# Scene-authoring extras (from the original companion_robot workspace)
+mujoco-scene-editor
+yourdfpy
