@@ -1,7 +1,9 @@
 import mujoco
+import os
+
 import mujoco.viewer
 
-XML_FILE = "scenes/living_room.xml"
+XML_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "models", "domestic_environment.xml")
 
 with open(XML_FILE, "r") as f:
     xml_string = f.read()

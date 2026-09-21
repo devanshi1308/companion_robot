@@ -1,0 +1,23 @@
+<mujoco model="elderly_companion_robot">
+  <compiler angle="radian" coordinate="local"/>
+  <option gravity="0 0 -9.81" timestep="0.002" solver="Newton"/>
+  <asset>
+    <material name="body_mat" rgba="0.85 0.88 0.9 1.0"/>
+    <material name="screen_mat" rgba="0.1 0.1 0.15 1.0"/>
+    <material name="floor_mat" rgba="0.8 0.75 0.7 1.0"/>
+  </asset>
+  <worldbody>
+    <geom name="floor" type="plane" size="8 8 0.1" material="floor_mat"/>
+    <light directional="true" pos="0 0 5" dir="0 0 -1"/>
+    <!-- Recumbent Human Mock Obstacle (Simulated Fall Pose) -->
+    <geom name="human_avatar_recumbent" type="capsule" fromto="2.0 1.0 0.15 2.0 -0.5 0.15" size="0.15" rgba="0.9 0.7 0.6 1"/>
+    <body name="companion_base" pos="0 0 0.15">
+      <freejoint name="base_joint"/>
+      <geom name="chassis" type="cylinder" size="0.25 0.15" material="body_mat" mass="18.0"/>
+      <!-- Mast elevating camera to human observation height (1.1m) -->
+      <geom name="mast" type="cylinder" size="0.03 0.45" pos="0 0 0.55" rgba="0.7 0.7 0.7 1" mass="2.0"/>
+      <geom name="screen_head" type="box" size="0.12 0.08 0.10" pos="0 0 1.05" material="screen_mat" mass="1.5"/>
+      <site name="camera_rgbd" pos="0.12 0 1.05" size="0.02" rgba="0 1 0 1"/>
+    </body>
+  </worldbody>
+</mujoco>

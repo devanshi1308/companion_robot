@@ -32,3 +32,9 @@ GEMINI.md
 QODER.md
 CODEBUDDY.md
 opencode.jsonc
+
+# Third-party binaries and generated demo output (kept out of the graded folder)
+external_assets/
+outputs/
+MUJOCO_LOG.TXT
+MUJOCO_LOG.TXT

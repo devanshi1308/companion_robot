@@ -1,0 +1,88 @@
+{
+  "group_id": "MDRIIA_GROUP_02",
+  "folder_name": "Group_02_Kamakshi_Devanshi",
+  "domain": "AI Companion Robot for Remote Elderly Supervision and Fall Emergency Response",
+  "authorized_title": "How can a vision-based mobile companion robot in MuJoCo integrate MediaPipe fall-detection kinematics to reduce emergency dispatch latency within the critical 6-minute cardiac arrest survival window for elderly individuals living alone?",
+  "members": [
+    {
+      "roll_no": "E007",
+      "sap_id": "70362400022",
+      "name": "Kamakshi Bahuguna",
+      "role": "Computer Vision, Pose Kinematics & Edge Inference Specialist",
+      "assigned_branch": "feat/e007-vision-pose-kinematics",
+      "viva_focus": "MediaPipe skeletal landmark tracking, bounding-box aspect ratio inversion, vertical centroid velocity thresholding, and confusion matrix validation."
+    },
+    {
+      "roll_no": "B029",
+      "sap_id": "70362400037",
+      "name": "Devanshi Sachin Kambli",
+      "role": "MuJoCo Physics, Domestic Navigation & Healthcare Economics Lead",
+      "assigned_branch": "feat/b029-mujoco-physics-navigation",
+      "viva_focus": "Differential mobile base physics, pan-tilt mast observation angles, post-fall approach trajectory, and 'long lie' clinical cost model."
+    }
+  ],
+  "foundational_papers": [
+    {
+      "id": 1,
+      "authors": "Wang & Deng",
+      "year": 2024,
+      "title": "Enhancing elderly care: Efficient and reliable real-time fall detection algorithm",
+      "venue": "Digital Health",
+      "doi": "https://doi.org/10.1177/20552076241233690",
+      "lead": "Kamakshi Bahuguna (E007)"
+    },
+    {
+      "id": 2,
+      "authors": "Kothari & Chakurkar",
+      "year": 2025,
+      "title": "Towards safer environments: A YOLO and MediaPipe-based human fall detection system",
+      "venue": "MethodsX",
+      "doi": "https://doi.org/10.1016/j.mex.2025.103623",
+      "lead": "Kamakshi Bahuguna (E007)"
+    },
+    {
+      "id": 3,
+      "authors": "Romero-Garces et al.",
+      "year": 2022,
+      "title": "CLARA: Building a Socially Assistive Robot to Interact with Elderly People",
+      "venue": "Designs",
+      "doi": "https://doi.org/10.3390/designs6060125",
+      "lead": "Devanshi Sachin Kambli (B029)"
+    },
+    {
+      "id": 4,
+      "authors": "Ding & Wang",
+      "year": 2020,
+      "title": "A WiFi-Based Smart Home Fall Detection System Using Recurrent Neural Network",
+      "venue": "IEEE Transactions on Consumer Electronics",
+      "doi": "https://doi.org/10.1109/TCE.2020.3021398",
+      "lead": "Devanshi Sachin Kambli (B029)"
+    },
+    {
+      "id": 5,
+      "authors": "Kubitza et al.",
+      "year": 2022,
+      "title": "Therapy options for those affected by a long lie after a fall: a scoping review",
+      "venue": "BMC Geriatrics",
+      "doi": "https://doi.org/10.1186/s12877-022-03258-2",
+      "lead": "Devanshi Sachin Kambli (B029)"
+    },
+    {
+      "id": 6,
+      "authors": "Chen et al.",
+      "year": 2021,
+      "title": "Vision-Based Elderly Fall Detection Algorithm for Mobile Robot",
+      "venue": "IEEE International Conference on Electronics Technology (ICET)",
+      "doi": "https://doi.org/10.1109/ICET51757.2021.9450950",
+      "lead": "Kamakshi Bahuguna (E007) & Devanshi Sachin Kambli (B029)"
+    }
+  ],
+  "project_showcase": {
+    "platform": "LinkedIn Video",
+    "linkedin_url": "PENDING_SUBMISSION",
+    "video_poster_path": "docs/figures/video_poster.png",
+    "video_duration_target": "60-90 seconds",
+    "submission_status": "PENDING",
+    "submission_instructions": "Paste your published LinkedIn post URL into 'linkedin_url' and submit a Pull Request"
+  }
+}
