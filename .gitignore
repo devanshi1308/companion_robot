@@ -6,3 +6,29 @@ sceneenv/
 roboticsenv/
 # Added by code-review-graph
 .code-review-graph/
+
+# Local-only planning/agent notes
+prompt.md
+CLAUDE.md
+
+# Environments and build output
+.venv/
+dist/
+
+# AI-tool generated config (code-review-graph install)
+.mcp.json
+.claude/
+.codebuddy/
+.cursor/
+.gemini/
+.github/instructions/
+.kiro/
+.qoder/
+.vscode/
+.cursorrules
+.windsurfrules
+AGENTS.md
+GEMINI.md
+QODER.md
+CODEBUDDY.md
+opencode.jsonc
