@@ -130,6 +130,10 @@ def body_xml(name, children, offset, indent, deg=False):
 
     geoms = []  # (xml without mass)
     common = 'contype="2" conaffinity="1" friction="0.8 0.005 0.0001"' + (' group="3"' if HAS_MESH else "")  # group 3 = hidden collision shapes
+    if kind not in ("foot", "ankle"):
+        # Skin, torso and arms keep their own friction (0.8): priority 2 beats the floor slab (priority 1).
+        # Feet stay at priority 0, so the floor's friction (hardwood 0.42 ... carpet 0.68) governs slips.
+        common += ' priority="2"'
     kids = [c for c in children.get(name, []) if c in offset]
     rad = RADIUS.get(name, RADIUS.get(kind, 0.04))
 
@@ -231,7 +235,7 @@ def build():
     scene = env.replace(marker, human_block + marker, 1)
     assert "</asset>" in scene
     scene = scene.replace("</asset>", asset_xml() + "  </asset>", 1)
-    scene = scene.replace('<mujoco model="living_room">', '<mujoco model="living_room_with_human">', 1)
+    scene = scene.replace('<mujoco model="apartment">', '<mujoco model="apartment_with_human">', 1)
     with open(OUT_SCENE, "w") as f:
         f.write(scene)
     print(f"wrote {os.path.relpath(OUT_HUMAN, ROOT)} and {os.path.relpath(OUT_SCENE, ROOT)} (human mass {total:.1f} kg)")

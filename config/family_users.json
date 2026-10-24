@@ -1,0 +1,23 @@
+{
+ "_note": "DEMO accounts only. Fictional people. Password hashes, no plain passwords.",
+ "users": [
+  {
+   "id": "rohan",
+   "display": "Rohan (son)",
+   "salt": "0cde49f2b47b8b7594074c358da3a19b",
+   "hash": "ad7a9127589b1337c7efd60a1c10990a57e50b4dd28e8ecc2fc3386ddda5eb32"
+  },
+  {
+   "id": "meera",
+   "display": "Meera (daughter)",
+   "salt": "cf510253a2117f19199d73478f5d3102",
+   "hash": "19443235b0a630bc059a4cd873a13eff900b166a7c0ad8b951f3a71c78e45b45"
+  },
+  {
+   "id": "iyer",
+   "display": "Mrs. Iyer (neighbour)",
+   "salt": "9bd26f3d8b95df65f55470a02607e111",
+   "hash": "2ab0988ae3008c26353fa4386655a3be20df1752a2334918da614c2593b7d430"
+  }
+ ]
+}

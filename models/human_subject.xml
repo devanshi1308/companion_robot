@@ -10,24 +10,24 @@
     <light directional="true" pos="0 0 5" dir="0 0 -1"/>
     <body name="pelvis" pos="0 0 1.0">
       <freejoint name="human_root"/>
-      <geom type="capsule" fromto="0.07616 0.01432 -0.09017 -0.07573 0.01561 -0.09660" size="0.09" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="5.0000"/>
-      <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.00587 0.02747 0.10494" size="0.1" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="5.0000"/>
+      <geom type="capsule" fromto="0.07616 0.01432 -0.09017 -0.07573 0.01561 -0.09660" size="0.09" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="5.0000"/>
+      <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.00587 0.02747 0.10494" size="0.1" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="5.0000"/>
       <body name="spine1" pos="-0.00587 0.02747 0.10494">
         <joint name="spine1" type="ball" limited="true" range="0 1.0" damping="3.0" armature="0.01"/>
-        <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.01123 0.01033 0.11633" size="0.11" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="6.0000"/>
+        <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.01123 0.01033 0.11633" size="0.11" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="6.0000"/>
         <body name="spine2" pos="0.01123 0.01033 0.11633">
           <joint name="spine2" type="ball" limited="true" range="0 1.0" damping="3.0" armature="0.01"/>
-          <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.00638 -0.03658 0.04373" size="0.12" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="6.0000"/>
+          <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.00638 -0.03658 0.04373" size="0.12" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="6.0000"/>
           <body name="spine3" pos="-0.00638 -0.03658 0.04373">
             <joint name="spine3" type="ball" limited="true" range="0 1.0" damping="3.0" armature="0.01"/>
-            <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.00596 0.04609 0.20066" size="0.13" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="4.5000"/>
-            <geom type="capsule" fromto="0.05531 0.02064 0.11846 -0.05758 0.02745 0.11426" size="0.07" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="4.5000"/>
+            <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.00596 0.04609 0.20066" size="0.13" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="4.5000"/>
+            <geom type="capsule" fromto="0.05531 0.02064 0.11846 -0.05758 0.02745 0.11426" size="0.07" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="4.5000"/>
             <body name="neck" pos="-0.00596 0.04609 0.20066">
               <joint name="neck" type="ball" limited="true" range="0 1.2" damping="1.0" armature="0.01"/>
-              <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.00917 -0.01800 0.14335" size="0.05" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="1.2000"/>
+              <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.00917 -0.01800 0.14335" size="0.05" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="1.2000"/>
               <body name="head" pos="0.00917 -0.01800 0.14335">
                 <joint name="head" type="ball" limited="true" range="0 1.2" damping="0.5" armature="0.01"/>
-                <geom type="sphere" pos="0.00000 0.00000 0.10000" size="0.095" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="4.5000"/>
+                <geom type="sphere" pos="0.00000 0.00000 0.10000" size="0.095" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="4.5000"/>
                 <site name="lm_00_nose" pos="0.00000 -0.10000 0.09000" size="0.012" rgba="1 0 0 0.6" group="4"/>
                 <site name="lm_01_left_eye_inner" pos="0.01500 -0.09000 0.11500" size="0.012" rgba="1 0 0 0.6" group="4"/>
                 <site name="lm_02_left_eye" pos="0.03200 -0.08500 0.11500" size="0.012" rgba="1 0 0 0.6" group="4"/>
@@ -43,18 +43,18 @@
             </body>
             <body name="left_collar" pos="0.05531 0.02064 0.11846">
               <joint name="left_collar" type="ball" limited="true" range="0 0.8" damping="1.5" armature="0.01"/>
-              <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.09340 0.02987 0.04910" size="0.04" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="0.8000"/>
+              <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.09340 0.02987 0.04910" size="0.04" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="0.8000"/>
               <body name="left_shoulder" pos="0.09340 0.02987 0.04910">
                 <joint name="left_shoulder" type="ball" limited="true" range="0 3.0" damping="1.5" armature="0.01"/>
-                <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.28499 0.02768 -0.05800" size="0.04" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="1.7000"/>
+                <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.28499 0.02768 -0.05800" size="0.04" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="1.7000"/>
                 <site name="lm_11_left_shoulder" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
                 <body name="left_elbow" pos="0.28499 0.02768 -0.05800">
                   <joint name="left_elbow" type="ball" limited="true" range="0 3.0" damping="1.5" armature="0.01"/>
-                  <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.23935 -0.00504 0.00860" size="0.033" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="1.0000"/>
+                  <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.23935 -0.00504 0.00860" size="0.033" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="1.0000"/>
                   <site name="lm_13_left_elbow" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
                   <body name="left_wrist" pos="0.23935 -0.00504 0.00860">
                     <joint name="left_wrist" type="ball" limited="true" range="0 1.6" damping="1.5" armature="0.01"/>
-                    <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.09500 -0.02000 -0.01500" size="0.03" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="0.5000"/>
+                    <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.09500 -0.02000 -0.01500" size="0.03" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="0.5000"/>
                     <site name="lm_15_left_wrist" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
                     <site name="lm_17_left_pinky" pos="0.08000 0.02500 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
                     <site name="lm_19_left_index" pos="0.09000 -0.02000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
@@ -65,18 +65,18 @@
             </body>
             <body name="right_collar" pos="-0.05758 0.02745 0.11426">
               <joint name="right_collar" type="ball" limited="true" range="0 0.8" damping="1.5" armature="0.01"/>
-              <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.10120 0.02261 0.05115" size="0.04" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="0.8000"/>
+              <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.10120 0.02261 0.05115" size="0.04" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="0.8000"/>
               <body name="right_shoulder" pos="-0.10120 0.02261 0.05115">
                 <joint name="right_shoulder" type="ball" limited="true" range="0 3.0" damping="1.5" armature="0.01"/>
-                <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.27499 0.02037 -0.05235" size="0.04" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="1.7000"/>
+                <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.27499 0.02037 -0.05235" size="0.04" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="1.7000"/>
                 <site name="lm_12_right_shoulder" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
                 <body name="right_elbow" pos="-0.27499 0.02037 -0.05235">
                   <joint name="right_elbow" type="ball" limited="true" range="0 3.0" damping="1.5" armature="0.01"/>
-                  <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.23999 0.00431 0.00429" size="0.033" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="1.0000"/>
+                  <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.23999 0.00431 0.00429" size="0.033" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="1.0000"/>
                   <site name="lm_14_right_elbow" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
                   <body name="right_wrist" pos="-0.23999 0.00431 0.00429">
                     <joint name="right_wrist" type="ball" limited="true" range="0 1.6" damping="1.5" armature="0.01"/>
-                    <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.09500 -0.02000 -0.01500" size="0.03" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="0.5000"/>
+                    <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.09500 -0.02000 -0.01500" size="0.03" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="0.5000"/>
                     <site name="lm_16_right_wrist" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
                     <site name="lm_18_right_pinky" pos="-0.08000 0.02500 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
                     <site name="lm_20_right_index" pos="-0.09000 -0.02000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
@@ -90,11 +90,11 @@
       </body>
       <body name="left_hip" pos="0.07616 0.01432 -0.09017">
         <joint name="left_hip" type="ball" limited="true" range="0 2.4" damping="1.5" armature="0.01"/>
-        <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.02773 0.02124 -0.39207" size="0.065" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="6.5000"/>
+        <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.02773 0.02124 -0.39207" size="0.065" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="6.5000"/>
         <site name="lm_23_left_hip" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
         <body name="left_knee" pos="0.02773 0.02124 -0.39207">
           <joint name="left_knee" type="ball" limited="true" range="0 2.8" damping="1.5" armature="0.01"/>
-          <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.00822 0.02195 -0.40760" size="0.045" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="2.8000"/>
+          <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.00822 0.02195 -0.40760" size="0.045" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="2.8000"/>
           <site name="lm_25_left_knee" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
           <body name="left_ankle" pos="-0.00822 0.02195 -0.40760">
             <joint name="left_ankle" type="ball" limited="true" range="0 1.2" damping="1.5" armature="0.01"/>
@@ -111,11 +111,11 @@
       </body>
       <body name="right_hip" pos="-0.07573 0.01561 -0.09660">
         <joint name="right_hip" type="ball" limited="true" range="0 2.4" damping="1.5" armature="0.01"/>
-        <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.03174 0.01488 -0.38803" size="0.065" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="6.5000"/>
+        <geom type="capsule" fromto="0.00000 0.00000 0.00000 -0.03174 0.01488 -0.38803" size="0.065" rgba="0.35 0.45 0.70 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="6.5000"/>
         <site name="lm_24_right_hip" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
         <body name="right_knee" pos="-0.03174 0.01488 -0.38803">
           <joint name="right_knee" type="ball" limited="true" range="0 2.8" damping="1.5" armature="0.01"/>
-          <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.00323 0.01833 -0.39883" size="0.045" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" mass="2.8000"/>
+          <geom type="capsule" fromto="0.00000 0.00000 0.00000 0.00323 0.01833 -0.39883" size="0.045" rgba="0.87 0.68 0.58 1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" group="3" priority="2" mass="2.8000"/>
           <site name="lm_26_right_knee" pos="0.00000 0.00000 0.00000" size="0.012" rgba="1 0 0 0.6" group="4"/>
           <body name="right_ankle" pos="0.00323 0.01833 -0.39883">
             <joint name="right_ankle" type="ball" limited="true" range="0 1.2" damping="1.5" armature="0.01"/>

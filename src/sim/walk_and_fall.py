@@ -8,7 +8,7 @@ Phase 2 (dynamic): at the trip instant the joints are released; MuJoCo simulates
     plus a trip impulse.
 
 Run headless with telemetry and a GIF:
-    python src/sim/walk_and_fall.py --gif ../outputs/demo_walk_and_fall.gif
+    python src/sim/walk_and_fall.py --gif outputs/demo_walk_and_fall.gif
 Live viewer (macOS needs mjpython):
     mjpython src/sim/walk_and_fall.py --view
 
@@ -22,6 +22,9 @@ import os
 import mujoco
 import numpy as np
 from scipy.spatial.transform import Rotation as Rot
+
+import apartment_layout as L
+from dynamic_obstacles import Vacuum
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
@@ -39,8 +42,6 @@ BLEND = 14                    # frames used to cross-fade the loop seam
 C = np.array([[1.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]])  # Y-up -> Z-up
 C_ROT = Rot.from_matrix(C)
 
-# Path through the living room (x, y in metres); avoids sofa, table, TV stand, lamp, shelf.
-PATH = np.array([[4.6, -3.6], [3.0, -3.1], [1.4, -2.4], [-0.2, -1.7], [-1.2, -1.3]])
 
 
 def load_cycle():
@@ -84,19 +85,36 @@ def _nlerp_all(a, b, w):
 class Walker:
     """Kinematic playback of the walking cycle along PATH at a chosen speed."""
 
-    def __init__(self, model, speed=0.8):
+    def __init__(self, model, speed=0.8, path=None, profile=None):
+        """path: polyline (n, 2) in metres (default: the demo path). profile: optional callable v(t) in m/s replacing the constant
+        speed (the gait rate follows it), e.g. slowing down before a collapse. post: optional callable (t, qpos) -> qpos that
+        edits her joints after the gait is computed (e.g. a hand pressed to the chest)."""
         self.m = model
+        self.post = None
         self.cyc = load_cycle()
         self.k = speed / self.cyc["speed"]       # playback-rate factor
         self.speed = speed
         self.qadr = {n: model.joint(n).qposadr[0] for n in BODY_JOINTS}
-        self.root_q = model.joint("human_root").qposadr[0]    # scene also holds mug/book/remote/ball
+        self.root_q = model.joint("human_root").qposadr[0]    # scene also holds furniture and (optionally) the robot
         self.root_v = model.joint("human_root").dofadr[0]
-        seg = np.diff(PATH, axis=0)
+        # her 91 position / 69 velocity entries are contiguous: free root (7/6) + 21 ball joints (4/3 each)
+        adr = sorted(model.joint(n).qposadr[0] for n in BODY_JOINTS)
+        assert adr[0] == self.root_q + 7 and adr[-1] + 4 == self.root_q + 91 and all(b - a == 4 for a, b in zip(adr, adr[1:]))
+        self.sl_q = slice(self.root_q, self.root_q + 91)
+        self.sl_v = slice(self.root_v, self.root_v + 69)
+        self.path = np.asarray(L.WALK_PATH if path is None else path, float)
+        seg = np.diff(self.path, axis=0)
         self.seg_len = np.hypot(seg[:, 0], seg[:, 1])
         self.cum = np.concatenate([[0], np.cumsum(self.seg_len)])
         self.total = self.cum[-1]
         self.z_off = 0.0
+        self.profile = profile
+        if profile is not None:                               # integrate the speed profile once: distance walked and gait phase
+            tt = np.arange(0.0, 240.0, 0.002)
+            v = np.array([profile(x) for x in tt])
+            self._tt = tt
+            self._s = np.concatenate([[0.0], np.cumsum(0.5 * (v[1:] + v[:-1]) * 0.002)])
+            self._ph = self._s / self.cyc["speed"] * CLIP_FPS     # frames of the gait cycle (= distance / stride speed)
         self._calibrate_height(model)
 
     # --- path helpers -------------------------------------------------------
@@ -104,6 +122,7 @@ class Walker:
         s = float(np.clip(s, 0, self.total - 1e-6))
         i = int(np.searchsorted(self.cum, s, side="right") - 1)
         u = (s - self.cum[i]) / self.seg_len[i]
+        PATH = self.path
         pos = PATH[i] + u * (PATH[i + 1] - PATH[i])
         # smoothed heading: blend towards the next segment near a corner
         d = (PATH[i + 1] - PATH[i]) / self.seg_len[i]
@@ -121,15 +140,28 @@ class Walker:
             ang = ang + w * _wrap(a0 - ang)
         return pos, ang
 
+    def s_at(self, t):
+        """Distance walked along the path at time t."""
+        return self.speed * t if self.profile is None else float(np.interp(t, self._tt, self._s))
+
+    def time_at(self, s):
+        """Time at which distance s along the path has been walked."""
+        return s / self.speed if self.profile is None else float(np.interp(s, self._s, self._tt))
+
     def default_trip_time(self):
-        """Trip on a straight stretch: 0.9 m before the last corner, so she is not turning when she goes down."""
-        return (self.cum[-2] - 0.9) / self.speed
+        """She trips on the curled rug edge, TRIP_AFTER_LAST_CORNER metres after the last turn."""
+        return self.time_at(self.cum[-2] + L.TRIP_AFTER_LAST_CORNER)
+
+    def apply(self, d, t):
+        """Put her at time t of the scripted walk. Touches only her own joints (not the robot or the furniture)."""
+        d.qpos[self.sl_q] = self.pose_at(t)[self.sl_q]
+        d.qvel[self.sl_v] = 0.0
 
     # --- pose ---------------------------------------------------------------
     def pose_at(self, t):
         """Return qpos (full vector) for the human at time t (s) of the walk."""
         c = self.cyc
-        fidx = (t * CLIP_FPS * self.k) % c["n"]
+        fidx = ((t * CLIP_FPS * self.k) if self.profile is None else float(np.interp(t, self._tt, self._ph))) % c["n"]
         i0 = int(fidx) % c["n"]
         i1 = (i0 + 1) % c["n"]
         w = fidx - int(fidx)
@@ -137,7 +169,7 @@ class Walker:
         rq = _nlerp(c["rq"][i0], c["rq"][i1], w)
         sway = (1 - w) * c["sway"][i0] + w * c["sway"][i1]
         hz = (1 - w) * c["height"][i0] + w * c["height"][i1]
-        pos, psi = self.path_state(self.speed * t)
+        pos, psi = self.path_state(self.s_at(t))
         rz = Rot.from_euler("z", psi)
         root_mj = rz * Rot.from_quat(rq)
         sw = rz.apply(sway)
@@ -152,6 +184,8 @@ class Walker:
             x, y, z, wq = r.as_quat()
             a = self.qadr[name]
             qpos[a:a + 4] = [wq, x, y, z]
+        if self.post is not None:
+            qpos = self.post(t, qpos)
         return qpos
 
     def _calibrate_height(self, model):
@@ -202,8 +236,9 @@ def draw_skeleton(scene, m, d):
         scene.ngeom += 1
 
 
-def render_frame(renderer, m, d, cam, skeleton):
+def render_frame(renderer, m, d, cam, skeleton, full_walls=False):
     opt = mujoco.MjvOption()
+    opt.geomgroup[2] = 1 if full_walls else 0     # group 2 = full-height walls; default is the cut-away view
     if skeleton:
         opt.geomgroup[1] = 0        # hide the body, show only the sketch (skins have their own switch)
         opt.skingroup[1] = 0
@@ -310,35 +345,63 @@ def make_target(m, q_rel, direction, brace, straight):
 
 
 def brace_arms(m, target, degrees):
-    """Protective reflex: swing both arms forward/up by `degrees` (about the body's lateral axis)."""
-    add = C_ROT * Rot.from_euler("x", -np.radians(degrees)) * C_ROT.inv()   # SMPL lateral axis -> MuJoCo frame
-    up = C_ROT * Rot.from_euler("x", -np.radians(HEAD_UP_DEG)) * C_ROT.inv()   # same axis: arms forward, head back
-    for n, rot in (("left_shoulder", add), ("right_shoulder", add), ("neck", up), ("head", up)):
+    """Protective reflex: both arms reach out in front of her; the head comes up.
+
+    `degrees` is the arm angle from hanging (0 = down, 90 = horizontal). The arms are aimed
+    straight ahead of the pelvis with only a slight outward spread (a plain rotation of the walking
+    pose also pushed them 40% sideways, which landed her in a T shape), and the elbows straighten."""
+    d2 = mujoco.MjData(m)
+    d2.qpos[:] = target
+    mujoco.mj_kinematics(m, d2)
+    Rp = d2.xmat[m.body("pelvis").id].reshape(3, 3)
+    fwd, up = Rp @ np.array([0.0, -1.0, 0.0]), Rp @ np.array([0.0, 0.0, 1.0])     # rest pose faces -y
+    th = np.radians(degrees)
+    for side, sgn in (("left", 1.0), ("right", -1.0)):
+        lat = Rp @ np.array([sgn, 0.0, 0.0])
+        ahead = fwd + 0.2 * lat
+        want = -np.cos(th) * up + np.sin(th) * ahead / np.linalg.norm(ahead)
+        sh, el = d2.xpos[m.body(f"{side}_shoulder").id], d2.xpos[m.body(f"{side}_elbow").id]
+        have = (el - sh) / np.linalg.norm(el - sh)
+        axis = np.cross(have, want)
+        n = np.linalg.norm(axis)
+        if n > 1e-9:
+            delta = Rot.from_rotvec(axis / n * np.arccos(np.clip(have @ want, -1, 1)))
+            rpar = Rot.from_matrix(d2.xmat[m.body(f"{side}_collar").id].reshape(3, 3))
+            a = m.joint(f"{side}_shoulder").qposadr[0]
+            w_, x_, y_, z_ = target[a:a + 4]
+            qn = (rpar.inv() * delta * rpar) * Rot.from_quat([x_, y_, z_, w_])     # world rotation -> parent frame
+            x_, y_, z_, w_ = qn.as_quat()
+            target[a:a + 4] = [w_, x_, y_, z_]
+        e = m.joint(f"{side}_elbow").qposadr[0]
+        target[e:e + 4] = _nlerp_q(target[e:e + 4], np.array([1.0, 0.0, 0.0, 0.0]), 0.7)   # reach, elbows mostly straight
+    upq = C_ROT * Rot.from_euler("x", -np.radians(HEAD_UP_DEG)) * C_ROT.inv()      # head back / up
+    for n in ("neck", "head"):
         a = m.joint(n).qposadr[0]
         w_, x_, y_, z_ = target[a:a + 4]
-        q = rot * Rot.from_quat([x_, y_, z_, w_])
-        x_, y_, z_, w_ = q.as_quat()
+        x_, y_, z_, w_ = (upq * Rot.from_quat([x_, y_, z_, w_])).as_quat()
         target[a:a + 4] = [w_, x_, y_, z_]
 
 
-def release(m, d, w, t_fall, speed, trip_omega, direction):
+def release(m, d, w, t_fall, speed, trip_omega, direction, lateral=False):
     """Hand over from kinematic playback to physics: keep pose and velocity, add the trip impulse."""
     eps = 0.01
     q0 = w.pose_at(t_fall)
     q1 = w.pose_at(t_fall + eps)
-    d.qpos[:] = q0
+    d.qpos[w.sl_q] = q0[w.sl_q]                          # only her joints: the robot and furniture keep their state
     v = np.zeros(m.nv)
     mujoco.mj_differentiatePos(m, v, eps, q0, q1)
-    d.qvel[:] = v
+    d.qvel[w.sl_v] = v[w.sl_v]
     mujoco.mj_forward(m, d)
     v0_ = w.root_v
     Rr = d.xmat[m.body("pelvis").id].reshape(3, 3)
     om = Rr @ d.qvel[v0_ + 3:v0_ + 6]
     om[2] = 0.0                                            # no leftover turning: she goes down straight
     d.qvel[v0_ + 3:v0_ + 6] = Rr.T @ om
-    _, psi = w.path_state(speed * t_fall)
+    _, psi = w.path_state(w.s_at(t_fall))
     fwd = np.array([np.cos(psi), np.sin(psi), 0.0])
     axis = np.cross([0, 0, 1.0], fwd) * direction      # pitch about the horizontal axis normal to heading
+    if lateral:                                          # fall sideways: roll about the heading axis instead
+        axis = fwd * direction
     Rm = d.xmat[m.body("pelvis").id].reshape(3, 3)
     v0 = w.root_v
     omega = trip_omega * axis                              # world angular velocity of the trip
@@ -352,37 +415,39 @@ def release(m, d, w, t_fall, speed, trip_omega, direction):
     return d.qpos.copy()
 
 
-def run(speed=0.8, t_fall=None, trip_omega=1.9, direction=1.0, after=6.0, log_hz=30, frames=None, fps=15, tau=0.45, brace=70.0, skeleton=False, straight=1.0):
+def run(speed=0.8, t_fall=None, trip_omega=1.9, direction=1.0, after=6.0, log_hz=30, frames=None, fps=15, tau=0.45, brace=70.0, skeleton=False, straight=1.0,
+        obstacle_speed=L.VACUUM_SPEED, full_walls=False):
     m = mujoco.MjModel.from_xml_path(SCENE)
     d = mujoco.MjData(m)
     w = Walker(m, speed)
     if t_fall is None:
         t_fall = w.default_trip_time()
     rows, imgs = [], []
-    renderer = mujoco.Renderer(m, 360, 480) if frames is not None else None
+    vac = Vacuum(m, obstacle_speed)
+    renderer = mujoco.Renderer(m, 480, 640) if frames is not None else None
     cam = None
     if renderer is not None:
         cam = mujoco.MjvCamera()
-        cam.type = mujoco.mjtCamera.mjCAMERA_FREE
-        cam.lookat[:] = [1.0, -1.5, 0.6]
-        cam.distance, cam.azimuth, cam.elevation = 7.0, 100, -28
+        cam.type = mujoco.mjtCamera.mjCAMERA_FIXED
+        cam.fixedcamid = m.camera("overview").id
 
     def log(t, phase):
         hip, pitch, eh, ev = features(m, d)
         rows.append({"t": round(t, 4), "phase": phase, "hip_x": hip[0], "hip_y": hip[1], "hip_z": hip[2],
                      "torso_pitch_deg": pitch, "extent_h": eh, "extent_v": ev,
-                     "aspect_ratio": eh / max(ev, 1e-6)})
+                     "aspect_ratio": eh / max(ev, 1e-6),
+                     "obstacle_x": d.xpos[m.body("vacuum").id][0], "obstacle_y": d.xpos[m.body("vacuum").id][1]})
 
     def snap(t):
         if renderer is not None and len(imgs) < int((t) * fps) + 1:
-            imgs.append(render_frame(renderer, m, d, cam, skeleton))
+            imgs.append(render_frame(renderer, m, d, cam, skeleton, full_walls))
 
     # phase 1: kinematic walk
     dt = 1.0 / log_hz
     t = 0.0
     while t < t_fall:
-        d.qpos[:] = w.pose_at(t)
-        d.qvel[:] = 0
+        w.apply(d, t)
+        vac.update(d, t)
         mujoco.mj_forward(m, d)
         log(t, "walk")
         snap(t)
@@ -396,11 +461,12 @@ def run(speed=0.8, t_fall=None, trip_omega=1.9, direction=1.0, after=6.0, log_hz
     snap_every = int(round(1.0 / (fps * m.opt.timestep)))
     for s in range(steps):
         hold.apply(d, s * m.opt.timestep)
+        vac.update(d, t_fall + s * m.opt.timestep)
         mujoco.mj_step(m, d)
         if s % log_every == 0:
             log(t_fall + (s + 1) * m.opt.timestep, "fall")
         if renderer is not None and s % snap_every == 0:
-            imgs.append(render_frame(renderer, m, d, cam, skeleton))
+            imgs.append(render_frame(renderer, m, d, cam, skeleton, full_walls))
     return m, d, rows, imgs, t_fall
 
 
@@ -424,7 +490,7 @@ def _sketch(v, m, d, on):
         draw_skeleton(v.user_scn, m, d)
 
 
-def main():
+def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--speed", type=float, default=0.8, help="walking speed m/s (elderly about 0.8)")
     ap.add_argument("--omega", type=float, default=1.9, help="trip pitch rate rad/s about the planted foot")
@@ -433,24 +499,30 @@ def main():
     ap.add_argument("--brace", type=float, default=70.0, help="arm brace angle in degrees (forward falls only, 0 = off)")
     ap.add_argument("--skeleton", action="store_true", help="sketch view: hide the body, show the 33-landmark skeleton")
     ap.add_argument("--straight", type=float, default=1.0, help="0..1: how strongly the fall is straightened / made symmetric (0 = keep the walking twist)")
+    ap.add_argument("--obstacle-speed", type=float, default=L.VACUUM_SPEED, help="robot-vacuum speed m/s (0 = parked)")
+    ap.add_argument("--full-walls", action="store_true", help="render full-height walls instead of the cut-away view")
     ap.add_argument("--csv", default=os.path.join(ROOT, "analytics", "human_walk_fall_telemetry.csv"))
     ap.add_argument("--gif", default=None)
     ap.add_argument("--view", action="store_true")
-    a = ap.parse_args()
+    a = ap.parse_args(argv)
 
     if a.view:
         import time
         import mujoco.viewer
         m = mujoco.MjModel.from_xml_path(SCENE); d = mujoco.MjData(m); w = Walker(m, a.speed)
         t_fall = w.default_trip_time()
+        vac = Vacuum(m, a.obstacle_speed)
         with mujoco.viewer.launch_passive(m, d) as v:
+            v.opt.geomgroup[2] = 1 if a.full_walls else 0
+            v.cam.type = mujoco.mjtCamera.mjCAMERA_FIXED
+            v.cam.fixedcamid = m.camera("overview").id
             if a.skeleton:
                 v.opt.geomgroup[1] = 0
                 v.opt.skingroup[1] = 0
                 v.opt.geomgroup[4] = 0
             t = 0.0
             while v.is_running() and t < t_fall:
-                d.qpos[:] = w.pose_at(t); mujoco.mj_forward(m, d); _sketch(v, m, d, a.skeleton); v.sync(); time.sleep(1 / 60); t += 1 / 60
+                w.apply(d, t); vac.update(d, t); mujoco.mj_forward(m, d); _sketch(v, m, d, a.skeleton); v.sync(); time.sleep(1 / 60); t += 1 / 60
             hold = ReflexHold(m, d, a.tau)
             hold.target = make_target(m, release(m, d, w, t_fall, a.speed, a.omega, a.direction),
                                       a.direction, a.brace, a.straight)
@@ -458,12 +530,14 @@ def main():
             while v.is_running():
                 for _ in range(8):
                     hold.apply(d, n_step * m.opt.timestep); n_step += 1
+                    vac.update(d, t_fall + n_step * m.opt.timestep)
                     mujoco.mj_step(m, d)
                 _sketch(v, m, d, a.skeleton); v.sync(); time.sleep(1 / 60)
         return
 
     m, d, rows, imgs, t_fall = run(a.speed, trip_omega=a.omega, direction=a.direction,
-                                   frames=(a.gif is not None) or None, tau=a.tau, brace=a.brace, skeleton=a.skeleton, straight=a.straight)
+                                   frames=(a.gif is not None) or None, tau=a.tau, brace=a.brace, skeleton=a.skeleton, straight=a.straight,
+                                   obstacle_speed=a.obstacle_speed, full_walls=a.full_walls)
     os.makedirs(os.path.dirname(a.csv), exist_ok=True)
     with open(a.csv, "w", newline="") as f:
         wr = csv.DictWriter(f, fieldnames=list(rows[0].keys())); wr.writeheader(); wr.writerows(rows)

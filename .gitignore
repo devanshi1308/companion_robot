@@ -1,0 +1,32 @@
+# Environments and caches
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+MUJOCO_LOG.TXT
+
+# Local-only planning notes, third-party originals, generated demo output
+prompt.md
+CLAUDE.md
+external_assets/
+outputs/
+
+# AI-tool generated config
+.mcp.json
+.claude/
+.codebuddy/
+.cursor/
+.gemini/
+.kiro/
+.qoder/
+.vscode/
+.code-review-graph/
+.github/instructions/
+.cursorrules
+.windsurfrules
+AGENTS.md
+GEMINI.md
+QODER.md
+CODEBUDDY.md
+opencode.jsonc

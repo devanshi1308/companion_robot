@@ -1,0 +1,14 @@
+{
+  "_note": "DEMO DATA ONLY. All names, numbers and addresses are fictional. The simulator never sends a real call or message.",
+  "patient": {
+    "display_name": "Asha (demo patient)",
+    "address": "Flat 3B, Demo Heights (fictional)",
+    "profile": "elderly, lives alone"
+  },
+  "family": [
+    {"name": "Rohan (son)", "relation": "son", "channels": ["app_push", "sms"], "priority": 1},
+    {"name": "Meera (daughter)", "relation": "daughter", "channels": ["app_push", "voice_call"], "priority": 1},
+    {"name": "Mrs. Iyer (neighbour)", "relation": "neighbour", "channels": ["sms"], "priority": 2}
+  ],
+  "ambulance": {"service": "108 (simulated emergency line)", "channel": "automated_call"}
+}
