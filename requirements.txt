@@ -1,0 +1,16 @@
+mujoco>=3.1.0
+numpy>=1.24.0
+scipy>=1.10.0
+matplotlib>=3.7.0
+pandas>=2.0.0
+
+# Scene-authoring extras (from the original companion_robot workspace)
+mujoco-scene-editor
+yourdfpy
+
+# Vision (real BlazePose on rendered camera frames; the pose model file is downloaded separately, see src/vision/blazepose_tracker.py)
+mediapipe>=1.1
+
+# optional: Momo, the agent with feelings (src/agent). Without a model key it runs on offline wording.
+strands-agents[anthropic]>=1.0
+sounddevice>=0.4   # optional: play the siren in a live demo (--sound)

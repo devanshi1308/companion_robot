@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family view: Momo</title>
+<style>
+:root{
+  --bg:#f4f5f7; --card:#ffffff; --ink:#1b1f24; --muted:#667085; --line:#e3e6ea;
+  --ok:#1f9d55; --ok-bg:#e6f6ec; --warn:#c77700; --warn-bg:#fff3dc; --bad:#d92d20; --bad-bg:#fde8e6; --info:#2563eb; --info-bg:#e8f0fe;
+  --plan:#fafbfc; --wall:#c5cbd3; --furn:#e6e9ee; --robot:#2563eb; --person:#1f9d55;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0f1318; --card:#171c23; --ink:#e8ebef; --muted:#97a1ae; --line:#272e38;
+  --ok:#3ecf7d; --ok-bg:#12301f; --warn:#f0a53a; --warn-bg:#352711; --bad:#ff6b5e; --bad-bg:#3b1815; --info:#6ea0ff; --info-bg:#16233f;
+  --plan:#12171d; --wall:#3a434f; --furn:#222a34; --robot:#6ea0ff; --person:#3ecf7d;}
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:14px 20px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:18px;margin:0;font-weight:650}
+header .sub{color:var(--muted);font-size:13px}
+.spacer{flex:1}
+.clock{font-variant-numeric:tabular-nums;color:var(--muted)}
+#banner{margin:16px 20px 0;padding:14px 18px;border-radius:12px;font-weight:600;display:flex;align-items:center;gap:12px;border:1px solid var(--line)}
+#banner.l0{background:var(--ok-bg);color:var(--ok)} #banner.l1{background:var(--warn-bg);color:var(--warn)} #banner.l2{background:var(--bad-bg);color:var(--bad);animation:flash 1s infinite}
+@keyframes flash{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--bad) 25%,transparent)}}
+#banner .dot{width:12px;height:12px;border-radius:50%;background:currentColor}
+main{display:grid;grid-template-columns:minmax(320px,1.15fr) minmax(300px,1fr);gap:16px;padding:16px 20px 28px;max-width:1280px;margin:0 auto}
+@media (max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:650}
+.col{display:flex;flex-direction:column;gap:16px}
+canvas{width:100%;display:block;border-radius:10px;background:var(--plan);border:1px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:560}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12.5px;font-weight:600;background:var(--line);color:var(--muted)}
+.chip.on{background:var(--ok-bg);color:var(--ok)} .chip.warn{background:var(--warn-bg);color:var(--warn)} .chip.bad{background:var(--bad-bg);color:var(--bad)} .chip.info{background:var(--info-bg);color:var(--info)}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.dose{padding:10px 0;border-top:1px solid var(--line)} .dose:first-of-type{border-top:0}
+button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:10px;cursor:pointer}
+button:hover{border-color:var(--info)} button.primary{background:var(--info);color:#fff;border-color:var(--info)}
+button.danger{background:var(--bad);color:#fff;border-color:var(--bad)} button:disabled{opacity:.45;cursor:not-allowed}
+input[type=text],input[type=password]{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);min-width:0}
+#timeline{max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.ev{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:8px 10px;border-radius:10px;background:var(--bg);border-left:4px solid var(--line)}
+.ev.momo{border-left-color:var(--info)} .ev.sent{border-left-color:var(--warn)} .ev.sent.emergency,.ev.sent.ambulance_call,.ev.sent.siren_on{border-left-color:var(--bad)}
+.ev.command{border-left-color:var(--ok)} .ev.log{opacity:.7;font-size:13px}
+.ev .t{color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px} .ev .who{font-size:12px;color:var(--muted);font-weight:600}
+.face{display:flex;gap:16px;align-items:center}
+.bars{flex:1;display:grid;gap:5px}
+.bar{display:grid;grid-template-columns:54px 1fr;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)}
+.bar i{display:block;height:7px;border-radius:5px;background:var(--line);overflow:hidden} .bar b{display:block;height:100%;background:var(--info)}
+.bar.alarm b{background:var(--bad)} .bar.worry b{background:var(--warn)} .bar.joy b{background:var(--ok)}
+.said{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--info-bg);color:var(--ink);min-height:44px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:10px;opacity:0;transition:opacity .25s;pointer-events:none}
+#toast.show{opacity:.95}
+.note{color:var(--muted);font-size:13px}
+img#snap{max-width:100%;border-radius:10px;border:1px solid var(--line);display:none;margin-top:8px}
+.wa{background:#e5ddd5;border-radius:12px;padding:10px;min-height:150px;max-height:340px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+@media (prefers-color-scheme: dark){.wa{background:#0b141a}}
+.wtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.wtab{padding:5px 12px;border-radius:999px;border:1px solid var(--line);cursor:pointer;font-size:13px;font-weight:600;background:var(--card);color:var(--muted)}
+.wtab.on{background:#25d366;color:#06361a;border-color:#25d366}
+.bub{align-self:flex-end;max-width:86%;background:#d9fdd3;color:#111b21;border-radius:10px 10px 2px 10px;padding:7px 10px 4px;box-shadow:0 1px 1px rgba(0,0,0,.12);font-size:14px}
+@media (prefers-color-scheme: dark){.bub{background:#005c4b;color:#e9edef}}
+.bub.urgent{border-left:4px solid var(--bad)} .bub img{width:100%;border-radius:8px;margin-bottom:4px;display:block}
+.bub .meta{display:flex;justify-content:flex-end;gap:5px;font-size:11px;opacity:.7;margin-top:2px}
+.tick{letter-spacing:-3px;font-weight:700} .tick.read{color:#34b7f1;opacity:1}
+#login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+#login .box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;max-width:380px;width:100%;display:grid;gap:12px}
+#login h1{margin:0;font-size:20px} #login input{width:100%} #loginErr{color:var(--bad);min-height:20px;font-size:14px}
+.bub.in{align-self:flex-start;background:#fff;color:#111b21;border-radius:10px 10px 10px 2px}
+@media (prefers-color-scheme: dark){.bub.in{background:#202c33;color:#e9edef}}
+.bub.me{align-self:flex-end}
+.sirenbox{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bad-bg);color:var(--bad);font-weight:650}
+</style>
+</head>
+<body>
+<div id="login"><form class="box" id="loginForm">
+  <h1>Family view: Momo</h1>
+  <div class="note">Sign in to see how she is and to chat with Momo.</div>
+  <input type="text" id="lu" placeholder="Username" autocomplete="username" autofocus>
+  <input type="password" id="lp" placeholder="Password" autocomplete="current-password">
+  <div id="loginErr"></div>
+  <button class="primary" type="submit">Sign in</button>
+  <div class="note">Demo accounts: rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo</div>
+</form></div>
+<header>
+  <div><h1 id="who">Family view</h1><div class="sub" id="sub">Waiting for the robot</div></div>
+  <div class="spacer"></div>
+  <span class="chip" id="conn">not connected</span>
+  <span class="note" id="me"></span><button id="btnOut" style="padding:4px 10px">Sign out</button>
+  <span class="clock" id="clock"></span>
+</header>
+<div id="banner" class="l0"><span class="dot"></span><span id="bannerText">Waiting for the robot to report</span></div>
+<main>
+  <div class="col">
+    <section class="card">
+      <h2>Where she is</h2>
+      <canvas id="plan" width="900" height="640"></canvas>
+      <div class="row note" style="margin-top:8px">
+        <span><span class="chip info">blue</span> Momo</span><span><span class="chip on">green</span> her</span><span><span class="chip bad">red</span> on the floor</span>
+        <span id="planNote"></span>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Ask Momo</h2>
+      <div class="row">
+        <input type="text" id="sayText" placeholder="Say something to her through Momo" style="flex:1" maxlength="160">
+        <button id="btnSay" class="primary">Say it</button>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="btnRemind">Remind her about the tablet now</button>
+        <button id="btnCheck">Ask Momo to check on her</button>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <span class="note">Camera:</span>
+        <button id="lookUp">Look up</button><button id="lookLevel">Level</button><button id="lookDown">Look down</button>
+        <span class="note" id="tilt"></span>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="btnSnap">Ask for a picture (blurred face)</button>
+        <button id="btnAround">Look around: pictures above and below</button>
+        <button id="btnSiren" class="danger" disabled>Silence the siren</button>
+      </div>
+      <img id="snap" alt="Latest blurred picture">
+      <div class="row" id="views" style="margin-top:8px;align-items:flex-start">
+        <figure style="margin:0;display:none" id="figAbove"><img id="imgAbove" alt="View above" style="max-width:100%;border-radius:10px;border:1px solid var(--line)"><figcaption class="note">What the camera sees above</figcaption></figure>
+        <figure style="margin:0;display:none" id="figBelow"><img id="imgBelow" alt="View below" style="max-width:100%;border-radius:10px;border:1px solid var(--line)"><figcaption class="note">What the camera sees below</figcaption></figure>
+      </div>
+    </section>
+  </div>
+  <div class="col">
+    <section class="card">
+      <h2>How Momo feels</h2>
+      <div class="face">
+        <svg id="face" width="150" height="110" viewBox="0 0 150 110"></svg>
+        <div class="bars" id="bars"></div>
+      </div>
+      <div class="note" style="margin-top:6px" id="feelLine"></div>
+      <div class="said" id="said">Momo has not said anything yet.</div>
+      <div class="sirenbox" id="sirenbox"></div>
+    </section>
+    <section class="card">
+      <h2>Medicine</h2>
+      <div id="doses" class="note">No reminder yet.</div>
+    </section>
+    <section class="card">
+      <h2>What she is doing</h2>
+      <dl class="kv">
+        <dt>Room</dt><dd id="pRoom">unknown</dd>
+        <dt>Doing</dt><dd id="pPosture">unknown</dd>
+        <dt>Last seen</dt><dd id="pSeen">not yet</dd>
+        <dt>Momo is</dt><dd id="rState">waiting</dd>
+      </dl>
+    </section>
+    <section class="card">
+      <h2>Privacy</h2>
+      <p class="note" style="margin:0" id="privacy">No video is streamed.</p>
+    </section>
+  </div>
+  <section class="card" style="grid-column:1/-1">
+    <h2>Chat with Momo</h2>
+    <div class="wa" id="wa"><span class="note">Say hello, or ask: "has she taken her tablet?", "where is she?", "how is she?"</span></div>
+    <div class="row" style="margin-top:10px"><input type="text" id="chatText" placeholder="Message Momo" style="flex:1" maxlength="300"><button class="primary" id="btnChat">Send</button></div>
+    <p class="note" style="margin:8px 0 0">Only you see this chat and the texts Momo sent you. Momo answers from what the robot knows right now and can act on requests (remind her, check on her, tell her, look up or down, send a picture, silence the siren). Nothing here goes to a real phone.</p>
+  </section>
+  <section class="card" style="grid-column:1/-1">
+    <h2>What Momo said and sent</h2>
+    <label class="note"><input type="checkbox" id="showLog"> also show the robot's technical log</label>
+    <div id="timeline" style="margin-top:10px"></div>
+  </section>
+</main>
+<div id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+let layout=null, trail=[], events=[], nEv=0, st=null, tPulse=0;
+const KIND={heads_up:"Text to family: possible fall", emergency:"URGENT to family", ambulance_call:"Ambulance call (simulated)", update:"Update to family", all_clear:"Text to family: all clear",
+ reminder_missed:"Text to family: reminder missed", welfare_missed:"Text to family: she did not answer", medicine_taken:"Text to family: tablet taken", medicine_acknowledged:"Text to family: said OK, not seen",
+ siren_on:"Text to family: siren sounding"};
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
+async function cmd(c,args){
+  try{const r=await fetch("/api/command",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cmd:c,args:args||{}})}); if(r.status===401){showLogin();return}
+    const j=await r.json(); toast(r.ok?"Sent to Momo":(j.error||"failed"));}catch(e){toast("Cannot reach the platform")}
+}
+$("btnSay").onclick=()=>{const v=$("sayText").value.trim(); if(v){cmd("say",{text:v});$("sayText").value=""}};
+$("sayText").addEventListener("keydown",e=>{if(e.key==="Enter")$("btnSay").click()});
+$("btnRemind").onclick=()=>cmd("remind",{label:"your tablet"});
+$("btnCheck").onclick=()=>cmd("check");
+$("lookUp").onclick=()=>cmd("look",{direction:"up"}); $("lookLevel").onclick=()=>cmd("look",{direction:"level"}); $("lookDown").onclick=()=>cmd("look",{direction:"down"});
+$("btnSnap").onclick=()=>cmd("snapshot");
+$("btnAround").onclick=()=>cmd("snapshot",{view:"both"});
+$("btnSiren").onclick=()=>{ if(confirm("Silence the siren? Only do this if help has arrived or she is fine.")) cmd("siren_off") };
+$("showLog").onchange=renderEvents;
+
+function face(mood){
+  const col={watching:"#2fb6c4",worried:"#e8a317",happy:"#2fb35f",alert:"#d92d20"}[mood]||"#2fb6c4";
+  let g=`<rect x="4" y="4" width="142" height="102" rx="22" fill="#0c0d10" stroke="#3a3f47" stroke-width="3"/>`;
+  for(const sx of [-1,1]){const cx=75+sx*32;
+    if(mood==="happy") g+=`<path d="M${cx-14} 56 Q${cx} 38 ${cx+14} 56" stroke="${col}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
+    else g+=`<rect x="${cx-11}" y="${mood==="worried"?40:34}" width="22" height="${mood==="alert"?40:mood==="worried"?30:34}" rx="8" fill="${col}"/>`;
+    if(mood==="worried"||mood==="alert") g+=`<line x1="${cx-sx*16}" y1="26" x2="${cx+sx*10}" y2="35" stroke="${col}" stroke-width="5" stroke-linecap="round"/>`;
+  }
+  if(mood==="alert") g+=`<rect x="4" y="4" width="142" height="102" rx="22" fill="none" stroke="${col}" stroke-width="4"><animate attributeName="opacity" values="1;.2;1" dur="0.8s" repeatCount="indefinite"/></rect>`;
+  $("face").innerHTML=g;
+}
+function bars(f){
+  const rows=[["worry",f.worry],["alarm",f.alarm],["joy",f.joy],["calm",f.calm]];
+  $("bars").innerHTML=rows.map(([n,v])=>`<div class="bar ${n}"><span>${n}</span><i><b style="width:${Math.round(100*v)}%"></b></i></div>`).join("");
+}
+function draw(){
+  if(!layout) return;
+  const c=$("plan"), x=c.getContext("2d"), W=c.width, H=c.height, [x0,x1,y0,y1]=layout.bounds, pad=24;
+  const s=Math.min((W-2*pad)/(x1-x0),(H-2*pad)/(y1-y0)), ox=(W-s*(x1-x0))/2, oy=(H-s*(y1-y0))/2;
+  const px=u=>ox+(u-x0)*s, py=v=>H-(oy+(v-y0)*s);
+  const css=getComputedStyle(document.documentElement), col=n=>css.getPropertyValue(n).trim();
+  x.clearRect(0,0,W,H); x.lineWidth=3; x.strokeStyle=col("--wall"); x.font="600 18px system-ui"; x.fillStyle=col("--muted");
+  layout.rooms.forEach(r=>{x.fillStyle=col("--plan");x.fillRect(px(r.x0),py(r.y1),(r.x1-r.x0)*s,(r.y1-r.y0)*s);x.strokeRect(px(r.x0),py(r.y1),(r.x1-r.x0)*s,(r.y1-r.y0)*s);
+    x.fillStyle=col("--muted");x.fillText(r.name,px(r.x0)+10,py(r.y1)+24)});
+  layout.doors.forEach(d=>{x.strokeStyle=col("--plan");x.lineWidth=7;x.beginPath();x.moveTo(px(d.x-d.w/2),py(d.y));x.lineTo(px(d.x+d.w/2),py(d.y));x.stroke();x.lineWidth=3;x.strokeStyle=col("--wall")});
+  x.font="13px system-ui";
+  layout.furniture.forEach(f=>{x.fillStyle=col("--furn");x.fillRect(px(f.x0),py(f.y1),(f.x1-f.x0)*s,(f.y1-f.y0)*s);x.fillStyle=col("--muted");x.fillText(f.n,px(f.x0)+5,py(f.y1)+16)});
+  if(!st||st.waiting) return;
+  const rb=st.robot, pe=st.person;
+  if(st.siren&&st.siren.on){tPulse=(tPulse+1)%60; const px0=pe.x!=null?px(pe.x):px(rb.x), py0=pe.y!=null?py(pe.y):py(rb.y);
+    for(let k=0;k<3;k++){const r=((tPulse/60)+k/3)%1; x.strokeStyle=col("--bad"); x.globalAlpha=1-r; x.lineWidth=3; x.beginPath(); x.arc(px0,py0,20+r*110,0,7); x.stroke();} x.globalAlpha=1}
+  x.strokeStyle=col("--robot"); x.lineWidth=2; x.globalAlpha=.35; x.beginPath(); trail.forEach((p,i)=>i?x.lineTo(px(p[0]),py(p[1])):x.moveTo(px(p[0]),py(p[1]))); x.stroke(); x.globalAlpha=1;
+  if(pe.x!=null){const lying=pe.posture&&pe.posture.startsWith("lying"); x.globalAlpha=pe.seen_now?1:.45; x.fillStyle=lying?col("--bad"):col("--person");
+    x.beginPath(); x.arc(px(pe.x),py(pe.y),lying?15:12,0,7); x.fill(); x.globalAlpha=1; x.fillStyle=col("--ink"); x.font="600 13px system-ui"; x.fillText("Asha",px(pe.x)+16,py(pe.y)+4)}
+  x.save(); x.translate(px(rb.x),py(rb.y)); x.rotate(-rb.yaw); x.fillStyle=col("--robot"); x.beginPath(); x.arc(0,0,11,0,7); x.fill();
+  x.beginPath(); x.moveTo(20,0); x.lineTo(8,-8); x.lineTo(8,8); x.closePath(); x.fill(); x.restore();
+  x.fillStyle=col("--ink"); x.font="600 13px system-ui"; x.fillText("Momo",px(rb.x)+16,py(rb.y)-12);
+}
+function fmtAgo(s){if(s==null)return "not yet"; if(s<2)return "now"; return Math.round(s)+" s ago"}
+function renderDoses(ds){
+  const real=ds.filter(d=>!d.welfare);
+  if(!real.length){$("doses").innerHTML='<span class="note">No medicine reminder yet. Momo reminds her at the scheduled time and watches whether she takes it.</span>';return}
+  $("doses").innerHTML=real.map(d=>{
+    const rem=`<span class="chip on">Reminded ${d.clock_due}</span>`;
+    const ack=d.t_ack!=null?`<span class="chip on">Said OK</span>`:`<span class="chip">Waiting for OK</span>`;
+    const tk=d.status==="taken"?`<span class="chip on">Taken, seen ${d.clock_taken}</span>`:d.status==="missed"?`<span class="chip bad">Missed</span>`:d.status==="acknowledged"?`<span class="chip warn">Not seen yet</span>`:`<span class="chip">Not taken yet</span>`;
+    const head=d.status==="taken"?"She took it.":d.status==="missed"?"She did not answer the reminder.":d.status==="acknowledged"?"She said OK; the robot has not seen her take it.":"Reminder in progress.";
+    return `<div class="dose"><b>${d.label}</b><div class="note">${head}</div><div class="steps">${rem}${ack}${tk}</div></div>`}).join("");
+}
+function renderEvents(){
+  const showLog=$("showLog").checked;
+  const merged=[]; events.filter(e=>showLog||e.type!=="log").forEach(e=>{const k=merged[merged.length-1];
+    if(k&&e.type==="sent"&&k.type==="sent"&&k.kind===e.kind&&k.text===e.text&&k.t===e.t){k.to+=", "+e.to}else merged.push(Object.assign({},e))});
+  const rows=merged.slice(-80).reverse().map(e=>{
+    let who="", text=e.text;
+    if(e.type==="momo"){who="Momo says"+(e.feeling?" ("+e.feeling+")":"")}
+    else if(e.type==="sent"){who=(KIND[e.kind]||e.kind)+" to "+e.to}
+    else if(e.type==="command"){who="Family request: "+e.cmd; text=(e.ok?"Momo accepted.":"Momo could not do it: "+e.note)}
+    else who="Robot log";
+    const cls=e.type==="sent"?`sent ${e.kind}`:e.type;
+    return `<div class="ev ${cls}"><div class="t">${e.clock||""}</div><div><div class="who">${who}</div>${text.replace(/</g,"&lt;")}</div></div>`}).join("");
+  $("timeline").innerHTML=rows||'<span class="note">Nothing yet.</span>';
+}
+let me=null;
+function showLogin(){$("login").style.display="flex"; me=null}
+async function loginSubmit(ev){ev.preventDefault(); $("loginErr").textContent="";
+  const r=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user:$("lu").value,password:$("lp").value})}); const j=await r.json();
+  if(!r.ok){$("loginErr").textContent=j.error||"sign-in failed";return}
+  me=j.user; $("lp").value=""; $("login").style.display="none"; events=[]; nEv=0; trail=[]; $("me").textContent="Signed in as "+me.display; poll()}
+$("loginForm").addEventListener("submit",loginSubmit);
+$("btnOut").onclick=async()=>{await fetch("/api/logout",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}); showLogin()};
+async function sendChat(){const v=$("chatText").value.trim(); if(!v)return; $("chatText").value="";
+  const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:v})}); if(r.status===401)showLogin()}
+$("btnChat").onclick=sendChat; $("chatText").addEventListener("keydown",e=>{if(e.key==="Enter")sendChat()});
+function renderChat(){
+  const thread=events.filter(e=>e.type==="chat"||e.type==="sent");
+  if(!thread.length) return;
+  const wa=$("wa"), atBottom=wa.scrollTop+wa.clientHeight>=wa.scrollHeight-30; const seen=[];
+  wa.innerHTML=thread.filter(e=>{const k=e.type+e.kind+e.t+e.text; if(seen.includes(k))return false; seen.push(k); return true}).map(e=>{
+    const mineMsg=e.type==="chat"&&e.who==="user"; const urgent=e.type==="sent"&&["emergency","siren_on"].includes(e.kind);
+    const img=e.attachment?`<img src="/api/snapshot?view=emergency&n=${e.n}" alt="blurred picture">`:"";
+    return `<div class="bub ${mineMsg?"me":"in"} ${urgent?"urgent":""}">${mineMsg?"":'<b style="font-size:12px;color:var(--ok)">Momo</b>'}${img}<div>${e.text.replace(/</g,"&lt;")}</div><div class="meta"><span>${e.clock||""}</span></div></div>`}).join("");
+  if(atBottom||thread[thread.length-1].who==="user") wa.scrollTop=wa.scrollHeight;
+}
+function render(){
+  if(!st||st.waiting){$("conn").textContent="waiting for the robot";return}
+  $("conn").textContent="live"; $("conn").className="chip on";
+  $("who").textContent=st.patient+" at home"; $("sub").textContent="Momo is "+st.robot.state_label.toLowerCase()+" in the "+st.robot.room.toLowerCase();
+  $("clock").textContent=st.clock+(st.ended?" (demo ended)":"");
+  const b=$("banner"); b.className="l"+st.alert.level; $("bannerText").textContent=st.alert.title;
+  face(st.robot.mood); bars(st.robot.feeling);
+  $("feelLine").textContent="Momo feels "+st.robot.feeling.label+". Voice: "+st.robot.agent_mode+".";
+  const say=events.filter(e=>e.type==="momo").slice(-1)[0]; if(say) $("said").textContent="“"+say.text+"”";
+  const sb=$("sirenbox"), si=st.siren;
+  if(si&&si.on){sb.style.display="block"; sb.textContent="SIREN ON ("+Math.round(si.level_db)+" dB at 1 m) to attract people"+(si.cardiac_cue?". Chest-clutch pattern seen just before the collapse.":"")}
+  else if(si){sb.style.display="block"; sb.style.background="var(--info-bg)"; sb.style.color="var(--info)"; sb.textContent="Siren was on and is now off ("+si.reason+")"} else sb.style.display="none";
+  $("btnSiren").disabled=!(si&&si.on);
+  renderDoses(st.doses||[]);
+  const p=st.person;
+  $("pRoom").textContent=p.room||"unknown"; $("pPosture").textContent=(p.posture||"unknown")+(p.lying_s!=null?" for "+Math.round(p.lying_s)+" s":"");
+  $("pSeen").textContent=p.seen_now?"in view now":fmtAgo(p.last_seen_ago);
+  $("rState").textContent=st.robot.state_label+" (camera tilt "+Math.round(st.robot.tilt_deg)+" deg)"; $("tilt").textContent="now "+Math.round(st.robot.tilt_deg)+" deg";
+  const pv=st.privacy; $("privacy").textContent="No video is streamed. A picture is sent only when you ask and only if she has agreed (now: "+(pv.snapshot_consent?"she has agreed":"she has not agreed")+"), with her face blurred on the robot. Data that has left the robot so far: "+pv.bytes_off_board+" bytes.";
+  if(st.has_snapshot){const im=$("snap"); if(im.dataset.t!==String(st.snapshot_t)){im.src="/api/snapshot?"+Date.now(); im.dataset.t=st.snapshot_t} im.style.display="block"}
+  for(const v of ["Above","Below"]){const tv=(st.views||{})[v.toLowerCase()]; const im=$("img"+v), fg=$("fig"+v);
+    if(tv!=null){ if(im.dataset.t!==String(tv)){im.src="/api/snapshot?view="+v.toLowerCase()+"&"+Date.now(); im.dataset.t=String(tv)} fg.style.display="block"; fg.style.flex="1 1 200px"} }
+  $("planNote").textContent=p.x==null?"Momo has not seen her yet":"";
+  if(!trail.length||Math.hypot(trail[trail.length-1][0]-st.robot.x,trail[trail.length-1][1]-st.robot.y)>0.05){trail.push([st.robot.x,st.robot.y]); if(trail.length>200)trail.shift()}
+}
+async function poll(){
+  try{
+    const m=await (await fetch("/api/me")).json(); if(!m.user){showLogin();return} me=m.user; $("me").textContent="Signed in as "+me.display; $("login").style.display="none";
+    if(!layout) layout=await (await fetch("/api/layout")).json();
+    st=await (await fetch("/api/state")).json();
+    const ev=await (await fetch("/api/events?since="+nEv)).json();
+    if(ev.events&&ev.events.length){events=events.concat(ev.events); renderEvents()} nEv=ev.next;
+    render(); renderChat();
+  }catch(e){ $("conn").textContent="platform not reachable"; $("conn").className="chip bad" }
+}
+setInterval(poll,500); setInterval(draw,50); poll();
+</script>
+</body>
+</html>
