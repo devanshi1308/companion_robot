@@ -33,5 +33,7 @@ CHASSIS_R = ((DECK_L / 2) ** 2 + (TRACK / 2 + WHEEL_T / 2) ** 2) ** 0.5   # m: f
 LIDAR_X = DECK_L / 2 + 0.02                                    # m: range-sensor rays start just in front of the chassis
 LIDAR_Z = 0.06                                                 # m above the floor (sees low obstacles: the robot vacuum, clutter)
 
-HEAD_SHELL_R = 0.15      # m: radius of the round visual head (no collision, no mass)
-CAM_X = 0.153             # m: camera forward offset in the head frame (on the front of the round head)
+HEAD_SHELL = (0.15, 0.19, 0.12)   # m: radii (x, y, z) of the flattened egg-shaped visual head (no collision, no mass)
+HEAD_SHELL_R = HEAD_SHELL[0]
+BELL_PROFILE = [(0.17, 0.20), (0.22, 0.235), (0.32, 0.26), (0.42, 0.265), (0.52, 0.25), (0.62, 0.21), (0.72, 0.175), (0.82, 0.15), (0.89, 0.125), (0.94, 0.08), (0.965, 0.03), (0.97, 0.0)]  # (height, radius): egg-shaped body shell
+CAM_X = 0.143             # m: camera forward offset in the head frame (on the front of the round head)

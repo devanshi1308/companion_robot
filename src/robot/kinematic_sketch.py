@@ -51,14 +51,13 @@ def side_view(ax):
     ax.add_patch(Rectangle((-0.02, S.DECK_Z0 + S.DECK_T), 0.04, S.PED_H, fc="#6b7078", ec=INK, lw=1.2, zorder=2))   # mast tube
     joint(ax, 0, S.NECK_Z, BLUE)                                                                          # J3 pan axis
     joint(ax, 0, S.TILT_Z, BLUE)                                                                          # J4 tilt axis
-    prof = [(0.17, 0.215), (0.22, 0.225), (0.32, 0.225), (0.45, 0.205), (0.58, 0.18), (0.70, 0.155), (0.80, 0.14), (0.88, 0.12), (0.93, 0.085), (0.955, 0.04), (0.96, 0.0)]
+    prof = S.BELL_PROFILE
     pts = [(-0.02 + 0.95 * r, z) for z, r in prof] + [(-0.02 - 0.95 * r, z) for z, r in reversed(prof)]
-    ax.add_patch(Polygon(pts, closed=True, fc="#eeeef2", ec=INK, lw=1.2, alpha=0.9, zorder=1))               # soft bell body shell (visual only)
+    ax.add_patch(Polygon(pts, closed=True, fc="#eeeef2", ec=INK, lw=1.2, alpha=0.9, zorder=1))               # soft egg body shell (visual only)
     ax.plot([-0.04, -0.23], [0.82, 0.50], color="#eeeef2", lw=9, solid_capstyle="round", zorder=0.5)          # arm shell (visual only, fixed)
     ax.plot([-0.04, -0.23], [0.82, 0.50], color=INK, lw=11, solid_capstyle="round", zorder=0.4)
-    ax.add_patch(Circle((0.0, S.HEAD_Z), S.HEAD_SHELL_R, fc="#eeeef2", ec=INK, lw=1.4, zorder=4))          # round head shell
-    ax.add_patch(Ellipse((0.14, S.HEAD_Z - 0.005), 0.03, 0.15, fc="#9a9aa0", ec=INK, lw=0.8, zorder=5))     # grey face panel
-    ax.add_patch(Ellipse((0.153, S.HEAD_Z - 0.005), 0.008, 0.045, fc=CYAN, ec="none", zorder=6))            # an eye
+    ax.add_patch(Ellipse((0.0, S.HEAD_Z), 2 * S.HEAD_SHELL[0], 2 * S.HEAD_SHELL[2], fc="#eeeef2", ec=INK, lw=1.4, zorder=4))          # round head shell
+    ax.add_patch(Circle((0.139, S.HEAD_Z), 0.016, fc=INK, ec="none", zorder=6))                           # an eye (dot)
     cam_x, cam_z = S.CAM_X, S.CAM_Z
     ax.add_patch(Circle((cam_x, cam_z), 0.008, fc=RED, ec="white", zorder=9))
     for a in (-S.FOVY / 2, S.FOVY / 2):                                                                    # field of view (camera level)
@@ -74,7 +73,7 @@ def side_view(ax):
     ax.text(0.07, zc, f"CoM {zc:.3f} m", fontsize=8.5, weight="bold", va="center")
     ax.annotate("", xy=(-0.30, 0), xytext=(-0.30, cam_z), arrowprops=dict(arrowstyle="<->", color=INK))
     ax.text(-0.33, cam_z / 2, f"camera {cam_z:.2f} m", rotation=90, fontsize=9, weight="bold", va="center", ha="right")
-    ax.text(0.16, S.HEAD_Z + 0.09, "round head: face panel with eyes + camera (red)\nJ3 pan +/-90 deg, J4 tilt -45..+30 deg\nbell body shell and arms: visual only (no mass)", fontsize=8, color=BLUE, weight="bold")
+    ax.text(0.16, S.HEAD_Z + 0.09, "round head: two dot eyes + line + camera (red)\nJ3 pan +/-90 deg, J4 tilt -45..+30 deg\negg body shell and arms: visual only (no mass)", fontsize=8, color=BLUE, weight="bold")
     ax.text(0.05, 0.55, f"mast tube {S.PED_H:.2f} m", fontsize=8.5)
     ax.text(0.26, 0.015, f"front caster {S.CASTER_X:.2f} m ahead of the CoM", fontsize=8)
     ax.set_xlim(-0.6, 2.4)
