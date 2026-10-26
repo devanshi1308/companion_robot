@@ -82,6 +82,43 @@ def test_she_gets_up_again():
     assert det.state == "normal"
 
 
+def test_fall_is_still_caught_with_little_of_her_visible():
+    """Half of the landmarks lost (behind a table): the bounding-box test is skipped, the hip-drop and torso-angle tests still decide."""
+    class Partial(FakeObs):
+        def __init__(self, z, pitch, x=0.0):
+            super().__init__(z, pitch, x)
+            self.n_valid = 8
+    rng = np.random.default_rng(1)
+    det = FallDetector()
+    for k in range(int(10 * 30)):
+        t = k / 30.0
+        det.update(t, Partial(smooth(t, 3.0, 3.6, 0.9, 0.12) + 0.02 * rng.standard_normal(), smooth(t, 3.0, 3.6, 8, 88) + 3 * rng.standard_normal()))
+    assert det.state == "confirmed" and det.witnessed
+
+
+def test_fast_bend_and_stand_is_not_a_fall():
+    """Bending over quickly to pick something up and standing again within 2 s (hip dips to 0.55 m, torso 80 degrees)."""
+    det = run(lambda t: (0.9 - 0.35 * np.sin(np.pi * np.clip((t - 3) / 2.0, 0, 1)), 8 + 72 * np.sin(np.pi * np.clip((t - 3) / 2.0, 0, 1))), 14)
+    assert det.state == "normal" and det.t_impact is None
+
+
+def test_stumble_then_fall_is_confirmed_once():
+    """A stagger (hip dips and recovers) followed by a real fall 4 s later raises one confirmed alarm for the real fall."""
+    def prof(t):
+        stumble = 0.15 * np.sin(np.pi * np.clip((t - 2) / 1.0, 0, 1))
+        z = 0.9 - stumble if t < 5.5 else smooth(t, 6.0, 6.6, 0.9, 0.12)
+        p = 8 + 10 * np.sin(np.pi * np.clip((t - 2) / 1.0, 0, 1)) if t < 5.5 else smooth(t, 6.0, 6.6, 8, 88)
+        return z, p
+    det = run(prof, 14)
+    assert det.state == "confirmed" and det.witnessed and det.t_impact > 6.0
+
+
+def test_sitting_on_the_floor_then_getting_up_clears():
+    """Sitting down on the floor (hip 0.25 m, torso upright) and standing again must not stay flagged."""
+    det = run(lambda t: (smooth(t, 3, 4, 0.9, 0.25) if t < 8 else smooth(t, 8, 10, 0.25, 0.9), 12), 16)
+    assert det.state == "normal"
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

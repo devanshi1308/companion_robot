@@ -682,6 +682,12 @@ class Companion:
                 self.say(t, "Stuck while turning on the spot: skipping the look-around")
                 self.t_scan = t - 5.0
             elif t - self.t_scan < 5.0:
+                i, j = self.grid.to_cell(est[0], est[1])
+                tight = float(self.grid.clear[min(max(i, 0), self.grid.nx - 1), min(max(j, 0), self.grid.ny - 1)]) < S.CHASSIS_R + 0.12
+                if tight:                                                                # too close to furniture to swing the corners round: look with the camera only
+                    if t - self.t_scan > 2.0:
+                        self.t_scan = t - 5.0
+                    return 0.0, 0.0
                 return 0.0, 0.8                                                          # turn on the spot and look around
             here = est[:2]
             cands = [(np.hypot(x - here[0], y - here[1]), n, (x, y)) for n, (x, y) in L.WAYPOINTS.items()
