@@ -1,7 +1,7 @@
 """The robot's voice: what the robot says out loud (check-in, first-aid guidance, reminders) is spoken with the computer's own text-to-speech.
 
 macOS: the built-in `say` command (offline, nothing leaves the machine). Other systems: no sound, the text still appears in the log and on the family page.
-Voice: COMPANION_VOICE (default: an installed Enhanced/Premium voice, else Moira); rate COMPANION_RATE words per minute (default 150, slow and calm); volume COMPANION_VOLUME 0-1 (default 0.7). For the most natural sound download an Enhanced or Premium voice in System Settings, Accessibility, Spoken Content, System Voice, Manage Voices.
+Voice: COMPANION_VOICE (default: an installed male Enhanced/Premium voice, else Rishi (Indian English, male)); rate COMPANION_RATE words per minute (default 150, slow and calm); volume COMPANION_VOLUME 0-1 (default 0.7). For the most natural sound download an Enhanced or Premium voice in System Settings, Accessibility, Spoken Content, System Voice, Manage Voices.
 Simulation only: this plays through the laptop speakers; it is never a real call. Experiments never use it (the harness leaves the speaker unset).
 
     python src/agent/speech.py "Hello, I am Momo."
@@ -18,22 +18,23 @@ VOLUME = os.environ.get("COMPANION_VOLUME", "0.7")      # 0 to 1: a soft voice, 
 
 
 def pick_voice():
-    """A gentle voice: an installed Enhanced or Premium English voice if there is one (they sound far more natural), else Moira (soft Irish English)."""
+    """A gentle voice: an installed Enhanced or Premium English voice if there is one (they sound far more natural), else Rishi (a calm male voice)."""
     if os.environ.get("COMPANION_VOICE"):
         return os.environ["COMPANION_VOICE"]
+    male = ("Rishi", "Daniel", "Evan", "Tom", "Aaron", "Oliver", "Lee", "Reed", "Alex", "Arthur", "Gordon")        # the robot is male
     try:
         out = subprocess.run(["say", "-v", "?"], capture_output=True, text=True, timeout=10).stdout
         for tag in ("Premium", "Enhanced"):
             for line in out.splitlines():
                 name = line.split("  ")[0].strip()
-                if tag in name and " en_" in line:
+                if tag in name and " en_" in line and any(m in name for m in male):
                     return name
     except Exception:
         pass
-    return "Moira"
+    return "Rishi"
 
 
-VOICE = pick_voice() if shutil.which("say") else "Moira"
+VOICE = pick_voice() if shutil.which("say") else "Rishi"
 
 
 def soften(text, volume=VOLUME):

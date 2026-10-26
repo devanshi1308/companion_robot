@@ -26,6 +26,7 @@ import apartment_layout as L  # noqa: E402
 from dispatch import blur_face, clock  # noqa: E402
 from localization import Localizer  # noqa: E402
 from first_aid import CONSCIOUS_CHECK, CONSCIOUS_OK, BYSTANDER  # noqa: E402
+from health_knowledge import COACH  # noqa: E402
 from navigation import PathFollower, turn_to, wrap  # noqa: E402
 from robot_interface import quat_to_yaw  # noqa: E402
 from companion_agent import PlainVoice  # noqa: E402
@@ -103,6 +104,7 @@ class Companion:
         self.t_alert = None
         self.t_update = None
         self.sent_heads_up = False
+        self.coach_i = 0
         self.on_speech = None                          # set by a live demo to speak the robot's words aloud (src/agent/speech.py); experiments leave it None
         self.front_range = LIDAR_RANGE
         self.front_unknown = self.front_known = LIDAR_RANGE
@@ -818,6 +820,8 @@ class Companion:
             self.t_update = t
             self.disp.update(t, t - self.detector.t_impact)
             self.say(t, "Update sent to family: still not responding")
+            self.speak_fixed(t, "first_aid_coach", COACH[self.coach_i % len(COACH)], audience="bystander")      # keeps a helper going (do not stop compressions)
+            self.coach_i += 1
 
     # ---- the family platform can ask the robot to do things (src/platform) ----------------------------------------
     def serve_snapshot(self, t, rgb, obs):
