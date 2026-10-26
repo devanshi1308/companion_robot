@@ -71,3 +71,9 @@ Source: "Final PBL Titles, MuJoCo Simulation Blueprints, Business Systems ROI & 
 | Economics: long lie slashes stay 18.4 to 4.2 days (the roster table says "14 days"); robot cost under 3 months of an attendant; return inside the first calendar quarter; GDS peace of mind | Model built, dimensionless. Payback was 3.75 months in the small-robot run, which is MORE than a quarter: report honestly. GDS cannot be simulated: name it as a future measurement |
 | Sheet cites decay of 7-10 percent per minute | Our lambda 0.0031/s is about 17 percent per minute: change lambda or wording before submission |
 | Venues: IndiaHCI (https://www.indiahci.org/), IEEE RO-MAN (https://ro-man2026.org/, CORE B); faculty mentor listed as co-author | Paper pending; add mentor as co-author |
+
+### Robot vs the guide: measured on the final robot (tests/test_robot.py)
+- Mass 16.5 kg, CoM 0.228 m, tip-over limit 7.76 m/s2 (guide 7.64), slip limit 3.92 m/s2 at mu 0.40.
+- Cruise 0.50 m/s (guide); manual ceiling 0.80 m/s respected (max commanded 0.75 in dev).
+- Emergency braking (manual: >= 1.5 m/s2, no tipping): from 0.50 m/s 2.45 (mu 0.40) and 3.18 (mu 0.68); from 0.79 m/s 2.43 and 3.30; max pitch 0.1 deg.
+- Clearance bubble 0.50 m vs doors 0.85/0.90 m: the robot is 0.42 m wide over the wheels (0.215 m each side in a 0.85 m door), so a 0.50 m bubble cannot be kept in a doorway. Implemented as a speed rule (robot_spec.BUBBLE, BUBBLE_V: 0.20 m/s inside the bubble), hard planning margin 0.045 m beyond the 0.304 m footprint. Still needs sir's confirmation; state this in the paper.
