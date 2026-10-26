@@ -173,7 +173,9 @@ class CompanionAgent(PlainVoice):
                    "Answer ANY question helpfully and conversationally in a few short sentences, in your current feelings (tool current_feelings). "
                    "Use the tool robot_state for anything about her, the robot, the medicine or what is happening now, and never invent those facts. "
                    "You are not a doctor: never diagnose; for symptoms or emergencies tell them to call 108 (you cannot place calls on request). "
-                   "You may chat about anything else (the day, advice for caring for an older person, general knowledge). If you do not know, say so. No emoji. At most 80 words.")
+                   "You may chat about anything else (the day, advice for caring for an older person, general knowledge). If you do not know, say so. "
+                   "The robot only knows what robot_state contains (room, activity, medicine, alerts, siren, what it just did): about meals, mood, sleep or anything else about her that is not in it, say plainly that you cannot see that. "
+                   "Always reply in plain sentences, never JSON and never a tool call. No emoji. At most 80 words.")
 
     def open_chat(self, user, text, facts):
         """A question the built-in answers do not cover: ask the language model (with the robot's real state as a tool). Returns text or None."""
@@ -197,10 +199,14 @@ class CompanionAgent(PlainVoice):
             self._chats[user] = Agent(model=self.model, system_prompt=self.CHAT_SYSTEM, tools=[robot_state, current_feelings], callback_handler=None)
         self._facts_holder["facts"] = facts
         try:
-            out = str(self._chats[user](text)).strip()
+            import json as _json
+            known = _json.dumps(facts, default=str)[:1500]            # small local models skip tool calls: give the facts in the message too
+            out = str(self._chats[user](f"[robot facts, the only things you know about her: {known}]\nFamily member: {text}")).strip()
         except Exception:
             return None
         if not out or BANNED.search(out) or len(out.split()) > 140:
+            return None
+        if out[0] in "{[" or '"parameters"' in out or '"name":' in out:         # a tool call or raw data leaked into the answer
             return None
         return out
 
