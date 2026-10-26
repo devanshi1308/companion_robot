@@ -6,7 +6,7 @@ Python interface to the simulated companion robot: motors, encoders/odometry, ca
     robot.set_neck(pan_deg, tilt_deg)     # guide ranges: pan +/-90, tilt -45..+30 (negative = down)
     robot.update_odometry()               # call every control step; wheel encoders only (noisy)
     rgb, depth = robot.grab(renderer)     # head camera (58 deg vertical FOV)
-    robot.set_mood("worried")             # watching | worried | happy | alert
+    robot.set_mood("worried")             # watching | concerned | worried | happy | relieved | alert | sleepy
 
 Ground truth (true_pose) is for logging and tests only; the robot's own behaviour uses the odometry estimate.
 """
@@ -19,12 +19,32 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import robot_spec as S  # noqa: E402
 
-MOODS = {   # eye colour, eye half-size (x, y, z), brows visible, status LED colour
-    "watching": ((0.05, 0.05, 0.06), (0.003, 0.02, 0.02), False, (0.2, 0.9, 0.4)),
-    "worried": ((1.00, 0.69, 0.00), (0.003, 0.02, 0.016), True, (1.0, 0.69, 0.0)),
-    "happy": ((0.20, 0.80, 0.35), (0.003, 0.02, 0.008), False, (0.2, 0.9, 0.4)),
-    "alert": ((0.84, 0.27, 0.24), (0.003, 0.024, 0.026), False, (0.84, 0.27, 0.24)),
+DARK = (0.05, 0.05, 0.06)
+# Baymax-style face: two dark dots joined by a line. The expression comes from the dot size (round, wide, squinting, sleepy), the tilt of the line
+# (smile or frown, degrees at the outer ends) and the brows (colour, inner end up = worried, inner end down = alert).
+# mood: (eye colour, eye half-size (x, y, z), brow colour or None, status LED colour, mouth tilt deg (+ smile), brow tilt deg (+ inner end up))
+MOODS = {
+    "watching": (DARK, (0.003, 0.02, 0.02), None, (0.2, 0.9, 0.4), 3.0, 0.0),
+    "concerned": (DARK, (0.003, 0.02, 0.023), (1.00, 0.69, 0.00), (1.0, 0.69, 0.0), -4.0, 14.0),
+    "worried": (DARK, (0.003, 0.02, 0.027), (1.00, 0.69, 0.00), (1.0, 0.69, 0.0), -12.0, 24.0),
+    "happy": (DARK, (0.003, 0.02, 0.009), None, (0.2, 0.9, 0.4), 16.0, 0.0),
+    "relieved": (DARK, (0.003, 0.02, 0.012), (0.55, 0.78, 0.55), (0.2, 0.9, 0.4), 9.0, 12.0),
+    "alert": (DARK, (0.003, 0.024, 0.03), (0.84, 0.27, 0.24), (0.84, 0.27, 0.24), -3.0, -22.0),
+    "sleepy": (DARK, (0.003, 0.02, 0.004), None, (0.2, 0.9, 0.4), 0.0, 0.0),
 }
+
+
+MOUTH_YAW_DEG = 6.5      # each half of the mouth line follows the curve of the head
+
+
+def _tilt_quat(yaw_deg, roll_deg):
+    """Quaternion for: rotate about z by yaw_deg, then tilt about the box's own x axis by roll_deg (moves the outer end of a side-lying box up or down)."""
+    z, x = np.radians(yaw_deg), np.radians(roll_deg)
+    Rz = np.array([[np.cos(z), -np.sin(z), 0], [np.sin(z), np.cos(z), 0], [0, 0, 1]])
+    Rx = np.array([[1, 0, 0], [0, np.cos(x), -np.sin(x)], [0, np.sin(x), np.cos(x)]])
+    q = np.zeros(4)
+    mujoco.mju_mat2Quat(q, (Rz @ Rx).flatten())
+    return q
 
 
 def quat_to_yaw(q):
@@ -55,6 +75,7 @@ class RobotInterface:
         self.floor_bodies = {0} | {names[n] for n in ("rug", "bedroom_rug") if n in names}
         self.eyes = [m.geom("eye_l").id, m.geom("eye_r").id]
         self.brows = [m.geom("brow_l").id, m.geom("brow_r").id]
+        self.mouth = [m.geom("shell_mouth_l").id, m.geom("shell_mouth_r").id]
         self.led = m.geom("status_led").id
         self.last_cmd = (0.0, 0.0)
         self.reset_odometry()
@@ -137,11 +158,14 @@ class RobotInterface:
         return rgb, dep
 
     def set_mood(self, mood):
-        colour, size, brows, led = MOODS[mood]
+        colour, size, brow_colour, led, mouth_deg, brow_deg = MOODS[mood]
         for g in self.eyes:
             self.m.geom_rgba[g] = (*colour, 1.0)
             self.m.geom_size[g] = size
-        for g in self.brows:
-            self.m.geom_rgba[g] = (*colour, 1.0 if brows else 0.0)
+        for g, sy in zip(self.brows, (1, -1)):
+            self.m.geom_rgba[g] = (*(brow_colour or (0, 0, 0)), 1.0 if brow_colour else 0.0)
+            self.m.geom_quat[g] = _tilt_quat(0.0, -sy * brow_deg)
+        for g, sy in zip(self.mouth, (1, -1)):
+            self.m.geom_quat[g] = _tilt_quat(sy * MOUTH_YAW_DEG, sy * mouth_deg)
         self.m.geom_rgba[self.led] = (*led, 1.0)
         self.mood = mood
