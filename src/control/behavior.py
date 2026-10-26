@@ -152,7 +152,7 @@ class Companion:
         self.rb.set_mood(mood)
 
     def feel(self, t, event):
-        """Something happened that Momo (the agent) reacts to emotionally; the robot's face follows its feelings."""
+        """Something happened that Baymax (the agent) reacts to emotionally; the robot's face follows its feelings."""
         self.voice.feel(t, event)
         m = self.voice.mood()
         if m:
@@ -183,7 +183,7 @@ class Companion:
             self.set_mood(mood)
             vm = self.voice.mood()
             if vm:
-                self.set_mood(vm)                                  # with the agent the face shows Momo's feelings, not a fixed mood per state
+                self.set_mood(vm)                                  # with the agent the face shows Baymax's feelings, not a fixed mood per state
         if text is not None:
             self.screen_text = text
 
@@ -734,7 +734,7 @@ class Companion:
         self.go(t, "CHECK_IN", "worried", "Are you okay?")
         self.checkin_started_t = t
         self.feel(t, "checking_in")
-        self.utter(t, "check_in", {}, "Are you okay? Please tell me if you need help.")
+        self.utter(t, "check_in", {}, "I am Baymax, your personal healthcare companion. I noticed you are on the floor. Are you hurt?")
         self.speak_fixed(t, "first_aid_stay_still", CONSCIOUS_CHECK)
         self.baseline = None                      # set once the robot has stood still for a second (see watch_for_response)
         self.still_since = None

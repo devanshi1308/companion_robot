@@ -25,7 +25,7 @@ import siren as SI  # noqa: E402
 def test_feed_round_trip_and_command_queue():
     d = tempfile.mkdtemp()
     f = FamilyFeed(d)
-    f.write_state(dict(t=1.5, robot=dict(name="Momo")))
+    f.write_state(dict(t=1.5, robot=dict(name="Baymax")))
     f.add_event(type="momo", text="hello")
     f.add_event(type="sent", text="text")
     g = FamilyFeed(d, reset=False)                      # the server's view

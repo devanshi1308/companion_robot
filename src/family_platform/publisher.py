@@ -5,7 +5,7 @@ Turns the robot's internal state into what the family sees (feed.py) and applies
     pub.tick(t, d, m)        # call a few times per simulated second
 
 What the family gets: where she is (room), what she is doing (standing, sitting, lying on the floor), when she was last seen, whether the medicine was
-taken (and whether the robot SAW it), alerts and the siren, Momo's feelings, and everything Momo said or texted. What they do not get: video.
+taken (and whether the robot SAW it), alerts and the siren, Baymax's feelings, and everything Baymax said or texted. What they do not get: video.
 """
 import os
 import sys
@@ -59,7 +59,7 @@ class FamilyPublisher:
         self.pending = []
         from concurrent.futures import ThreadPoolExecutor
         self.pool = ThreadPoolExecutor(1)
-        self.frozen = False                      # the simulation has ended: Momo can still answer questions, but cannot act
+        self.frozen = False                      # the simulation has ended: Baymax can still answer questions, but cannot act
         self.doses = []
         self.t_seen_person = None
         self.person_room = None
@@ -86,7 +86,7 @@ class FamilyPublisher:
         self.n_sent = len(c.disp.sent)
 
     def apply_chats(self, t):
-        """Family members chatting with Momo: answer from the robot's facts, act on requests, and keep every message in the feed."""
+        """Family members chatting with Baymax: answer from the robot's facts, act on requests, and keep every message in the feed."""
         from chat import answer
         for ch in self.feed.new_chats():
             self.feed.add_event(type="chat", who="user", user=ch["user"], t=round(float(t), 2), clock=self.clk(t), text=ch["text"])
@@ -170,9 +170,9 @@ class FamilyPublisher:
         if c.state == "ALERT":
             level, title = 2, "EMERGENCY: she collapsed and is not answering"
         elif c.state in ("SUSPECT", "APPROACH", "CHECK_IN") and c.purpose == "fall":
-            level, title = 1, "Momo is checking on her (possible fall)"
+            level, title = 1, "Baymax is checking on her (possible fall)"
         elif c.sent_heads_up and c.state != "WATCH":
-            level, title = 1, "Momo is checking on her"
+            level, title = 1, "Baymax is checking on her"
         elif any(r["status"] == "missed" and not r.get("welfare") for r in self.doses[-1:]):
             level, title = 1, "A medicine reminder was missed"
         emo = self.agent.emotion.snapshot() if self.agent is not None else dict(label=rb.mood, worry=0, alarm=0, joy=0, calm=1)
@@ -180,7 +180,7 @@ class FamilyPublisher:
         est = rb.est
         state = dict(
             t=round(float(t), 2), clock=self.clk(t), patient=self.patient,
-            robot=dict(name="Momo", state=c.state, state_label=STATE_LABEL.get(c.state, c.state), mood=rb.mood, feeling=emo, screen_text=c.screen_text,
+            robot=dict(name="Baymax", state=c.state, state_label=STATE_LABEL.get(c.state, c.state), mood=rb.mood, feeling=emo, screen_text=c.screen_text,
                        x=round(float(est[0]), 2), y=round(float(est[1]), 2), yaw=round(float(est[2]), 3), pan_deg=round(pan, 1), tilt_deg=round(tilt, 1),
                        room=L.room_of(est[0], est[1]), agent_mode=getattr(self.agent, "mode", "plain wording")),
             person=dict(room=room, x=None if hip is None else round(float(hip[0]), 2), y=None if hip is None else round(float(hip[1]), 2), seen_now=bool(seen_now),

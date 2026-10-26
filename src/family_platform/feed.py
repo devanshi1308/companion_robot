@@ -2,7 +2,7 @@
 The link between the robot (simulation) and the family platform: three small files in one folder.
 
     state.json       the robot's latest status (written by the simulation about 4 times a second, replaced atomically)
-    events.jsonl     everything Momo said or sent, one JSON line each (append only)
+    events.jsonl     everything Baymax said or sent, one JSON line each (append only)
     commands.jsonl   what the family asked for in the browser (appended by the server, read by the simulation)
     snapshot.png     the latest face-blurred picture, only if the patient agreed
 
@@ -69,7 +69,7 @@ class FamilyFeed:
         return self.p_snap if view in (None, "", "ahead") else os.path.join(self.root, f"snapshot_{view}.png")
 
     def send_chat(self, user, text):
-        """A signed-in family member's message to Momo (server side)."""
+        """A signed-in family member's message to Baymax (server side)."""
         with open(self.p_chat, "a") as f:
             f.write(json.dumps(dict(user=user, text=str(text)[:300], wall=time.time())) + "\n")
 

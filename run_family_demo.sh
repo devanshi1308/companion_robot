@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Family-platform demo WITH the live MuJoCo window. Usage: ./run_family_demo.sh [medicine|cardiac|fall] [--no-view]
-# Opens the page in your browser: sign in as rohan / rohan-demo (or meera / meera-demo, iyer / iyer-demo) and chat with Momo while the robot moves.
+# Opens the page in your browser: sign in as rohan / rohan-demo (or meera / meera-demo, iyer / iyer-demo) and chat with Baymax while the robot moves.
 cd "$(dirname "$0")" || exit 1
 source .venv/bin/activate || { echo "no .venv here"; exit 1; }
 export MUJOCO_GL=glfw

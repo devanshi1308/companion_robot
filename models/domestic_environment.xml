@@ -307,7 +307,7 @@
       <geom type="box" size="0.0603 0.43 0.002" pos="-0.74 0 0.004" euler="0 -5.711 0" rgba="0.5 0.5 0.5 1" group="4" friction="0.68 0.005 0.0001" priority="1"/>
       <geom type="plane" size="0.8 0.55 0.05" pos="0 0 0.0125" rgba="0.35 0.42 0.50 1" contype="0" conaffinity="0"/>
     </body>
-    <body name="dock" pos="-1.05 -1.1 0" euler="0 0 180">
+    <body name="dock" pos="-1.85 -1.35 0" euler="0 0 180">
       <geom type="box" size="0.17 0.14 0.004" pos="0 0 0.004" rgba="0.22 0.24 0.27 1" contype="0" conaffinity="0"/>
       <geom type="box" size="0.012 0.1 0.0045" pos="-0.14 0 0.0075" rgba="0.2 0.8 0.35 1" contype="0" conaffinity="0"/>
     </body>

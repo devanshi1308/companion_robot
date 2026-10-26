@@ -1,5 +1,5 @@
 """
-Checks for Momo (the agent with feelings) in offline mode: feelings move and fade, messages keep the facts, the ambulance script is untouched,
+Checks for Baymax (the agent with feelings) in offline mode: feelings move and fade, messages keep the facts, the ambulance script is untouched,
 output validation rejects a diagnosis.   Run:  python tests/test_agent.py
 """
 import os
@@ -36,7 +36,7 @@ def test_family_messages_go_through_the_agent_and_keep_the_facts():
     kinds = {m["kind"]: m["text"] for m in d.sent}
     assert "living room" in kinds["heads_up"] and "14:00:08" in kinds["heads_up"]
     assert "living room" in kinds["emergency"] and "ambulance" in kinds["emergency"].lower()
-    assert "108" in kinds["ambulance_call"] and "Momo" not in kinds["ambulance_call"]            # the ambulance script is the factual template
+    assert "108" in kinds["ambulance_call"] and "Baymax" not in kinds["ambulance_call"]            # the ambulance script is the factual template
     assert {o["kind"] for o in v.outbox} >= {"heads_up", "emergency"} and "ambulance_call" not in {o["kind"] for o in v.outbox}
 
 

@@ -1,10 +1,10 @@
 """
-Momo: the companion robot's voice, a Strands agent with feelings.
+Baymax: the companion robot's voice, a Strands agent with feelings.
 
-Every sentence the robot says to her (check-in, reminder, siren call-out) and every text it sends to the family goes through Momo, so the
+Every sentence the robot says to her (check-in, reminder, siren call-out) and every text it sends to the family goes through Baymax, so the
 family hears one consistent, caring voice whose tone follows how the robot feels (see emotion.py). The facts never come from the language
 model: the simulator and the state machine decide WHAT happens and what must be said (room, time, 'not responding', 'ambulance called');
-Momo only decides HOW to say it.
+Baymax only decides HOW to say it.
 
     voice = CompanionAgent("Asha")                  # picks a model automatically, or runs offline
     text = voice.phrase("emergency", dict(room="living room", clock="14:02", seconds=10), default_text, audience="family")
@@ -32,7 +32,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from emotion import Emotion  # noqa: E402
 
-NAME = "Momo"
+NAME = "Baymax"
 SYSTEM = f"""You are {NAME}, a small, gentle companion robot who lives with an older woman and looks after her. You speak in short, warm, plain sentences.
 You have feelings that change with what is happening; your current feelings are available from the tool current_feelings, and your tone must match them:
 calm and friendly when all is well, concerned when she is out of sight or slow to answer, worried when she is on the floor, alarmed when she has collapsed and does not answer, relieved and happy when she is fine.
@@ -90,13 +90,13 @@ def offline_text(kind, f, label, name):
     secs = int(f.get("seconds", 10))
     her = str(f.get("label", "your tablet")).replace("your ", "her ")
     T = {
-        "check_in": f"{o}{who}, are you okay? Please tell me if you need help.",
-        "reprompt": f"{who}, can you hear me? Say something or wave, please.",
+        "check_in": f"{o}I am Baymax, your personal healthcare companion. {who}, I noticed you are on the floor. Are you hurt?",
+        "reprompt": f"{who}, I did not hear you. If you can hear me, please say something or wave. I am staying with you.",
         "heads_up": f"{o}I think {who} may have fallen at {clock}. She is on the floor in the {room} and has not moved. I am going to her now.",
         "emergency": f"{o}{who} collapsed in the {room} at {clock} and is not answering me ({secs} s). It could be a cardiac emergency. I have called an ambulance. Please come or call her now.",
         "update": f"{o}{who} is still not responding, {secs} s since the collapse. The ambulance is on its way and I am staying with her.",
         "all_clear": f"{o}Good news: {who} answered me and says she is fine. No ambulance is needed.",
-        "reminder": f"{who}, it is time for {f.get('label', 'your tablet')}. Please take it and say OK.",
+        "reminder": f"{who}, it is time for {f.get('label', 'your tablet')}. Please take it with a glass of water, and say OK when you have.",
         "reminder_repeat": f"{who}, a gentle reminder: {f.get('label', 'your tablet')}. Say OK when you have taken it.",
         "reminder_ack": f"{o}{who} said OK to the reminder for {her}, but I did not see her take it.",
         "tablet_taken": f"I saw {who} take {her}.",
@@ -130,7 +130,7 @@ class CompanionAgent(PlainVoice):
     def __init__(self, patient="Asha", model="auto", name=NAME, verbose=False):
         self.name, self.patient = name, patient
         self.emotion = Emotion()
-        self.outbox = []                       # every message Momo produced: dict(t, kind, audience, text, feeling, source)
+        self.outbox = []                       # every message Baymax produced: dict(t, kind, audience, text, feeling, source)
         self.recent = []
         self.model, self.remote = None, False
         self.mode = "offline templates"

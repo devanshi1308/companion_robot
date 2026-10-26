@@ -14,7 +14,7 @@ See `docs/REQUIREMENTS_CHECK.md` (final title sheet table, robot-vs-guide measur
 Scripted motions, adult body; 8/120 robot trials ended lost; one cardiac fall landed on the robot; sofa false alarms (5/20) at alarm level; cardiac prodrome cues false-flag 49% (not used for alerting); payback 3.75 months is longer than the brief's "first quarter"; the 0.50 m bubble cannot hold in 0.85 m doors (speed rule instead, needs sir's confirmation); GDS cannot be simulated; no survival-decay constant is used anywhere (the sheet's 7-10 percent per minute is only quoted as context).
 
 ## Demo-only extras (outside the authorised scope, in no metric)
-Momo agent, family platform with login and chat, siren, medicine reminder, wide camera.
+Baymax agent, family platform with login and chat, siren, medicine reminder, wide camera.
 
 ## Still to do
 Dossier (group Word template needed), LinkedIn video (Devanshi), Kamakshi's own commits (>= 4, vision files), reading Tinetti 1993 and Wild 1981 in full, sir's answer on the door/bubble conflict, a guide-robot 120-trial test if time allows.
@@ -24,3 +24,6 @@ Robot: alarm sensitivity 0.60 (12/20), specificity 0.90, dispatch sensitivity 0.
 
 ## Guide-robot dev run 3 (2026-10-26 night, after SEARCH tight-clearance fix) - status, NOT a result
 Robot alarm sensitivity 0.70 (14/20, was 0.60), specificity 0.90; dispatch sensitivity 0.53 (8/15, was 0.47), 0 false dispatches; 4 fixed cameras alarm 0.50, dispatch 0.53, 0 false dispatches. The fix (no turning on the spot when the map clearance is under 0.43 m: look with the camera only) raised detection but did NOT remove the contacts: 13 of 40 trials still had non-human contact above 5 N (max 187 N, mostly the coffee table during SEARCH with small position error), one trial had 29 N from her, 5 trials ended lost (pose error above 0.5 m, max 3.9 m). Cause of the coffee-table contacts is still unknown (likely the swept footprint near the table corner or leg during SEARCH moves; not isolated). Therefore NO 120-trial test was run on the guide robot and the paper keeps the compact-robot numbers with the deviation stated.
+
+## Guide-robot contacts: root cause found (2026-10-27)
+The dock (-1.05, -1.10) was a one-cell pocket: map clearance 0.350 m there against the 0.349 m the planner needs, and 0.2 m or less one step away. Leaving the dock the robot always crossed blocked cells and brushed the south-east leg of the coffee table (about 0.30 m away). Moving the dock to (-1.85, -1.35) (clearance 0.45 m) removed the contact in 10 of the 14 trials that had it (dev trials re-run, robot condition only): 4 still touch (86 to 170 N) and 1 ended lost (pose error 1.97 m). The full dev split and the 120-trial test on the guide robot were started after this change (see the end of this file for the outcome when they finish).

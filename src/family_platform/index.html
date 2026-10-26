@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Family view: Momo</title>
+<title>Family view: Baymax</title>
 <style>
 :root{
   --bg:#f4f5f7; --card:#ffffff; --ink:#1b1f24; --muted:#667085; --line:#e3e6ea;
@@ -79,8 +79,8 @@ img#snap{max-width:100%;border-radius:10px;border:1px solid var(--line);display:
 </head>
 <body>
 <div id="login"><form class="box" id="loginForm">
-  <h1>Family view: Momo</h1>
-  <div class="note">Sign in to see how she is and to chat with Momo.</div>
+  <h1>Family view: Baymax</h1>
+  <div class="note">Sign in to see how she is and to chat with Baymax.</div>
   <input type="text" id="lu" placeholder="Username" autocomplete="username" autofocus>
   <input type="password" id="lp" placeholder="Password" autocomplete="current-password">
   <div id="loginErr"></div>
@@ -101,19 +101,19 @@ img#snap{max-width:100%;border-radius:10px;border:1px solid var(--line);display:
       <h2>Where she is</h2>
       <canvas id="plan" width="900" height="640"></canvas>
       <div class="row note" style="margin-top:8px">
-        <span><span class="chip info">blue</span> Momo</span><span><span class="chip on">green</span> her</span><span><span class="chip bad">red</span> on the floor</span>
+        <span><span class="chip info">blue</span> Baymax</span><span><span class="chip on">green</span> her</span><span><span class="chip bad">red</span> on the floor</span>
         <span id="planNote"></span>
       </div>
     </section>
     <section class="card">
-      <h2>Ask Momo</h2>
+      <h2>Ask Baymax</h2>
       <div class="row">
-        <input type="text" id="sayText" placeholder="Say something to her through Momo" style="flex:1" maxlength="160">
+        <input type="text" id="sayText" placeholder="Say something to her through Baymax" style="flex:1" maxlength="160">
         <button id="btnSay" class="primary">Say it</button>
       </div>
       <div class="row" style="margin-top:10px">
         <button id="btnRemind">Remind her about the tablet now</button>
-        <button id="btnCheck">Ask Momo to check on her</button>
+        <button id="btnCheck">Ask Baymax to check on her</button>
       </div>
       <div class="row" style="margin-top:10px">
         <span class="note">Camera:</span>
@@ -134,13 +134,13 @@ img#snap{max-width:100%;border-radius:10px;border:1px solid var(--line);display:
   </div>
   <div class="col">
     <section class="card">
-      <h2>How Momo feels</h2>
+      <h2>How Baymax feels</h2>
       <div class="face">
         <svg id="face" width="150" height="110" viewBox="0 0 150 110"></svg>
         <div class="bars" id="bars"></div>
       </div>
       <div class="note" style="margin-top:6px" id="feelLine"></div>
-      <div class="said" id="said">Momo has not said anything yet.</div>
+      <div class="said" id="said">Baymax has not said anything yet.</div>
       <div class="sirenbox" id="sirenbox"></div>
     </section>
     <section class="card">
@@ -153,7 +153,7 @@ img#snap{max-width:100%;border-radius:10px;border:1px solid var(--line);display:
         <dt>Room</dt><dd id="pRoom">unknown</dd>
         <dt>Doing</dt><dd id="pPosture">unknown</dd>
         <dt>Last seen</dt><dd id="pSeen">not yet</dd>
-        <dt>Momo is</dt><dd id="rState">waiting</dd>
+        <dt>Baymax is</dt><dd id="rState">waiting</dd>
       </dl>
     </section>
     <section class="card">
@@ -162,13 +162,13 @@ img#snap{max-width:100%;border-radius:10px;border:1px solid var(--line);display:
     </section>
   </div>
   <section class="card" style="grid-column:1/-1">
-    <h2>Chat with Momo</h2>
+    <h2>Chat with Baymax</h2>
     <div class="wa" id="wa"><span class="note">Say hello, or ask: "has she taken her tablet?", "where is she?", "how is she?"</span></div>
-    <div class="row" style="margin-top:10px"><input type="text" id="chatText" placeholder="Message Momo" style="flex:1" maxlength="300"><button class="primary" id="btnChat">Send</button></div>
-    <p class="note" style="margin:8px 0 0">Only you see this chat and the texts Momo sent you. Momo answers from what the robot knows right now and can act on requests (remind her, check on her, tell her, look up or down, send a picture, silence the siren). Nothing here goes to a real phone.</p>
+    <div class="row" style="margin-top:10px"><input type="text" id="chatText" placeholder="Message Baymax" style="flex:1" maxlength="300"><button class="primary" id="btnChat">Send</button></div>
+    <p class="note" style="margin:8px 0 0">Only you see this chat and the texts Baymax sent you. Baymax answers from what the robot knows right now and can act on requests (remind her, check on her, tell her, look up or down, send a picture, silence the siren). Nothing here goes to a real phone.</p>
   </section>
   <section class="card" style="grid-column:1/-1">
-    <h2>What Momo said and sent</h2>
+    <h2>What Baymax said and sent</h2>
     <label class="note"><input type="checkbox" id="showLog"> also show the robot's technical log</label>
     <div id="timeline" style="margin-top:10px"></div>
   </section>
@@ -183,7 +183,7 @@ const KIND={heads_up:"Text to family: possible fall", emergency:"URGENT to famil
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
 async function cmd(c,args){
   try{const r=await fetch("/api/command",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cmd:c,args:args||{}})}); if(r.status===401){showLogin();return}
-    const j=await r.json(); toast(r.ok?"Sent to Momo":(j.error||"failed"));}catch(e){toast("Cannot reach the platform")}
+    const j=await r.json(); toast(r.ok?"Sent to Baymax":(j.error||"failed"));}catch(e){toast("Cannot reach the platform")}
 }
 $("btnSay").onclick=()=>{const v=$("sayText").value.trim(); if(v){cmd("say",{text:v});$("sayText").value=""}};
 $("sayText").addEventListener("keydown",e=>{if(e.key==="Enter")$("btnSay").click()});
@@ -231,12 +231,12 @@ function draw(){
     x.beginPath(); x.arc(px(pe.x),py(pe.y),lying?15:12,0,7); x.fill(); x.globalAlpha=1; x.fillStyle=col("--ink"); x.font="600 13px system-ui"; x.fillText("Asha",px(pe.x)+16,py(pe.y)+4)}
   x.save(); x.translate(px(rb.x),py(rb.y)); x.rotate(-rb.yaw); x.fillStyle=col("--robot"); x.beginPath(); x.arc(0,0,11,0,7); x.fill();
   x.beginPath(); x.moveTo(20,0); x.lineTo(8,-8); x.lineTo(8,8); x.closePath(); x.fill(); x.restore();
-  x.fillStyle=col("--ink"); x.font="600 13px system-ui"; x.fillText("Momo",px(rb.x)+16,py(rb.y)-12);
+  x.fillStyle=col("--ink"); x.font="600 13px system-ui"; x.fillText("Baymax",px(rb.x)+16,py(rb.y)-12);
 }
 function fmtAgo(s){if(s==null)return "not yet"; if(s<2)return "now"; return Math.round(s)+" s ago"}
 function renderDoses(ds){
   const real=ds.filter(d=>!d.welfare);
-  if(!real.length){$("doses").innerHTML='<span class="note">No medicine reminder yet. Momo reminds her at the scheduled time and watches whether she takes it.</span>';return}
+  if(!real.length){$("doses").innerHTML='<span class="note">No medicine reminder yet. Baymax reminds her at the scheduled time and watches whether she takes it.</span>';return}
   $("doses").innerHTML=real.map(d=>{
     const rem=`<span class="chip on">Reminded ${d.clock_due}</span>`;
     const ack=d.t_ack!=null?`<span class="chip on">Said OK</span>`:`<span class="chip">Waiting for OK</span>`;
@@ -250,9 +250,9 @@ function renderEvents(){
     if(k&&e.type==="sent"&&k.type==="sent"&&k.kind===e.kind&&k.text===e.text&&k.t===e.t){k.to+=", "+e.to}else merged.push(Object.assign({},e))});
   const rows=merged.slice(-80).reverse().map(e=>{
     let who="", text=e.text;
-    if(e.type==="momo"){who="Momo says"+(e.feeling?" ("+e.feeling+")":"")}
+    if(e.type==="momo"){who="Baymax says"+(e.feeling?" ("+e.feeling+")":"")}
     else if(e.type==="sent"){who=(KIND[e.kind]||e.kind)+" to "+e.to}
-    else if(e.type==="command"){who="Family request: "+e.cmd; text=(e.ok?"Momo accepted.":"Momo could not do it: "+e.note)}
+    else if(e.type==="command"){who="Family request: "+e.cmd; text=(e.ok?"Baymax accepted.":"Baymax could not do it: "+e.note)}
     else who="Robot log";
     const cls=e.type==="sent"?`sent ${e.kind}`:e.type;
     return `<div class="ev ${cls}"><div class="t">${e.clock||""}</div><div><div class="who">${who}</div>${text.replace(/</g,"&lt;")}</div></div>`}).join("");
@@ -276,17 +276,17 @@ function renderChat(){
   wa.innerHTML=thread.filter(e=>{const k=e.type+e.kind+e.t+e.text; if(seen.includes(k))return false; seen.push(k); return true}).map(e=>{
     const mineMsg=e.type==="chat"&&e.who==="user"; const urgent=e.type==="sent"&&["emergency","siren_on"].includes(e.kind);
     const img=e.attachment?`<img src="/api/snapshot?view=emergency&n=${e.n}" alt="blurred picture">`:"";
-    return `<div class="bub ${mineMsg?"me":"in"} ${urgent?"urgent":""}">${mineMsg?"":'<b style="font-size:12px;color:var(--ok)">Momo</b>'}${img}<div>${e.text.replace(/</g,"&lt;")}</div><div class="meta"><span>${e.clock||""}</span></div></div>`}).join("");
+    return `<div class="bub ${mineMsg?"me":"in"} ${urgent?"urgent":""}">${mineMsg?"":'<b style="font-size:12px;color:var(--ok)">Baymax</b>'}${img}<div>${e.text.replace(/</g,"&lt;")}</div><div class="meta"><span>${e.clock||""}</span></div></div>`}).join("");
   if(atBottom||thread[thread.length-1].who==="user") wa.scrollTop=wa.scrollHeight;
 }
 function render(){
   if(!st||st.waiting){$("conn").textContent="waiting for the robot";return}
   $("conn").textContent="live"; $("conn").className="chip on";
-  $("who").textContent=st.patient+" at home"; $("sub").textContent="Momo is "+st.robot.state_label.toLowerCase()+" in the "+st.robot.room.toLowerCase();
+  $("who").textContent=st.patient+" at home"; $("sub").textContent="Baymax is "+st.robot.state_label.toLowerCase()+" in the "+st.robot.room.toLowerCase();
   $("clock").textContent=st.clock+(st.ended?" (demo ended)":"");
   const b=$("banner"); b.className="l"+st.alert.level; $("bannerText").textContent=st.alert.title;
   face(st.robot.mood); bars(st.robot.feeling);
-  $("feelLine").textContent="Momo feels "+st.robot.feeling.label+". Voice: "+st.robot.agent_mode+".";
+  $("feelLine").textContent="Baymax feels "+st.robot.feeling.label+". Voice: "+st.robot.agent_mode+".";
   const say=events.filter(e=>e.type==="momo").slice(-1)[0]; if(say) $("said").textContent="“"+say.text+"”";
   const sb=$("sirenbox"), si=st.siren;
   if(si&&si.on){sb.style.display="block"; sb.textContent="SIREN ON ("+Math.round(si.level_db)+" dB at 1 m) to attract people"+(si.cardiac_cue?". Chest-clutch pattern seen just before the collapse.":"")}
@@ -301,7 +301,7 @@ function render(){
   if(st.has_snapshot){const im=$("snap"); if(im.dataset.t!==String(st.snapshot_t)){im.src="/api/snapshot?"+Date.now(); im.dataset.t=st.snapshot_t} im.style.display="block"}
   for(const v of ["Above","Below"]){const tv=(st.views||{})[v.toLowerCase()]; const im=$("img"+v), fg=$("fig"+v);
     if(tv!=null){ if(im.dataset.t!==String(tv)){im.src="/api/snapshot?view="+v.toLowerCase()+"&"+Date.now(); im.dataset.t=String(tv)} fg.style.display="block"; fg.style.flex="1 1 200px"} }
-  $("planNote").textContent=p.x==null?"Momo has not seen her yet":"";
+  $("planNote").textContent=p.x==null?"Baymax has not seen her yet":"";
   if(!trail.length||Math.hypot(trail[trail.length-1][0]-st.robot.x,trail[trail.length-1][1]-st.robot.y)>0.05){trail.push([st.robot.x,st.robot.y]); if(trail.length>200)trail.shift()}
 }
 async function poll(){
