@@ -1,0 +1,50 @@
+[
+ {
+  "system": "companion robot",
+  "sensitivity": 0.8604651162790697,
+  "false_dispatch_rate_per_adl_event": 0.0,
+  "false_dispatches_per_year": 0.0,
+  "gross_bed_days_saved_per_year": 14.662325581395349,
+  "false_dispatch_burden_bed_days": 0.0,
+  "net_bed_days_saved_per_year": 14.662325581395349,
+  "kappa": 0.2,
+  "kappa_within_limit": true,
+  "payback_months": 3.75,
+  "median_response_min": 0.6626443068317649,
+  "long_lie_reduction": 0.9915586712505507,
+  "max_false_dispatch_rate_for_kappa_limit": 0.005128205128205127,
+  "min_specificity_for_kappa_limit": 0.9948717948717949
+ },
+ {
+  "system": "4 fixed cameras",
+  "sensitivity": 0.46511627906976744,
+  "false_dispatch_rate_per_adl_event": 0.0,
+  "false_dispatches_per_year": 0.0,
+  "gross_bed_days_saved_per_year": 7.9255813953488365,
+  "false_dispatch_burden_bed_days": 0.0,
+  "net_bed_days_saved_per_year": 7.9255813953488365,
+  "kappa": 0.2,
+  "kappa_within_limit": true,
+  "payback_months": 3.75,
+  "median_response_min": 0.22575236929826606,
+  "long_lie_reduction": 0.9971241736395126,
+  "max_false_dispatch_rate_for_kappa_limit": 0.005128205128205127,
+  "min_specificity_for_kappa_limit": 0.9948717948717949
+ },
+ {
+  "system": "1 fixed camera",
+  "sensitivity": 0.023255813953488372,
+  "false_dispatch_rate_per_adl_event": 0.0,
+  "false_dispatches_per_year": 0.0,
+  "gross_bed_days_saved_per_year": 0.3962790697674418,
+  "false_dispatch_burden_bed_days": 0.0,
+  "net_bed_days_saved_per_year": 0.3962790697674418,
+  "kappa": 0.2,
+  "kappa_within_limit": true,
+  "payback_months": 3.75,
+  "median_response_min": 0.34764920558954543,
+  "long_lie_reduction": 0.9955713476994963,
+  "max_false_dispatch_rate_for_kappa_limit": 0.005128205128205127,
+  "min_specificity_for_kappa_limit": 0.9948717948717949
+ }
+]
