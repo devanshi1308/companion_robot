@@ -165,7 +165,7 @@ class RobotInterface:
         for g, sy in zip(self.brows, (1, -1)):
             self.m.geom_rgba[g] = (*(brow_colour or (0, 0, 0)), 1.0 if brow_colour else 0.0)
             self.m.geom_quat[g] = _tilt_quat(0.0, -sy * brow_deg)
-        for g, sy in zip(self.mouth, (1, -1)):
-            self.m.geom_quat[g] = _tilt_quat(sy * MOUTH_YAW_DEG, sy * mouth_deg)
+        for g in self.mouth:                                   # the line between the eyes stays straight in every mood
+            self.m.geom_quat[g] = (1.0, 0.0, 0.0, 0.0)
         self.m.geom_rgba[self.led] = (*led, 1.0)
         self.mood = mood

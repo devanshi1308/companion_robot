@@ -113,7 +113,7 @@ def robot_body(x, y, yaw_deg, ind=2):
     a(f'{pad}      <geom name="neck_ring" type="cylinder" size="0.085 0.004" pos="{f(0, 0, -0.095)}" rgba="0.5 0.5 0.53 1" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}      <geom name="power_button" type="box" size="0.004 0.012 0.016" pos="{f(-0.12, 0, -0.06)}" rgba="0.85 0.1 0.1 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sy in (("l", 1), ("r", -1)):
-        a(f'{pad}      <geom name="shell_mouth_{nm}" type="box" size="0.0012 0.036 0.0016" pos="{f(0.1575, sy * 0.035, 0.04)}" euler="0 0 {sy * 6.5}" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}      <geom name="shell_mouth_{nm}" type="box" size="0.0012 0.036 0.0016" pos="{f(0.1585, sy * 0.035, 0.04)}" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
         a(f'{pad}      <geom name="blush_{nm}" type="ellipsoid" size="0.003 0.024 0.013" pos="{f(0.121, sy * 0.12, 0.0)}" euler="0 0 {sy * 35}" rgba="1 0.62 0.62 1" contype="0" conaffinity="0" mass="0"/>')
         a(f'{pad}      <geom name="ear_pod_{nm}" type="cylinder" size="0.045 0.007" pos="{f(0, sy * 0.198, 0.04)}" euler="90 0 0" rgba="0.95 0.52 0.42 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sy in (("l", 1), ("r", -1)):
