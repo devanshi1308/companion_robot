@@ -239,6 +239,7 @@ class CompanionAgent(PlainVoice):
         self.agent.messages.clear()
         out = str(self.agent(prompt)).strip().strip('"')
         low = out.lower()
-        if not out or len(out.split()) > words + 15 or BANNED.search(out) or any(m.lower() not in low for m in must):
+        junk = out[:1] in ('{', '[') or '"parameters"' in out or '"name":' in out or len(out.split()) < 3     # a small model sometimes emits a tool call or a fragment
+        if not out or junk or len(out.split()) > words + 15 or BANNED.search(out) or any(m.lower() not in low for m in must):
             raise ValueError("model answer failed the checks")
         return out
