@@ -18,3 +18,6 @@ Momo agent, family platform with login and chat, siren, medicine reminder, wide 
 
 ## Still to do
 Dossier (group Word template needed), LinkedIn video (Devanshi), Kamakshi's own commits (>= 4, vision files), reading Tinetti 1993 and Wild 1981 in full, sir's answer on the door/bubble conflict, a guide-robot 120-trial test if time allows.
+
+## Guide-robot dev run (2026-10-26, 40 trials, seed 1, after the SEARCH stall fix) - NOT a result, a status check
+Robot: alarm sensitivity 0.60 (12/20), specificity 0.90, dispatch sensitivity 0.47 (7/15), 0 false dispatches; 4 fixed cameras: alarm 0.60, dispatch 0.60 (3 false dispatches); 1 camera 0. Safety: max commanded speed 0.72 m/s, 14 of 40 trials with non-human contact above 5 N (max 145 N), 5 trials with final pose error above 0.5 m, 0 N from her, 0 bytes off-board before the first alert. The guide robot is therefore NOT ready for a 120-trial test: contacts and localisation failures must be fixed first. The submitted 120-trial numbers remain those of the earlier compact robot.
