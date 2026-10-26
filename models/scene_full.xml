@@ -447,9 +447,10 @@
     <body name="robot" pos="-1.05 -1.1 0.08" euler="0 0 180.0">
       <freejoint name="robot_free"/>
       <site name="base_link" pos="0 0 0" size="0.004" rgba="0 0 1 0.5" group="5"/>
-      <geom name="deck" type="box" size="0.22 0.17 0.08" pos="0 0 0.04" rgba="0.16 0.17 0.19 1" mass="11.4" friction="0.3 0.005 0.0001"/>
+      <geom name="deck" type="box" size="0.22 0.17 0.08" pos="0 0 0.04" rgba="0.16 0.17 0.19 0" mass="11.4" friction="0.3 0.005 0.0001"/>
       <geom name="pedestal" type="cylinder" size="0.02 0.42500000000000004" pos="0 0 0.545" rgba="0.96 0.95 0.93 1" mass="1.2"/>
       <geom name="status_led" type="capsule" size="0.007 0.03" pos="0.15 0 0.62" euler="90 0 0" rgba="0.2 0.9 0.4 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_base" type="ellipsoid" size="0.235 0.215 0.085" pos="0 0 0.045" rgba="0.16 0.17 0.19 1" contype="0" conaffinity="0" mass="0"/>
       <geom name="shell_body" type="mesh" mesh="shell_body" pos="0 0 -0.08" rgba="0.96 0.95 0.93 1" contype="0" conaffinity="0" mass="0"/>
       <geom name="shell_neck" type="cylinder" size="0.07 0.06" pos="-0.03 0 0.905" rgba="0.96 0.95 0.93 1" contype="0" conaffinity="0" mass="0"/>
       <geom name="shell_slot" type="capsule" size="0.011 0.075" pos="0.224 0 0.22" euler="90 0 0" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>
