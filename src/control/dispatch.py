@@ -44,6 +44,9 @@ def blur_face(rgb, centre_px, radius_px):
     return Image.fromarray(np.where(mask[..., None] > 0, blurred, rgb).astype(np.uint8))
 
 
+from first_aid import FAMILY_STEPS  # noqa: E402
+
+
 class Dispatcher:
     def __init__(self, out_dir, config_path=DEFAULT_CONFIG, voice=None):
         self.voice = voice                  # optional agent voice (src/agent): rephrases family texts; the ambulance script is never rephrased
@@ -96,6 +99,7 @@ class Dispatcher:
                        f"(no answer to 'Are you okay?' for {unresponsive_s:.0f} s). Possible cardiac emergency. "
                        f"An ambulance has been called to {addr}. Photo attached (face blurred).")
         family_text = self._say("emergency", t_impact, dict(room=room, seconds=unresponsive_s), family_text)
+        family_text += " " + FAMILY_STEPS
         out = []
         for c in self.cfg["family"]:
             for ch in c["channels"]:

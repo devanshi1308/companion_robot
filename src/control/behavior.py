@@ -25,6 +25,7 @@ import robot_spec as S  # noqa: E402
 import apartment_layout as L  # noqa: E402
 from dispatch import blur_face, clock  # noqa: E402
 from localization import Localizer  # noqa: E402
+from first_aid import CONSCIOUS_CHECK, CONSCIOUS_OK, BYSTANDER  # noqa: E402
 from navigation import PathFollower, turn_to, wrap  # noqa: E402
 from robot_interface import quat_to_yaw  # noqa: E402
 from companion_agent import PlainVoice  # noqa: E402
@@ -157,6 +158,13 @@ class Companion:
     def utter(self, t, kind, facts, default, audience="patient", loud=False):
         """The robot speaks (or texts): the agent decides the wording, the simulator decides the facts."""
         text = self.voice.phrase(kind, facts, default, audience=audience, t=t)
+        self.say(t, f'Robot says{" (louder)" if loud else ""}: "{text}"')
+        self.last_utterance = (t, kind, text)
+        self.utterances.append((round(float(t), 2), kind, text))
+        return text
+
+    def speak_fixed(self, t, kind, text, audience="patient", loud=False):
+        """A fixed, reviewed script (first aid): never re-worded by the language model."""
         self.say(t, f'Robot says{" (louder)" if loud else ""}: "{text}"')
         self.last_utterance = (t, kind, text)
         self.utterances.append((round(float(t), 2), kind, text))
@@ -395,6 +403,7 @@ class Companion:
             self.moved_since = self.moved_since or t
             if t - self.moved_since >= self.p.move_hold_s:
                 self.say(t, "She moved: response detected, no emergency call")
+                self.speak_fixed(t, "first_aid_get_up_slowly", CONSCIOUS_OK)
                 self.feel(t, "she_answered")
                 self.responded = True
                 self.suppress = True
@@ -415,6 +424,7 @@ class Companion:
             return True
         if self.state == "CHECK_IN":
             self.say(t, 'She answered ("I\'m fine"): response heard, no emergency call')
+            self.speak_fixed(t, "first_aid_get_up_slowly", CONSCIOUS_OK)
             self.feel(t, "she_answered")
             self.responded = True
             self.suppress = True
@@ -712,6 +722,7 @@ class Companion:
         self.checkin_started_t = t
         self.feel(t, "checking_in")
         self.utter(t, "check_in", {}, "Are you okay? Please tell me if you need help.")
+        self.speak_fixed(t, "first_aid_stay_still", CONSCIOUS_CHECK)
         self.baseline = None                      # set once the robot has stood still for a second (see watch_for_response)
         self.still_since = None
         self.moved_since = None
@@ -797,6 +808,7 @@ class Companion:
                 evidence=evidence)
             self.disp.emergency(t, xy, self.detector.t_impact, self.p.checkin_s, snapshot=self.snapshot, evidence=evidence, telemetry=telemetry)
             self.say(t, "Family messaged (with blurred photo) and ambulance called (simulated)")
+            self.speak_fixed(t, "first_aid_bystander", BYSTANDER, audience="bystander", loud=True)
         elif t - self.t_update >= self.p.update_every_s:
             self.t_update = t
             self.disp.update(t, t - self.detector.t_impact)
