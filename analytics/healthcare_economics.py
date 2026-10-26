@@ -55,7 +55,35 @@ def model(sens, far, lat_s, label):
                 long_lie_reduction=long_lie_reduction, max_false_dispatch_rate_for_kappa_limit=far_max, min_specificity_for_kappa_limit=1.0 - far_max)
 
 
+def payback_table():
+    """Payback months = capital cost in months of attendant cost / (1 - kappa) (standards manual: 12 * K0 / (1 - kappa), K0 in attendant-years).
+    The sheet claims BOTH 'robot cost under 3 months of an attendant' AND 'return within the first calendar quarter (3 months)'. With kappa > 0 the payback is
+    always longer than the capital cost, so the two claims fit together only if the capital cost is at most 3 * (1 - kappa) months of attendant cost."""
+    rows = []
+    for cost_m in (1.5, 2.0, 2.4, 3.0):
+        for kap in (0.10, 0.20, 0.25):
+            rows.append(dict(capital_cost_in_attendant_months=cost_m, kappa=kap, payback_months=round(cost_m / (1 - kap), 2), within_one_quarter=bool(cost_m / (1 - kap) <= 3.0)))
+    limits = {f"kappa_{k}": round(3.0 * (1 - k), 2) for k in (0.10, 0.20, 0.25)}
+    return rows, limits
+
+
+def print_payback_table():
+    rows, limits = payback_table()
+    print("\nPayback against the sheet's two claims (dimensionless):")
+    print("  capital cost (attendant-months)   kappa   payback (months)   within one quarter?")
+    for r in rows:
+        print(f"  {r['capital_cost_in_attendant_months']:>30.1f}   {r['kappa']:.2f}   {r['payback_months']:>16.2f}   {'yes' if r['within_one_quarter'] else 'NO'}")
+    print(f"  Largest capital cost that still pays back within 3 months: {limits['kappa_0.1']} months of attendant cost at kappa 0.10, "
+          f"{limits['kappa_0.2']} at kappa 0.20, {limits['kappa_0.25']} at kappa 0.25. The model used here (cost = 3 months, kappa 0.20) gives 3.75 months.")
+    out = os.path.join(ROOT, "results", "small_robot_test")
+    if os.path.isdir(out):
+        json.dump(dict(rows=rows, max_capital_cost_months_for_one_quarter=limits), open(os.path.join(out, "payback_sensitivity.json"), "w"), indent=1)
+
+
 def main(split="test"):
+    if split == "payback":
+        print_payback_table()
+        return None
     M = load_metrics(split)
     print("=" * 78)
     print("HEALTHCARE ECONOMICS (dimensionless: bed-days, attendant-years, ratios)")
@@ -97,6 +125,7 @@ def main(split="test"):
         r = model(d["sensitivity"], far, M["lat_dispatch_robot"].get("median", float("nan")), "robot")
         print(f"  bed-day = {v:.0f} attendant-days: kappa = {r['kappa']:.3f}, payback = {r['payback_months']:.1f} months")
     BED_DAY_IN_ATTENDANT_DAYS = keep
+    print_payback_table()
     print("\nAssumed constants are listed at the top of this file; the 78.5-minute long-lie figure still needs its citation verified.")
     json.dump(out, open(os.path.join(ROOT, "outputs", "experiments", split, "analysis", "economics.json"), "w"), indent=1)
     return out
