@@ -57,7 +57,7 @@ The model eliminates currency-dependent distortions by normalizing parameters to
 ---
 
 ## V. Experimental Evaluation and Results
-Simulations were conducted across $N = 120$ seeded trials (`outputs/experiments/<split>/analysis`, produced by `src/experiments/analyze.py` from the seeded runs). Telemetry figures were generated at 300 DPI resolution (`analytics/generate_paper_figures.py`):
+Simulations were conducted across $N = 120$ seeded trials (`outputs/experiments/<split>/analysis`, produced by `src/experiments/analyze.py` from the seeded runs). The figures come from those runs:
 * **Figure 1:** System architecture and physical kinematics (`docs/figures/figure1_system_architecture.png`).
 * **Figure 2:** Falls detected by where she fell (`paper/detection_by_zone.png`, from the seeded runs).
 * **Figure 3:** Mean latency with standard-error bars (`paper/latency_se.png`, from `results/small_robot_test/metrics.json`).
