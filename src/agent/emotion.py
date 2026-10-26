@@ -76,7 +76,7 @@ class Emotion:
     def face(self):
         """Mood of the robot's screen face (robot_interface.MOODS)."""
         lab = self.label()
-        return {"alarmed": "alert", "worried": "worried", "concerned": "worried", "happy": "happy", "relieved": "happy", "cheerful": "happy"}.get(lab, "watching")
+        return {"alarmed": "alert", "worried": "worried", "concerned": "concerned", "happy": "happy", "relieved": "relieved", "cheerful": "happy"}.get(lab, "watching")
 
     def snapshot(self):
         return dict(label=self.label(), worry=round(self.worry, 2), alarm=round(self.alarm, 2), joy=round(self.joy, 2), calm=round(self.calm, 2))

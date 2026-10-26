@@ -6,7 +6,7 @@ Python interface to the simulated companion robot: motors, encoders/odometry, ca
     robot.set_neck(pan_deg, tilt_deg)     # guide ranges: pan +/-90, tilt -45..+30 (negative = down)
     robot.update_odometry()               # call every control step; wheel encoders only (noisy)
     rgb, depth = robot.grab(renderer)     # head camera (58 deg vertical FOV)
-    robot.set_mood("worried")             # watching | worried | happy | alert
+    robot.set_mood("worried")             # watching | concerned | worried | happy | relieved | alert | sleepy
 
 Ground truth (true_pose) is for logging and tests only; the robot's own behaviour uses the odometry estimate.
 """
@@ -19,12 +19,11 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import robot_spec as S  # noqa: E402
 
-MOODS = {   # eye colour, eye half-size (x, y, z), brows visible, status LED colour
-    "watching": ((0.21, 0.88, 0.91), (0.0012, 0.010, 0.014), False, (0.2, 0.9, 0.4)),
-    "worried": ((1.00, 0.69, 0.00), (0.0012, 0.010, 0.012), True, (1.0, 0.69, 0.0)),
-    "happy": ((0.20, 0.80, 0.35), (0.0012, 0.010, 0.006), False, (0.2, 0.9, 0.4)),
-    "alert": ((0.84, 0.27, 0.24), (0.0012, 0.012, 0.016), False, (0.84, 0.27, 0.24)),
-}
+# The face shows NO expressions: two dark dots and a straight line, always. What the robot feels is shown only by the chest status light
+# (green calm, amber worried, red alert); the moods keep their names so the rest of the code does not change.
+LED = {"watching": (0.2, 0.9, 0.4), "concerned": (1.0, 0.69, 0.0), "worried": (1.0, 0.69, 0.0), "happy": (0.2, 0.9, 0.4),
+       "relieved": (0.2, 0.9, 0.4), "alert": (0.84, 0.27, 0.24), "sleepy": (0.2, 0.9, 0.4)}
+NEUTRAL_EYE = (0.003, 0.02, 0.02)
 
 
 def quat_to_yaw(q):
@@ -55,6 +54,7 @@ class RobotInterface:
         self.floor_bodies = {0} | {names[n] for n in ("rug", "bedroom_rug") if n in names}
         self.eyes = [m.geom("eye_l").id, m.geom("eye_r").id]
         self.brows = [m.geom("brow_l").id, m.geom("brow_r").id]
+        self.mouth = [m.geom("shell_mouth_l").id, m.geom("shell_mouth_r").id]
         self.led = m.geom("status_led").id
         self.last_cmd = (0.0, 0.0)
         self.reset_odometry()
@@ -137,11 +137,10 @@ class RobotInterface:
         return rgb, dep
 
     def set_mood(self, mood):
-        colour, size, brows, led = MOODS[mood]
+        """Only the status light changes (see LED); the face stays neutral."""
         for g in self.eyes:
-            self.m.geom_rgba[g] = (*colour, 1.0)
-            self.m.geom_size[g] = size
+            self.m.geom_size[g] = NEUTRAL_EYE
         for g in self.brows:
-            self.m.geom_rgba[g] = (*colour, 1.0 if brows else 0.0)
-        self.m.geom_rgba[self.led] = (*led, 1.0)
+            self.m.geom_rgba[g] = (0.0, 0.0, 0.0, 0.0)
+        self.m.geom_rgba[self.led] = (*LED[mood], 1.0)
         self.mood = mood

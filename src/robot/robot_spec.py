@@ -32,3 +32,8 @@ STANDOFF = 1.00        # m from the person (guide: 0.80 to 1.20 m)
 CHASSIS_R = ((DECK_L / 2) ** 2 + (TRACK / 2 + WHEEL_T / 2) ** 2) ** 0.5   # m: footprint radius (chassis front corner / outer wheel), about 0.30
 LIDAR_X = DECK_L / 2 + 0.02                                    # m: range-sensor rays start just in front of the chassis
 LIDAR_Z = 0.06                                                 # m above the floor (sees low obstacles: the robot vacuum, clutter)
+
+HEAD_SHELL = (0.16, 0.20, 0.13)   # m: radii (x, y, z) of the flattened egg-shaped visual head (no collision, no mass)
+HEAD_SHELL_R = HEAD_SHELL[0]
+BELL_PROFILE = [(0.11, 0.232), (0.13, 0.246), (0.17, 0.257), (0.28, 0.262), (0.40, 0.266), (0.52, 0.25), (0.62, 0.215), (0.72, 0.178), (0.82, 0.15), (0.89, 0.125), (0.94, 0.08), (0.965, 0.03), (0.97, 0.0)]  # (height, radius): egg-shaped body shell
+CAM_X = 0.152             # m: camera forward offset in the head frame (on the front of the round head)

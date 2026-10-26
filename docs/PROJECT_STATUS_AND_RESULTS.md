@@ -11,10 +11,13 @@ Title (authorised, unchanged): How can a vision-based mobile companion robot in 
 See `docs/REQUIREMENTS_CHECK.md` (final title sheet table, robot-vs-guide measurements, bubble-vs-door note).
 
 ## Honest limitations
-Scripted motions, adult body; 8/120 robot trials ended lost; one cardiac fall landed on the robot; sofa false alarms (5/20) at alarm level; cardiac prodrome cues false-flag 49% (not used for alerting); payback 3.75 months is longer than the brief's "first quarter"; the 0.50 m bubble cannot hold in 0.85 m doors (speed rule instead, needs sir's confirmation); GDS cannot be simulated; the sheet's 7-10 percent per minute decay differs from our lambda (about 17 percent per minute).
+Scripted motions, adult body; 8/120 robot trials ended lost; one cardiac fall landed on the robot; sofa false alarms (5/20) at alarm level; cardiac prodrome cues false-flag 49% (not used for alerting); payback 3.75 months is longer than the brief's "first quarter"; the 0.50 m bubble cannot hold in 0.85 m doors (speed rule instead, needs sir's confirmation); GDS cannot be simulated; no survival-decay constant is used anywhere (the sheet's 7-10 percent per minute is only quoted as context).
 
 ## Demo-only extras (outside the authorised scope, in no metric)
 Momo agent, family platform with login and chat, siren, medicine reminder, wide camera.
 
 ## Still to do
 Dossier (group Word template needed), LinkedIn video (Devanshi), Kamakshi's own commits (>= 4, vision files), reading Tinetti 1993 and Wild 1981 in full, sir's answer on the door/bubble conflict, a guide-robot 120-trial test if time allows.
+
+## Guide-robot dev run (2026-10-26, 40 trials, seed 1, after the SEARCH stall fix) - NOT a result, a status check
+Robot: alarm sensitivity 0.60 (12/20), specificity 0.90, dispatch sensitivity 0.47 (7/15), 0 false dispatches; 4 fixed cameras: alarm 0.60, dispatch 0.60 (3 false dispatches); 1 camera 0. Safety: max commanded speed 0.72 m/s, 14 of 40 trials with non-human contact above 5 N (max 145 N), 5 trials with final pose error above 0.5 m, 0 N from her, 0 bytes off-board before the first alert. The guide robot is therefore NOT ready for a 120-trial test: contacts and localisation failures must be fixed first. The submitted 120-trial numbers remain those of the earlier compact robot.

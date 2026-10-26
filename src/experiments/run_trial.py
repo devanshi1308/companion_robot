@@ -160,7 +160,7 @@ def run_robot(ctx, out_dir, cfg=None):
         viewer.opt.geomgroup[2] = 0
         viewer.cam.type = mujoco.mjtCamera.mjCAMERA_FREE            # a FREE camera that starts at the overview angle: drag to rotate, scroll to zoom, right-drag to pan
         viewer.cam.lookat[:] = [0.0, -0.3, 0.3]
-        viewer.cam.distance, viewer.cam.azimuth, viewer.cam.elevation = 9.1, 90.0, -63.0
+        viewer.cam.distance, viewer.cam.azimuth, viewer.cam.elevation = 6.6, 90.0, -62.0
     t_reply = None
     stopped_at = None
     while True:

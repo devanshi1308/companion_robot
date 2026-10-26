@@ -169,11 +169,13 @@ class CompanionAgent(PlainVoice):
         return self.emotion.face()
 
     # ---- open conversation ------------------------------------------------------------------------------------
-    CHAT_SYSTEM = (f"You are {NAME}, a small, kind companion robot who lives with an older woman and looks after her. A family member is chatting with you. "
+    CHAT_SYSTEM = (f"You are {NAME}, a gentle, soft-spoken male companion robot (he/him) who lives with an older woman and looks after her. A family member is chatting with you. "
                    "Answer ANY question helpfully and conversationally in a few short sentences, in your current feelings (tool current_feelings). "
                    "Use the tool robot_state for anything about her, the robot, the medicine or what is happening now, and never invent those facts. "
                    "You are not a doctor: never diagnose; for symptoms or emergencies tell them to call 108 (you cannot place calls on request). "
-                   "You may chat about anything else (the day, advice for caring for an older person, general knowledge). If you do not know, say so. No emoji. At most 80 words.")
+                   "You may chat about anything else (the day, advice for caring for an older person, general knowledge). If you do not know, say so. "
+                   "The robot only knows what robot_state contains (room, activity, medicine, alerts, siren, what it just did): about meals, mood, sleep or anything else about her that is not in it, say plainly that you cannot see that. "
+                   "Always reply in plain sentences, never JSON and never a tool call. No emoji. At most 80 words.")
 
     def open_chat(self, user, text, facts):
         """A question the built-in answers do not cover: ask the language model (with the robot's real state as a tool). Returns text or None."""
@@ -197,10 +199,14 @@ class CompanionAgent(PlainVoice):
             self._chats[user] = Agent(model=self.model, system_prompt=self.CHAT_SYSTEM, tools=[robot_state, current_feelings], callback_handler=None)
         self._facts_holder["facts"] = facts
         try:
-            out = str(self._chats[user](text)).strip()
+            import json as _json
+            known = _json.dumps(facts, default=str)[:1500]            # small local models skip tool calls: give the facts in the message too
+            out = str(self._chats[user](f"[robot facts, the only things you know about her: {known}]\nFamily member: {text}")).strip()
         except Exception:
             return None
         if not out or BANNED.search(out) or len(out.split()) > 140:
+            return None
+        if out[0] in "{[" or '"parameters"' in out or '"name":' in out:         # a tool call or raw data leaked into the answer
             return None
         return out
 
@@ -233,6 +239,7 @@ class CompanionAgent(PlainVoice):
         self.agent.messages.clear()
         out = str(self.agent(prompt)).strip().strip('"')
         low = out.lower()
-        if not out or len(out.split()) > words + 15 or BANNED.search(out) or any(m.lower() not in low for m in must):
+        junk = out[:1] in ('{', '[') or '"parameters"' in out or '"name":' in out or len(out.split()) < 3     # a small model sometimes emits a tool call or a fragment
+        if not out or junk or len(out.split()) > words + 15 or BANNED.search(out) or any(m.lower() not in low for m in must):
             raise ValueError("model answer failed the checks")
         return out

@@ -8,11 +8,16 @@ the re-worded text must still contain every number and time of the factual answe
 Requests that change what the robot does come back as `actions` (dicts like the platform commands) and are applied by the simulation; the robot refuses
 them when it is busy with a fall or an emergency. It never places a call on request: emergency calls are automatic after an unanswered collapse.
 """
+import os
 import re
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from health_knowledge import lookup as health_lookup  # noqa: E402
 
 FALLBACK = "I am not sure what you mean."          # the reply that means "no built-in answer": the agent (language model) gets a go
 URGENT = ("chest pain", "can't breathe", "cannot breathe", "not breathing", "unconscious", "bleeding", "stroke", "heart attack", "collapsed", "fainted")
-HELP = ("You can ask me: where she is, how she is, whether she took her tablet, how I feel. You can also say: remind her, check on her, tell her <message>, "
+HELP = ("You can ask me: where she is, how she is, whether she took her tablet, how I feel, how to do CPR or other first aid, or what a medicine is for. You can also say: remind her, check on her, tell her <message>, "
         "look up / look down / look around, send a picture, silence the siren.")
 
 
@@ -26,9 +31,16 @@ def answer(text, f):
     actions = []
     if not t:
         return "I am here. " + HELP, actions
+    status_q = bool(re.search(r"has she|did she|was she|taken|is she", t))
     if any(k in t for k in URGENT) and not re.search(r"has she|did she|was she|taken|tablet", t):
+        steps = health_lookup(text)
         return ("If someone has chest pain, cannot breathe, is unconscious or badly hurt, call 108 now. I cannot place calls on request. "
-                + (f"The ambulance has already been called for {p}." if al.get("emergency") else al.get("title", "")) ), actions
+                + (f"The ambulance has already been called for {p}. " if al.get("emergency") else (al.get("title", "") + " "))
+                + (steps or "")).strip(), actions
+    if not status_q:
+        kb = health_lookup(text)                                  # CPR and other first aid, medicine facts: fixed, reviewed text
+        if kb:
+            return kb, actions
     m = re.search(r"\b(?:tell|say to|say)\b (?:her |asha )?(?:that )?(.+)", text, re.I)
     if re.search(r"\b(tell|say) ", t) and m and not t.startswith(("say how", "say where")):
         msg = m.group(1).strip().rstrip(".") if re.search(r"\b(tell|say)\b.* ", t) else ""

@@ -25,6 +25,8 @@ import robot_spec as S  # noqa: E402
 import apartment_layout as L  # noqa: E402
 from dispatch import blur_face, clock  # noqa: E402
 from localization import Localizer  # noqa: E402
+from first_aid import CONSCIOUS_CHECK, CONSCIOUS_OK, BYSTANDER  # noqa: E402
+from health_knowledge import COACH  # noqa: E402
 from navigation import PathFollower, turn_to, wrap  # noqa: E402
 from robot_interface import quat_to_yaw  # noqa: E402
 from companion_agent import PlainVoice  # noqa: E402
@@ -102,6 +104,8 @@ class Companion:
         self.t_alert = None
         self.t_update = None
         self.sent_heads_up = False
+        self.coach_i = 0
+        self.on_speech = None                          # set by a live demo to speak the robot's words aloud (src/agent/speech.py); experiments leave it None
         self.front_range = LIDAR_RANGE
         self.front_unknown = self.front_known = LIDAR_RANGE
         self.blocked = False
@@ -160,6 +164,17 @@ class Companion:
         self.say(t, f'Robot says{" (louder)" if loud else ""}: "{text}"')
         self.last_utterance = (t, kind, text)
         self.utterances.append((round(float(t), 2), kind, text))
+        if self.on_speech is not None and audience in ("patient", "bystander"):
+            self.on_speech(text, loud)
+        return text
+
+    def speak_fixed(self, t, kind, text, audience="patient", loud=False):
+        """A fixed, reviewed script (first aid): never re-worded by the language model."""
+        self.say(t, f'Robot says{" (louder)" if loud else ""}: "{text}"')
+        self.last_utterance = (t, kind, text)
+        self.utterances.append((round(float(t), 2), kind, text))
+        if self.on_speech is not None:
+            self.on_speech(text, loud)
         return text
 
     def go(self, t, state, mood=None, text=None):
@@ -395,6 +410,7 @@ class Companion:
             self.moved_since = self.moved_since or t
             if t - self.moved_since >= self.p.move_hold_s:
                 self.say(t, "She moved: response detected, no emergency call")
+                self.speak_fixed(t, "first_aid_get_up_slowly", CONSCIOUS_OK)
                 self.feel(t, "she_answered")
                 self.responded = True
                 self.suppress = True
@@ -415,6 +431,7 @@ class Companion:
             return True
         if self.state == "CHECK_IN":
             self.say(t, 'She answered ("I\'m fine"): response heard, no emergency call')
+            self.speak_fixed(t, "first_aid_get_up_slowly", CONSCIOUS_OK)
             self.feel(t, "she_answered")
             self.responded = True
             self.suppress = True
@@ -665,6 +682,12 @@ class Companion:
                 self.say(t, "Stuck while turning on the spot: skipping the look-around")
                 self.t_scan = t - 5.0
             elif t - self.t_scan < 5.0:
+                i, j = self.grid.to_cell(est[0], est[1])
+                tight = float(self.grid.clear[min(max(i, 0), self.grid.nx - 1), min(max(j, 0), self.grid.ny - 1)]) < S.CHASSIS_R + 0.12
+                if tight:                                                                # too close to furniture to swing the corners round: look with the camera only
+                    if t - self.t_scan > 2.0:
+                        self.t_scan = t - 5.0
+                    return 0.0, 0.0
                 return 0.0, 0.8                                                          # turn on the spot and look around
             here = est[:2]
             cands = [(np.hypot(x - here[0], y - here[1]), n, (x, y)) for n, (x, y) in L.WAYPOINTS.items()
@@ -712,6 +735,7 @@ class Companion:
         self.checkin_started_t = t
         self.feel(t, "checking_in")
         self.utter(t, "check_in", {}, "Are you okay? Please tell me if you need help.")
+        self.speak_fixed(t, "first_aid_stay_still", CONSCIOUS_CHECK)
         self.baseline = None                      # set once the robot has stood still for a second (see watch_for_response)
         self.still_since = None
         self.moved_since = None
@@ -797,10 +821,13 @@ class Companion:
                 evidence=evidence)
             self.disp.emergency(t, xy, self.detector.t_impact, self.p.checkin_s, snapshot=self.snapshot, evidence=evidence, telemetry=telemetry)
             self.say(t, "Family messaged (with blurred photo) and ambulance called (simulated)")
+            self.speak_fixed(t, "first_aid_bystander", BYSTANDER, audience="bystander", loud=True)
         elif t - self.t_update >= self.p.update_every_s:
             self.t_update = t
             self.disp.update(t, t - self.detector.t_impact)
             self.say(t, "Update sent to family: still not responding")
+            self.speak_fixed(t, "first_aid_coach", COACH[self.coach_i % len(COACH)], audience="bystander")      # keeps a helper going (do not stop compressions)
+            self.coach_i += 1
 
     # ---- the family platform can ask the robot to do things (src/platform) ----------------------------------------
     def serve_snapshot(self, t, rgb, obs):

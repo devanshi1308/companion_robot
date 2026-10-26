@@ -12,5 +12,5 @@ yourdfpy
 mediapipe>=1.1
 
 # optional: Momo, the agent with feelings (src/agent). Without a model key it runs on offline wording.
-strands-agents[anthropic]>=1.0
+strands-agents[anthropic,ollama]>=1.0
 sounddevice>=0.4   # optional: play the siren in a live demo (--sound)
