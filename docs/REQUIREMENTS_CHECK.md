@@ -68,8 +68,8 @@ Source: "Final PBL Titles, MuJoCo Simulation Blueprints, Business Systems ROI & 
 | COPE: every data point, chart and error bar must come from MuJoCo CSV telemetry in the Git repository | Rule: outputs/ is git-ignored, so the telemetry CSVs the paper cites must be committed (a trimmed set) before submission |
 | COPE: citations must be authentic (Hendrich JONA, Tinetti NEJM, AHA ECC) | Open: our check found Tinetti 1993 is in JAMA, not NEJM; Hendrich and AHA/ERC entries still to verify with real DOIs |
 | Viva: each student modifies MJCF parameters and re-runs the controller live | Prepare: build_robot_mjcf.py / robot_spec.py constants, run_demo.py |
-| Economics: long lie slashes stay 18.4 to 4.2 days (the roster table says "14 days"); robot cost under 3 months of an attendant; return inside the first calendar quarter; GDS peace of mind | Model built, dimensionless. Payback was 3.75 months in the small-robot run, which is MORE than a quarter: report honestly. GDS cannot be simulated: name it as a future measurement |
-| Sheet cites decay of 7-10 percent per minute | Our lambda 0.0031/s is about 17 percent per minute: change lambda or wording before submission |
+| Economics: long lie slashes stay 18.4 to 4.2 days (the roster table's "14 days" is the difference, 18.4 minus 4.2 = 14.2); robot cost under 3 months of an attendant; return inside the first calendar quarter; GDS peace of mind | Model built, dimensionless. Payback was 3.75 months in the small-robot run, which is MORE than a quarter: report honestly. GDS cannot be simulated: name it as a future measurement |
+| Sheet cites decay of 7-10 percent per minute | No decay constant is used in any code or result (checked 2026-10-26); the paper only says survival falls with each minute of delay. If a constant is ever added, use 7-10 percent per minute (about 0.0012 to 0.0018 per second) |
 | Venues: IndiaHCI (https://www.indiahci.org/), IEEE RO-MAN (https://ro-man2026.org/, CORE B); faculty mentor listed as co-author | Paper pending; add mentor as co-author |
 
 ### Robot vs the guide: measured on the final robot (tests/test_robot.py)

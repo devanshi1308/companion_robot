@@ -11,7 +11,7 @@ Title (authorised, unchanged): How can a vision-based mobile companion robot in 
 See `docs/REQUIREMENTS_CHECK.md` (final title sheet table, robot-vs-guide measurements, bubble-vs-door note).
 
 ## Honest limitations
-Scripted motions, adult body; 8/120 robot trials ended lost; one cardiac fall landed on the robot; sofa false alarms (5/20) at alarm level; cardiac prodrome cues false-flag 49% (not used for alerting); payback 3.75 months is longer than the brief's "first quarter"; the 0.50 m bubble cannot hold in 0.85 m doors (speed rule instead, needs sir's confirmation); GDS cannot be simulated; the sheet's 7-10 percent per minute decay differs from our lambda (about 17 percent per minute).
+Scripted motions, adult body; 8/120 robot trials ended lost; one cardiac fall landed on the robot; sofa false alarms (5/20) at alarm level; cardiac prodrome cues false-flag 49% (not used for alerting); payback 3.75 months is longer than the brief's "first quarter"; the 0.50 m bubble cannot hold in 0.85 m doors (speed rule instead, needs sir's confirmation); GDS cannot be simulated; no survival-decay constant is used anywhere (the sheet's 7-10 percent per minute is only quoted as context).
 
 ## Demo-only extras (outside the authorised scope, in no metric)
 Momo agent, family platform with login and chat, siren, medicine reminder, wide camera.
