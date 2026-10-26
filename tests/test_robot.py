@@ -64,9 +64,9 @@ def test_spin_in_place():
 
 
 def test_emergency_braking_without_tipping():
-    for mu in (0.40, 0.68):
+    for mu, vcmd in ((0.40, S.V_MAX), (0.68, S.V_MAX), (0.68, 0.80), (0.40, 0.80)):   # cruise speed and the manual's 0.80 m/s ceiling
         m, d, r = _robot(mu)
-        _run(m, d, r, 3.0, lambda t: r.set_drive(S.V_MAX, 0.0))
+        _run(m, d, r, 4.0, lambda t: r.set_drive(vcmd, 0.0))
         v0, x0 = r.true_velocity()[0], r.true_pose()[0]
         pitch_max, t_stop = 0.0, None
         for k in range(int(2.0 / m.opt.timestep)):
@@ -79,7 +79,7 @@ def test_emergency_braking_without_tipping():
                 t_stop = (k + 1) * m.opt.timestep
         dist = r.true_pose()[0] - x0
         decel = v0 / t_stop
-        print(f"  mu={mu:.2f}: from {v0:.2f} m/s, stopped in {t_stop:.2f} s over {dist * 100:.1f} cm, mean decel {decel:.2f} m/s2, max pitch {pitch_max:.1f} deg")
+        print(f"  mu={mu:.2f}: cmd {vcmd:.2f}, from {v0:.2f} m/s, stopped in {t_stop:.2f} s over {dist * 100:.1f} cm, mean decel {decel:.2f} m/s2, max pitch {pitch_max:.1f} deg")
         assert decel >= S.A_EMERGENCY, "standards manual: emergency braking >= 1.5 m/s2"
         assert pitch_max < 10.0, "must not tip"
 

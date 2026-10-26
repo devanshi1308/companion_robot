@@ -583,7 +583,8 @@ class Companion:
         when the robot turns), full speed in open floor."""
         i, j = self.grid.to_cell(est[0], est[1])
         c = float(self.grid.clear[min(max(i, 0), self.grid.nx - 1), min(max(j, 0), self.grid.ny - 1)])
-        return 0.15 + 2.0 * max(c - S.CHASSIS_R, 0.0)
+        v = 0.15 + 2.0 * max(c - S.CHASSIS_R, 0.0)
+        return min(v, S.BUBBLE_V) if c < S.BUBBLE else v
 
     def free_for_creep(self, est, dist):
         """Is the spot `dist` metres ahead (+) or behind (-) the robot clear of mapped obstacles for the robot's full footprint? The range sensor alone misses

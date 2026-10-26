@@ -50,3 +50,30 @@ after the test run, without changing the physics; until then outputs/robot_look_
 2. Add velocity columns (vx, vy, vz) to telemetry.
 3. Decide on the sofa false-alarm fix after seeing the new numbers.
 4. Fill the dossier (Word template from the course pack), export the PDF, record the LinkedIn video, commit from each member's own account.
+
+## Final title sheet (final title.pdf, MDRIIA 2026-27): what it adds and where we stand
+
+Source: "Final PBL Titles, MuJoCo Simulation Blueprints, Business Systems ROI & Robotics Conference Directory". Group 02 page restates the authorised title (unchanged), the N = 120 falls plus ADLs, the three rejection pitfalls and the MuJoCo telemetry list. New or stricter points, and status:
+
+| Requirement in the sheet | Status |
+|---|---|
+| Title in Aalborg-UNESCO form (stakeholder + MuJoCo mechanism + measurable metric); never altered | Done (title unchanged everywhere) |
+| Technical mechanism: mast pan-tilt camera, MediaPipe fall kinematics, mobile chassis, domestic clutter | Done (guide robot: 1.10 m mast, pan-tilt, 0.44 x 0.34 m chassis, cluttered flat) |
+| Rapid autonomous navigation to the fallen person; bounding-box / skeletal aspect-ratio velocity thresholding (MediaPipe/OpenCV); automated local dispatch to EMS and caregivers | Built (A* + pure pursuit, aspect ratio and its rise rate, simulated dispatch). Numbers for the guide robot are not final |
+| MJCF kinematic tree with friction, limits, actuators; closed loop with disturbance injection and state estimation | Done |
+| Telemetry: time, X/Y/Z and orientation, velocities, collision forces, control signals | Mostly: velocity columns vx, vy, vz still to add |
+| N = 120 falls and ADLs; precision, recall, F1, latency to SOS | Harness built; the 120-trial run on the guide robot is NOT done. Only the archived small-robot run is complete |
+| Pitfall: abrupt low-sofa sitting; edge inference, no cloud streaming; mobility constraints | Sofa sit included (2 to 3 of 20 sofa sits still raised a heads-up text in the small-robot run); privacy: 0 bytes off-board before an alert; mobility: friction, climb limit, doors, collisions modelled |
+| Manuscript: 4 pages, standard-error bars, p-values, CSBS ROI model | NOT written |
+| COPE: every data point, chart and error bar must come from MuJoCo CSV telemetry in the Git repository | Rule: outputs/ is git-ignored, so the telemetry CSVs the paper cites must be committed (a trimmed set) before submission |
+| COPE: citations must be authentic (Hendrich JONA, Tinetti NEJM, AHA ECC) | Open: our check found Tinetti 1993 is in JAMA, not NEJM; Hendrich and AHA/ERC entries still to verify with real DOIs |
+| Viva: each student modifies MJCF parameters and re-runs the controller live | Prepare: build_robot_mjcf.py / robot_spec.py constants, run_demo.py |
+| Economics: long lie slashes stay 18.4 to 4.2 days (the roster table says "14 days"); robot cost under 3 months of an attendant; return inside the first calendar quarter; GDS peace of mind | Model built, dimensionless. Payback was 3.75 months in the small-robot run, which is MORE than a quarter: report honestly. GDS cannot be simulated: name it as a future measurement |
+| Sheet cites decay of 7-10 percent per minute | Our lambda 0.0031/s is about 17 percent per minute: change lambda or wording before submission |
+| Venues: IndiaHCI (https://www.indiahci.org/), IEEE RO-MAN (https://ro-man2026.org/, CORE B); faculty mentor listed as co-author | Paper pending; add mentor as co-author |
+
+### Robot vs the guide: measured on the final robot (tests/test_robot.py)
+- Mass 16.5 kg, CoM 0.228 m, tip-over limit 7.76 m/s2 (guide 7.64), slip limit 3.92 m/s2 at mu 0.40.
+- Cruise 0.50 m/s (guide); manual ceiling 0.80 m/s respected (max commanded 0.75 in dev).
+- Emergency braking (manual: >= 1.5 m/s2, no tipping): from 0.50 m/s 2.45 (mu 0.40) and 3.18 (mu 0.68); from 0.79 m/s 2.43 and 3.30; max pitch 0.1 deg.
+- Clearance bubble 0.50 m vs doors 0.85/0.90 m: the robot is 0.42 m wide over the wheels (0.215 m each side in a 0.85 m door), so a 0.50 m bubble cannot be kept in a doorway. Implemented as a speed rule (robot_spec.BUBBLE, BUBBLE_V: 0.20 m/s inside the bubble), hard planning margin 0.045 m beyond the 0.304 m footprint. Still needs sir's confirmation; state this in the paper.

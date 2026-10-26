@@ -25,6 +25,8 @@ TILT_WIDE_DEG = (-75.0, 70.0)                                  # 'wide view' opt
 
 V_MAX = 0.50           # m/s cruise (guide); standards manual limit is 0.80 m/s
 A_COMFORT = 1.00       # m/s2 normal braking (guide: the controller clamps braking to 1.00 m/s2)
+BUBBLE = 0.50          # m: standards-manual clearance bubble; doors are 0.85-0.90 m (half 0.43), so inside the bubble the robot only SLOWS (BUBBLE_V), see docs/REQUIREMENTS_CHECK.md
+BUBBLE_V = 0.20        # m/s: speed cap while closer than BUBBLE to a mapped obstacle (doorways, furniture)
 A_EMERGENCY = 1.50     # m/s2 emergency braking required by the standards manual
 STANDOFF = 1.00        # m from the person (guide: 0.80 to 1.20 m)
 CHASSIS_R = ((DECK_L / 2) ** 2 + (TRACK / 2 + WHEEL_T / 2) ** 2) ** 0.5   # m: footprint radius (chassis front corner / outer wheel), about 0.30
