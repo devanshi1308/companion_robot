@@ -50,9 +50,9 @@ def robot_body(x, y, yaw_deg, ind=2):
     a(f'{pad}  <freejoint name="robot_free"/>')
     a(f'{pad}  <site name="base_link" pos="0 0 0" size="0.004" rgba="0 0 1 0.5" group="5"/>')
     a(f'{pad}  <geom name="deck" type="box" size="{f(S.DECK_L / 2, S.DECK_W / 2, S.DECK_T / 2)}" pos="{f(0, 0, z(S.DECK_Z0 + S.DECK_T / 2))}" '
-      f'rgba="0.29 0.31 0.35 1" mass="{S.MASS["deck"]}" friction="0.3 0.005 0.0001"/>')
+      f'rgba="0.95 0.42 0.08 1" mass="{S.MASS["deck"]}" friction="0.3 0.005 0.0001"/>')
     a(f'{pad}  <geom name="pedestal" type="cylinder" size="0.02 {S.PED_H / 2}" pos="{f(0, 0, z(S.DECK_Z0 + S.DECK_T + S.PED_H / 2))}" '
-      f'rgba="0.29 0.31 0.35 1" mass="{S.MASS["pedestal"]}"/>')                     # the 1.10 m mast tube (it does collide: tables and shelves are overhead obstacles)
+      f'rgba="0.95 0.42 0.08 1" mass="{S.MASS["pedestal"]}"/>')                     # the 1.10 m mast tube (it does collide: tables and shelves are overhead obstacles)
     a(f'{pad}  <geom name="status_led" type="box" size="0.002 0.12 0.004" pos="{f(S.DECK_L / 2 + 0.001, 0, z(S.DECK_Z0 + S.DECK_T - 0.02))}" '
       f'rgba="0.2 0.9 0.4 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sx in (("caster_front", 1), ("caster_back", -1)):
