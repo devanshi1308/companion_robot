@@ -78,15 +78,17 @@ def robot_body(x, y, yaw_deg, ind=2):
     a(f'{pad}  <geom name="status_led" type="capsule" size="0.007 0.03" pos="{f(0.150, 0, z(0.70))}" euler="90 0 0" rgba="0.2 0.9 0.4 1" contype="0" conaffinity="0" mass="0"/>')
     # ---- look: a soft white shell (visual only: no collision, no mass) so the guide's mass, centre of mass and braking numbers stay valid -----------
     W = "0.96 0.95 0.93 1"
-    a(f'{pad}  <geom name="shell_base" type="ellipsoid" size="0.235 0.215 0.085" pos="{f(0, 0, z(0.125))}" rgba="0.16 0.17 0.19 1" contype="0" conaffinity="0" mass="0"/>')
+    T = "0.36 0.64 0.68 1"                       # teal for the arms
+    a(f'{pad}  <geom name="shell_base" type="ellipsoid" size="0.19 0.15 0.05" pos="{f(0, 0, z(0.095))}" rgba="0.16 0.17 0.19 1" contype="0" conaffinity="0" mass="0"/>')
+    a(f'{pad}  <geom name="shell_bumper" type="ellipsoid" size="0.238 0.218 0.012" pos="{f(0, 0, z(0.118))}" rgba="0.95 0.52 0.42 1" contype="0" conaffinity="0" mass="0"/>')   # coral hem strip
     a(f'{pad}  <geom name="shell_body" type="mesh" mesh="shell_body" pos="0 0 {z(0.0):.5g}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}  <geom name="shell_neck" type="cylinder" size="0.07 0.06" pos="{f(-0.03, 0, z(0.985))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}  <geom name="shell_slot" type="capsule" size="0.011 0.075" pos="{f(0.224, 0, z(0.30))}" euler="90 0 0" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}  <geom name="shell_grille" type="box" size="0.003 0.07 0.012" pos="{f(-0.268, 0, z(0.30))}" rgba="0.55 0.55 0.58 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sy in (("l", 1), ("r", -1)):
         # the arm hangs from a shoulder ball that sits on the body surface (body radius 0.15 at 0.82 m) and ends in the palm: no gaps
-        a(f'{pad}  <geom name="shell_shoulder_{nm}" type="sphere" size="0.062" pos="{f(-0.03, sy * 0.15, z(0.83))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
-        a(f'{pad}  <geom name="shell_arm_{nm}" type="capsule" size="0.056" fromto="{f(-0.03, sy * 0.15, z(0.83), -0.03, sy * 0.292, z(0.50))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}  <geom name="shell_shoulder_{nm}" type="sphere" size="0.062" pos="{f(-0.03, sy * 0.15, z(0.83))}" rgba="{T}" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}  <geom name="shell_arm_{nm}" type="capsule" size="0.056" fromto="{f(-0.03, sy * 0.15, z(0.83), -0.03, sy * 0.292, z(0.50))}" rgba="{T}" contype="0" conaffinity="0" mass="0"/>')
         hy = sy * 0.298
         a(f'{pad}  <geom name="shell_palm_{nm}" type="ellipsoid" size="0.04 0.034 0.05" pos="{f(-0.03, hy, z(0.46))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
         for k, fx in enumerate((-0.022, 0.0, 0.022)):
@@ -99,7 +101,7 @@ def robot_body(x, y, yaw_deg, ind=2):
         a(f'{pad}  <body name="wheel_{nm}" pos="{f(0, sy * S.TRACK / 2, 0)}">')
         a(f'{pad}    <joint name="wheel_{nm}" type="hinge" axis="0 1 0" damping="0.05" armature="0.02"/>')
         a(f'{pad}    <geom name="wheel_{nm}_geom" type="cylinder" size="{S.WHEEL_R} {S.WHEEL_T / 2}" euler="90 0 0" rgba="0.1 0.1 0.12 1" mass="{S.MASS["wheels"] / 2}"/>')
-        a(f'{pad}    <geom name="wheel_{nm}_hub" type="cylinder" size="0.012 {S.WHEEL_T / 2 + 0.0005}" euler="90 0 0" rgba="0.2 0.8 0.4 1" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}    <geom name="wheel_{nm}_hub" type="cylinder" size="0.02 {S.WHEEL_T / 2 + 0.0005}" euler="90 0 0" rgba="0.95 0.52 0.42 1" contype="0" conaffinity="0" mass="0"/>')
         a(f'{pad}  </body>')
     a(f'{pad}  <body name="robot_neck" pos="{f(0, 0, z(S.NECK_Z))}">')
     a(f'{pad}    <joint name="neck_pan" type="hinge" axis="0 0 1" range="{f(*S.PAN_RANGE_DEG)}" damping="0.3" armature="0.005"/>')
@@ -112,7 +114,8 @@ def robot_body(x, y, yaw_deg, ind=2):
     a(f'{pad}      <geom name="power_button" type="box" size="0.004 0.012 0.016" pos="{f(-0.12, 0, -0.06)}" rgba="0.85 0.1 0.1 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sy in (("l", 1), ("r", -1)):
         a(f'{pad}      <geom name="shell_mouth_{nm}" type="box" size="0.0012 0.036 0.0016" pos="{f(0.1575, sy * 0.035, 0.04)}" euler="0 0 {sy * 6.5}" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
-        a(f'{pad}      <geom name="ear_pod_{nm}" type="cylinder" size="0.045 0.007" pos="{f(0, sy * 0.198, 0.04)}" euler="90 0 0" rgba="0.36 0.64 0.68 1" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}      <geom name="blush_{nm}" type="ellipsoid" size="0.003 0.024 0.013" pos="{f(0.121, sy * 0.12, 0.0)}" euler="0 0 {sy * 35}" rgba="1 0.62 0.62 1" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}      <geom name="ear_pod_{nm}" type="cylinder" size="0.045 0.007" pos="{f(0, sy * 0.198, 0.04)}" euler="90 0 0" rgba="0.95 0.52 0.42 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sy in (("l", 1), ("r", -1)):
         a(f'{pad}      <geom name="eye_{nm}" type="ellipsoid" size="0.003 0.02 0.02" pos="{f(0.150, sy * 0.075, 0.04)}" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
         a(f'{pad}      <geom name="brow_{nm}" type="box" size="0.0012 0.022 0.0025" pos="{f(0.1475, sy * 0.075, 0.074)}" euler="{sy * 18} 0 0" rgba="1 0.69 0 0" contype="0" conaffinity="0" mass="0"/>')
