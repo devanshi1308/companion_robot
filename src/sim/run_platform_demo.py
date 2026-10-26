@@ -102,6 +102,7 @@ def main():
             from speech import Speaker
             spk = Speaker()
             comp.on_speech = lambda text, loud=False: spk.say(text, urgent=loud)
+            comp.introduce(t)                                   # Baymax says who he is before anything else happens
         if a.sound:
             on = comp.siren is not None and comp.siren["t_off"] is None
             if on and not siren_on[0]:
