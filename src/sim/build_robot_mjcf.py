@@ -72,17 +72,16 @@ def robot_body(x, y, yaw_deg, ind=2):
     a(f'{pad}  <freejoint name="robot_free"/>')
     a(f'{pad}  <site name="base_link" pos="0 0 0" size="0.004" rgba="0 0 1 0.5" group="5"/>')
     a(f'{pad}  <geom name="deck" type="box" size="{f(S.DECK_L / 2, S.DECK_W / 2, S.DECK_T / 2)}" pos="{f(0, 0, z(S.DECK_Z0 + S.DECK_T / 2))}" '
-      f'rgba="0.93 0.93 0.94 1" mass="{S.MASS["deck"]}" friction="0.3 0.005 0.0001"/>')
+      f'rgba="0.16 0.17 0.19 1" mass="{S.MASS["deck"]}" friction="0.3 0.005 0.0001"/>')
     a(f'{pad}  <geom name="pedestal" type="cylinder" size="0.02 {S.PED_H / 2}" pos="{f(0, 0, z(S.DECK_Z0 + S.DECK_T + S.PED_H / 2))}" '
-      f'rgba="0.93 0.93 0.94 1" mass="{S.MASS["pedestal"]}"/>')                     # the 1.10 m mast tube (it does collide: tables and shelves are overhead obstacles)
-    a(f'{pad}  <geom name="status_led" type="box" size="0.002 0.12 0.004" pos="{f(S.DECK_L / 2 + 0.001, 0, z(S.DECK_Z0 + S.DECK_T - 0.02))}" '
-      f'rgba="0.2 0.9 0.4 1" contype="0" conaffinity="0" mass="0"/>')
+      f'rgba="0.96 0.95 0.93 1" mass="{S.MASS["pedestal"]}"/>')                     # the 1.10 m mast tube (it does collide: tables and shelves are overhead obstacles)
+    a(f'{pad}  <geom name="status_led" type="capsule" size="0.007 0.03" pos="{f(0.150, 0, z(0.70))}" euler="90 0 0" rgba="0.2 0.9 0.4 1" contype="0" conaffinity="0" mass="0"/>')
     # ---- look: a soft white shell (visual only: no collision, no mass) so the guide's mass, centre of mass and braking numbers stay valid -----------
-    W = "0.93 0.93 0.94 1"
+    W = "0.96 0.95 0.93 1"
     a(f'{pad}  <geom name="shell_body" type="mesh" mesh="shell_body" pos="0 0 {z(0.0):.5g}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}  <geom name="shell_neck" type="cylinder" size="0.07 0.06" pos="{f(-0.03, 0, z(0.985))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
-    a(f'{pad}  <geom name="shell_slot" type="capsule" size="0.011 0.075" pos="{f(0.248, 0, z(0.36))}" euler="90 0 0" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
-    a(f'{pad}  <geom name="shell_grille" type="box" size="0.003 0.07 0.012" pos="{f(-0.27, 0, z(0.36))}" rgba="0.55 0.55 0.58 1" contype="0" conaffinity="0" mass="0"/>')
+    a(f'{pad}  <geom name="shell_slot" type="capsule" size="0.011 0.075" pos="{f(0.224, 0, z(0.30))}" euler="90 0 0" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
+    a(f'{pad}  <geom name="shell_grille" type="box" size="0.003 0.07 0.012" pos="{f(-0.268, 0, z(0.30))}" rgba="0.55 0.55 0.58 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sy in (("l", 1), ("r", -1)):
         # the arm hangs from a shoulder ball that sits on the body surface (body radius 0.15 at 0.82 m) and ends in the palm: no gaps
         a(f'{pad}  <geom name="shell_shoulder_{nm}" type="sphere" size="0.062" pos="{f(-0.03, sy * 0.15, z(0.83))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
@@ -106,14 +105,16 @@ def robot_body(x, y, yaw_deg, ind=2):
     a(f'{pad}    <geom name="neck_geom" type="cylinder" size="0.02 0.008" pos="0 0 0.008" rgba="0.2 0.22 0.25 1" mass="{S.MASS["neck"]}" contype="0" conaffinity="0"/>')
     a(f'{pad}    <body name="robot_head" pos="{f(0, 0, S.TILT_Z - S.NECK_Z)}">')
     a(f'{pad}      <joint name="head_tilt" type="hinge" axis="0 -1 0" range="{f(*S.TILT_WIDE_DEG)}" damping="0.3" armature="0.005"/>')
-    a(f'{pad}      <geom name="head_geom" type="box" size="{f(S.HEAD_D / 2, S.HEAD_W / 2, S.HEAD_H / 2)}" pos="0 0 0.04" rgba="0.93 0.93 0.94 1" mass="{S.MASS["head"]}"/>')
-    a(f'{pad}      <geom name="shell_head" type="ellipsoid" size="{f(*S.HEAD_SHELL)}" pos="{f(0, 0, 0.04)}" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>')
+    a(f'{pad}      <geom name="head_geom" type="box" size="{f(S.HEAD_D / 2, S.HEAD_W / 2, S.HEAD_H / 2)}" pos="0 0 0.04" rgba="0.96 0.95 0.93 1" mass="{S.MASS["head"]}"/>')
+    a(f'{pad}      <geom name="shell_head" type="ellipsoid" size="{f(*S.HEAD_SHELL)}" pos="{f(0, 0, 0.04)}" rgba="0.96 0.95 0.93 1" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}      <geom name="neck_ring" type="cylinder" size="0.085 0.004" pos="{f(0, 0, -0.095)}" rgba="0.5 0.5 0.53 1" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}      <geom name="power_button" type="box" size="0.004 0.012 0.016" pos="{f(-0.12, 0, -0.06)}" rgba="0.85 0.1 0.1 1" contype="0" conaffinity="0" mass="0"/>')
-    a(f'{pad}      <geom name="shell_mouth_line" type="box" size="0.0012 0.07 0.0016" pos="{f(0.1475, 0, 0.04)}" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sy in (("l", 1), ("r", -1)):
-        a(f'{pad}      <geom name="eye_{nm}" type="ellipsoid" size="0.003 0.02 0.02" pos="{f(0.1405, sy * 0.075, 0.04)}" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
-        a(f'{pad}      <geom name="brow_{nm}" type="box" size="0.0012 0.022 0.0025" pos="{f(0.139, sy * 0.075, 0.074)}" euler="{sy * 18} 0 0" rgba="1 0.69 0 0" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}      <geom name="shell_mouth_{nm}" type="box" size="0.0012 0.036 0.0016" pos="{f(0.1575, sy * 0.035, 0.04)}" euler="0 0 {sy * 6.5}" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}      <geom name="ear_pod_{nm}" type="cylinder" size="0.045 0.007" pos="{f(0, sy * 0.198, 0.04)}" euler="90 0 0" rgba="0.36 0.64 0.68 1" contype="0" conaffinity="0" mass="0"/>')
+    for nm, sy in (("l", 1), ("r", -1)):
+        a(f'{pad}      <geom name="eye_{nm}" type="ellipsoid" size="0.003 0.02 0.02" pos="{f(0.150, sy * 0.075, 0.04)}" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}      <geom name="brow_{nm}" type="box" size="0.0012 0.022 0.0025" pos="{f(0.1475, sy * 0.075, 0.074)}" euler="{sy * 18} 0 0" rgba="1 0.69 0 0" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}      <geom name="mic_array" type="box" size="0.012 0.02 0.001" pos="{f(-0.01, 0, 0.04 + S.HEAD_H / 2 + 0.001)}" rgba="0.1 0.1 0.1 1" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}      <camera name="robot_cam" pos="{f(S.CAM_X, 0, cam_z)}" xyaxes="0 -1 0 0 0 1" fovy="{S.FOVY}"/>')
     a(f'{pad}      <site name="camera_optical_frame" pos="{f(S.CAM_X, 0, cam_z)}" size="0.003" rgba="1 0 0 0.6" group="5"/>')
@@ -158,7 +159,7 @@ def build():
     scene = scene.replace('<mujoco model="apartment_with_human">', '<mujoco model="apartment_full">', 1)
     vv, ff = bell_mesh()
     assert "<asset>" in scene
-    scene = scene.replace("<asset>", f'<asset>\n    <mesh name="shell_body" vertex="{vv}" face="{ff}"/>', 1)
+    scene = scene.replace("<asset>", f'<asset>\n    <mesh name="shell_body" smoothnormal="true" vertex="{vv}" face="{ff}"/>', 1)
     assert scene.rstrip().endswith("</mujoco>")
     scene = scene.rstrip()[: -len("</mujoco>")] + ACTUATORS_AND_SENSORS + "</mujoco>\n"
     with open(SCENE_OUT, "w") as fh:
@@ -169,7 +170,7 @@ def build():
   <compiler angle="degree" inertiafromgeom="true"/>
   <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast"/>
   <asset>
-    <mesh name="shell_body" vertex="{bell_mesh()[0]}" face="{bell_mesh()[1]}"/>
+    <mesh name="shell_body" smoothnormal="true" vertex="{bell_mesh()[0]}" face="{bell_mesh()[1]}"/>
   </asset>
   <worldbody>
     <geom name="floor" type="plane" size="10 10 0.1" friction="0.5 0.005 0.0001" priority="1" rgba="0.8 0.75 0.7 1"/>
