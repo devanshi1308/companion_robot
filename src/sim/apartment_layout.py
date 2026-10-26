@@ -63,7 +63,7 @@ VACUUM_LOOP = np.array([[-3.0, 1.6], [-1.7, 1.6], [-1.7, 2.2], [-3.0, 2.2]])   #
 VACUUM_SPEED = 0.25                   # m/s
 
 # --- robot dock (charging pad); the robot starts here: x, y, yaw in degrees (0 = facing +x) ---------------
-ROBOT_DOCK = (-1.05, -1.10, 180.0)            # 'watch' scenario: waits here and sees the fall side-on
+ROBOT_DOCK = (-1.85, -1.35, 180.0)            # 'watch' scenario: waits here and sees the fall side-on
 ROBOT_START_FOLLOW = (2.9, 0.0, 160.0)       # 'follow' scenario: starts in the bedroom with her and follows her through the flat
 
 # --- named places (sites in the model; the robot's patrol and the fall scenarios use them) ------

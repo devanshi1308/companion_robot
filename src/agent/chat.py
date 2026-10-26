@@ -1,9 +1,9 @@
 """
-Chatting with Momo: a signed-in family member types a message, Momo answers from what the robot actually knows and can act on a request.
+Chatting with Baymax: a signed-in family member types a message, Baymax answers from what the robot actually knows and can act on a request.
 
     reply, actions = answer("has she taken her tablet?", facts)      # facts = the state the family page shows (publisher.build_facts)
 
-Answers are built from the facts (never invented). If the Strands agent has a model, the SAME answer is then re-worded in Momo's current feelings, and
+Answers are built from the facts (never invented). If the Strands agent has a model, the SAME answer is then re-worded in Baymax's current feelings, and
 the re-worded text must still contain every number and time of the factual answer (otherwise the factual answer is used).
 Requests that change what the robot does come back as `actions` (dicts like the platform commands) and are applied by the simulation; the robot refuses
 them when it is busy with a fall or an emergency. It never places a call on request: emergency calls are automatic after an unanswered collapse.
@@ -105,5 +105,5 @@ def answer(text, f):
             base += f" She took her tablet at {ds[-1]['clock_taken']}."
         return base, actions
     if re.search(r"^(hi|hello|hey|good (morning|evening|afternoon))", t):
-        return f"Hello. I am Momo. {al.get('title', 'All well')}. Ask me how {p} is.", actions
+        return f"Hello. I am Baymax. {al.get('title', 'All well')}. Ask me how {p} is.", actions
     return FALLBACK + " " + HELP, actions

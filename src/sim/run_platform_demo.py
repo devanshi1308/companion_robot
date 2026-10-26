@@ -3,13 +3,13 @@ Live demo of the family platform: the simulation runs (about real time) and writ
 
     MUJOCO_GL=glfw python src/sim/run_platform_demo.py --scenario medicine     then open http://127.0.0.1:8765 and sign in
     MUJOCO_GL=glfw python src/sim/run_platform_demo.py --scenario cardiac --sound
-    options: --agent (Momo as a Strands agent; uses ANTHROPIC_API_KEY / OLLAMA_HOST / AWS credentials if present, else offline wording)
+    options: --agent (Baymax as a Strands agent; uses ANTHROPIC_API_KEY / OLLAMA_HOST / AWS credentials if present, else offline wording)
              --consent (she agrees to face-blurred snapshots)   --pace 1.0 (simulated seconds per wall second, 0 = as fast as possible)
              --no-serve (write the feed only; start src/family_platform/server.py yourself)
 
 Scenarios (DEMO ONLY, not part of the measured experiment set):
-    medicine  she sits on the sofa; at 08:00 Momo reminds her, she says OK, and takes the tablet (hand to mouth): the family page shows 'taken, seen'
-    cardiac   she walks, slows, presses a hand to her chest, hunches, collapses and does not answer: heads-up, emergency, the SIREN and Momo's call for help
+    medicine  she sits on the sofa; at 08:00 Baymax reminds her, she says OK, and takes the tablet (hand to mouth): the family page shows 'taken, seen'
+    cardiac   she walks, slows, presses a hand to her chest, hunches, collapses and does not answer: heads-up, emergency, the SIREN and Baymax's call for help
     fall      a plain trip that she answers (check-in, all clear)
 Try on the page: talk to her, remind now, check on her, camera up / down, ask for a picture, silence the siren.
 """
@@ -72,7 +72,7 @@ def main():
     ctx = TS.TrialContext(spec, clip, [], start)
     feed = FamilyFeed(a.dir, reset=True)
     voice = CompanionAgent("Asha") if a.agent else PlainVoice()
-    print("Momo's voice:", getattr(voice, "mode", "plain wording"), flush=True)
+    print("Baymax's voice:", getattr(voice, "mode", "plain wording"), flush=True)
     if a.scenario == "medicine":
         t_seat = clip.meta["t_event"] + 3.0
         reminder_at = t_seat + 3.0

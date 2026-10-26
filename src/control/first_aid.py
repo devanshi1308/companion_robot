@@ -6,8 +6,9 @@ Circulation 2020, doi 10.1161/CIR.0000000000000916); the 'do not get up quickly'
 no real call is placed. These texts should be reviewed by a clinician before any real use.
 """
 
-CONSCIOUS_CHECK = ("Please stay where you are and do not try to get up quickly. Tell me if anything hurts, especially your chest, head, neck, hip or back.")
-CONSCIOUS_OK = ("Stay still for a moment and breathe slowly. If nothing hurts, roll to your side, rest on your hands and knees, "
+CONSCIOUS_CHECK = ("Please stay where you are and do not try to get up quickly. I am scanning you now. Tell me if anything hurts, especially your chest, head, neck, hip or back. "
+                   "On a scale of one to ten, how would you rate your pain?")
+CONSCIOUS_OK = ("Your voice sounds steady. I am glad you are well. Stay still for a moment and breathe slowly. If nothing hurts, roll to your side, rest on your hands and knees, "
                 "and get up slowly using a sturdy chair. If anything hurts, stay down and tell me, and I will get help.")
 BYSTANDER = ("Someone please help. She is not answering. Call 108 now. Check if she is breathing normally. "
              "If she is not breathing normally, start chest compressions: push hard and fast in the centre of her chest, "

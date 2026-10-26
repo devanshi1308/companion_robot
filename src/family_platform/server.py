@@ -1,11 +1,11 @@
 """
-Family platform: a small web page where signed-in family members see how she is, chat with Momo (the companion robot) and ask it to do things.
+Family platform: a small web page where signed-in family members see how she is, chat with Baymax (the companion robot) and ask it to do things.
 
     python src/family_platform/server.py            then open http://127.0.0.1:8765 and sign in (start a simulation that writes the feed, see run_platform_demo.py)
     demo accounts: rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo      (src/family_platform/auth.py)
 
 What you can do after signing in: read how she is (room, what she is doing, last seen, tablet taken or not and whether the robot SAW it, alerts, the siren), read
-the messages Momo sent YOU, chat with Momo (ask questions, ask it to remind her, check on her, tell her something, look up or down, send a picture, silence the
+the messages Baymax sent YOU, chat with Baymax (ask questions, ask it to remind her, check on her, tell her something, look up or down, send a picture, silence the
 siren). Privacy: nothing works without signing in; each person sees only their own chat and the texts sent to them; there is no video stream; pictures only if
 she agreed, face blurred; the server listens on this computer only. Standard library only. Demo-grade security (no HTTPS): do not expose it to a network.
 """
