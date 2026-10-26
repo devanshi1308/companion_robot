@@ -27,6 +27,7 @@ from dispatch import blur_face, clock  # noqa: E402
 from localization import Localizer  # noqa: E402
 from first_aid import CONSCIOUS_CHECK, CONSCIOUS_OK, BYSTANDER  # noqa: E402
 from health_knowledge import COACH  # noqa: E402
+from script import INTRO, LINES  # noqa: E402
 from navigation import PathFollower, turn_to, wrap  # noqa: E402
 from robot_interface import quat_to_yaw  # noqa: E402
 from companion_agent import PlainVoice  # noqa: E402
@@ -105,6 +106,7 @@ class Companion:
         self.t_update = None
         self.sent_heads_up = False
         self.coach_i = 0
+        self.introduced = False
         self.on_speech = None                          # set by a live demo to speak the robot's words aloud (src/agent/speech.py); experiments leave it None
         self.front_range = LIDAR_RANGE
         self.front_unknown = self.front_known = LIDAR_RANGE
@@ -176,6 +178,12 @@ class Companion:
         if self.on_speech is not None:
             self.on_speech(text, loud)
         return text
+
+    def introduce(self, t):
+        """Baymax introduces himself once (a live demo calls this when the voice is on)."""
+        if not self.introduced:
+            self.introduced = True
+            self.speak_fixed(t, "introduction", INTRO)
 
     def go(self, t, state, mood=None, text=None):
         self.state, self.t_state = state, t
@@ -734,7 +742,7 @@ class Companion:
         self.go(t, "CHECK_IN", "worried", "Are you okay?")
         self.checkin_started_t = t
         self.feel(t, "checking_in")
-        self.utter(t, "check_in", {}, "I am Baymax, your personal healthcare companion. I noticed you are on the floor. Are you hurt?")
+        self.utter(t, "check_in", {}, LINES["check_in"])
         self.speak_fixed(t, "first_aid_stay_still", CONSCIOUS_CHECK)
         self.baseline = None                      # set once the robot has stood still for a second (see watch_for_response)
         self.still_since = None
