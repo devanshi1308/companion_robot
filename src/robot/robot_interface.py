@@ -20,21 +20,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import robot_spec as S  # noqa: E402
 
 DARK = (0.05, 0.05, 0.06)
-# Baymax-style face: two dark dots joined by a line. The expression comes from the dot size (round, wide, squinting, sleepy), the tilt of the line
-# (smile or frown, degrees at the outer ends) and the brows (colour, inner end up = worried, inner end down = alert).
-# mood: (eye colour, eye half-size (x, y, z), brow colour or None, status LED colour, mouth tilt deg (+ smile), brow tilt deg (+ inner end up))
+# Baymax-style face: two dark dots joined by a line. The expression comes from the dot size (round, wide, squinting, sleepy), and the brows
+# (colour, inner end up = worried, inner end down = alert). The line between the eyes never changes: it stays straight.
+# mood: (eye colour, eye half-size (x, y, z), brow colour or None, status LED colour, brow tilt deg (+ inner end up))
 MOODS = {
-    "watching": (DARK, (0.003, 0.02, 0.02), None, (0.2, 0.9, 0.4), 3.0, 0.0),
-    "concerned": (DARK, (0.003, 0.02, 0.023), (1.00, 0.69, 0.00), (1.0, 0.69, 0.0), -4.0, 14.0),
-    "worried": (DARK, (0.003, 0.02, 0.027), (1.00, 0.69, 0.00), (1.0, 0.69, 0.0), -12.0, 24.0),
-    "happy": (DARK, (0.003, 0.02, 0.009), None, (0.2, 0.9, 0.4), 16.0, 0.0),
-    "relieved": (DARK, (0.003, 0.02, 0.012), (0.55, 0.78, 0.55), (0.2, 0.9, 0.4), 9.0, 12.0),
-    "alert": (DARK, (0.003, 0.024, 0.03), (0.84, 0.27, 0.24), (0.84, 0.27, 0.24), -3.0, -22.0),
-    "sleepy": (DARK, (0.003, 0.02, 0.004), None, (0.2, 0.9, 0.4), 0.0, 0.0),
+    "watching": (DARK, (0.003, 0.02, 0.02), None, (0.2, 0.9, 0.4), 0.0),
+    "concerned": (DARK, (0.003, 0.02, 0.023), (1.00, 0.69, 0.00), (1.0, 0.69, 0.0), 14.0),
+    "worried": (DARK, (0.003, 0.02, 0.027), (1.00, 0.69, 0.00), (1.0, 0.69, 0.0), 24.0),
+    "happy": (DARK, (0.003, 0.02, 0.009), None, (0.2, 0.9, 0.4), 0.0),
+    "relieved": (DARK, (0.003, 0.02, 0.012), (0.55, 0.78, 0.55), (0.2, 0.9, 0.4), 12.0),
+    "alert": (DARK, (0.003, 0.024, 0.03), (0.84, 0.27, 0.24), (0.84, 0.27, 0.24), -22.0),
+    "sleepy": (DARK, (0.003, 0.02, 0.004), None, (0.2, 0.9, 0.4), 0.0),
 }
-
-
-MOUTH_YAW_DEG = 6.5      # each half of the mouth line follows the curve of the head
 
 
 def _tilt_quat(yaw_deg, roll_deg):
@@ -158,7 +155,7 @@ class RobotInterface:
         return rgb, dep
 
     def set_mood(self, mood):
-        colour, size, brow_colour, led, mouth_deg, brow_deg = MOODS[mood]
+        colour, size, brow_colour, led, brow_deg = MOODS[mood]
         for g in self.eyes:
             self.m.geom_rgba[g] = (*colour, 1.0)
             self.m.geom_size[g] = size
