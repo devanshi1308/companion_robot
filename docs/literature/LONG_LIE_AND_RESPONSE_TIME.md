@@ -38,3 +38,18 @@ here (JAMA and Europe PMC refuse automated downloads; the Tinetti 1993 paper is 
 2. Find the AHA or ERC guideline text that supports the 6-minute statement, or reword it.
 3. Find the source for 134.5 minutes (report name, year) or drop it.
 4. Remove the 78.5-minute figure from `analytics/healthcare_economics.py` unless a source is found.
+
+## 5. Verified 2026-10-26 against the sheet's two statements
+
+Checked by reading abstracts online (Crossref for DOIs, PubMed Central for the 1981 BMJ abstract):
+
+| Statement in the sheet | What the sources say | Use in the paper |
+|---|---|---|
+| "Long lie increases 6-month mortality by 50% (Tinetti et al., NEJM)" | NOT in Tinetti. Tinetti, Liu, Claus, JAMA 1993;269:65-70 (doi 10.1001/jama.1993.03500010075035) is about inability to get up. The half-died figure is from Wild, Nayak, Isaacs, "How dangerous are falls in old people at home?", BMJ 1981;282:266-268 (doi 10.1136/bmj.282.6260.266): "of those who lay on the floor for more than one hour, half died within six months of the fall" (20 people, a small cohort, mobility-impaired). The paired JECH 1981 paper (doi 10.1136/jech.35.3.200) reports fallers vs controls (32 vs 8 deaths at one year), not the 50 percent figure | Paper cites Wild BMJ 1981 for the figure and calls it a small cohort; Tinetti JAMA for inability to get up |
+| "6-minute window is the AHA/ERC standard" | AHA says each minute without CPR lowers survival by about 7-10 percent (secondary sources; the guideline text itself not read) and recommends defibrillation within 3-5 minutes (OHCA). A 6-minute irreversible-damage threshold is a common teaching figure, not a sharp cut-off. AHA 2020 adult BLS/ALS guideline: Panchal et al., Circulation 2020 (doi 10.1161/CIR.0000000000000916) | Paper cites the guideline and Nguyen 2024 (delay to CPR and survival); says "time-critical", does not claim a hard 6-minute cut-off |
+| "134.5-minute rural ambulance response" | No primary source found. Treat as the sheet's value | Stated in the paper only as a brief-supplied assumption (not a finding) |
+| "Long lie slashes hospital stay from 18.4 to 4.2 days" | No primary source found. A UK retrospective review of over-80s long lies reports about 8 days for admitted patients; evidence on length of stay is limited and causal comparisons are missing | Used only as the sheet's assumption in the dimensionless economics; flagged in the paper |
+| "Prevents rhabdomyolysis and pressure necrosis" | Plausible complications of long lies (the Sheffield Long Lies Study is investigating kidney injury); not quantified | Not claimed as a result |
+| "Robot cost under 3 months of an attendant; ROI in the first quarter; GDS" | Cost/ROI is our model (payback 3.75 months in the evaluated run, longer than a quarter); GDS cannot be simulated | Reported honestly; GDS named as future measurement |
+
+Still to do by hand: read the Tinetti 1993 and Wild 1981 full texts through the NMIMS library; confirm the AHA 7-10 percent figure in the guideline text.
