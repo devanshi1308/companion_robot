@@ -56,6 +56,7 @@ def main():
     ap.add_argument("--scenario", choices=["medicine", "cardiac", "fall"], default="medicine")
     ap.add_argument("--agent", action="store_true")
     ap.add_argument("--sound", action="store_true")
+    ap.add_argument("--voice", action="store_true", help="speak what the robot says out loud (macOS text-to-speech, offline)")
     ap.add_argument("--consent", action="store_true")
     ap.add_argument("--pace", type=float, default=1.0)
     ap.add_argument("--port", type=int, default=8765)
@@ -97,6 +98,10 @@ def main():
         if pub[0] is None:
             pub[0] = FamilyPublisher(feed, comp, agent=voice if a.agent else None, consent=a.consent)
         pub[0].tick(t, d, m)
+        if a.voice and comp.on_speech is None:
+            from speech import Speaker
+            spk = Speaker()
+            comp.on_speech = lambda text, loud=False: spk.say(text, urgent=loud)
         if a.sound:
             on = comp.siren is not None and comp.siren["t_off"] is None
             if on and not siren_on[0]:

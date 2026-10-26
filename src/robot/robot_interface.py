@@ -19,29 +19,11 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import robot_spec as S  # noqa: E402
 
-DARK = (0.05, 0.05, 0.06)
-# Baymax-style face: two dark dots joined by a line. The expression comes from the dot size (round, wide, squinting, sleepy), and the brows
-# (colour, inner end up = worried, inner end down = alert). The line between the eyes never changes: it stays straight.
-# mood: (eye colour, eye half-size (x, y, z), brow colour or None, status LED colour, brow tilt deg (+ inner end up))
-MOODS = {
-    "watching": (DARK, (0.003, 0.02, 0.02), None, (0.2, 0.9, 0.4), 0.0),
-    "concerned": (DARK, (0.003, 0.02, 0.023), (1.00, 0.69, 0.00), (1.0, 0.69, 0.0), 14.0),
-    "worried": (DARK, (0.003, 0.02, 0.027), (1.00, 0.69, 0.00), (1.0, 0.69, 0.0), 24.0),
-    "happy": (DARK, (0.003, 0.02, 0.009), None, (0.2, 0.9, 0.4), 0.0),
-    "relieved": (DARK, (0.003, 0.02, 0.012), (0.55, 0.78, 0.55), (0.2, 0.9, 0.4), 12.0),
-    "alert": (DARK, (0.003, 0.024, 0.03), (0.84, 0.27, 0.24), (0.84, 0.27, 0.24), -22.0),
-    "sleepy": (DARK, (0.003, 0.02, 0.004), None, (0.2, 0.9, 0.4), 0.0),
-}
-
-
-def _tilt_quat(yaw_deg, roll_deg):
-    """Quaternion for: rotate about z by yaw_deg, then tilt about the box's own x axis by roll_deg (moves the outer end of a side-lying box up or down)."""
-    z, x = np.radians(yaw_deg), np.radians(roll_deg)
-    Rz = np.array([[np.cos(z), -np.sin(z), 0], [np.sin(z), np.cos(z), 0], [0, 0, 1]])
-    Rx = np.array([[1, 0, 0], [0, np.cos(x), -np.sin(x)], [0, np.sin(x), np.cos(x)]])
-    q = np.zeros(4)
-    mujoco.mju_mat2Quat(q, (Rz @ Rx).flatten())
-    return q
+# The face shows NO expressions: two dark dots and a straight line, always. What the robot feels is shown only by the chest status light
+# (green calm, amber worried, red alert); the moods keep their names so the rest of the code does not change.
+LED = {"watching": (0.2, 0.9, 0.4), "concerned": (1.0, 0.69, 0.0), "worried": (1.0, 0.69, 0.0), "happy": (0.2, 0.9, 0.4),
+       "relieved": (0.2, 0.9, 0.4), "alert": (0.84, 0.27, 0.24), "sleepy": (0.2, 0.9, 0.4)}
+NEUTRAL_EYE = (0.003, 0.02, 0.02)
 
 
 def quat_to_yaw(q):
@@ -155,14 +137,10 @@ class RobotInterface:
         return rgb, dep
 
     def set_mood(self, mood):
-        colour, size, brow_colour, led, brow_deg = MOODS[mood]
+        """Only the status light changes (see LED); the face stays neutral."""
         for g in self.eyes:
-            self.m.geom_rgba[g] = (*colour, 1.0)
-            self.m.geom_size[g] = size
-        for g, sy in zip(self.brows, (1, -1)):
-            self.m.geom_rgba[g] = (*(brow_colour or (0, 0, 0)), 1.0 if brow_colour else 0.0)
-            self.m.geom_quat[g] = _tilt_quat(0.0, -sy * brow_deg)
-        for g in self.mouth:                                   # the line between the eyes stays straight in every mood
-            self.m.geom_quat[g] = (1.0, 0.0, 0.0, 0.0)
-        self.m.geom_rgba[self.led] = (*led, 1.0)
+            self.m.geom_size[g] = NEUTRAL_EYE
+        for g in self.brows:
+            self.m.geom_rgba[g] = (0.0, 0.0, 0.0, 0.0)
+        self.m.geom_rgba[self.led] = (*LED[mood], 1.0)
         self.mood = mood

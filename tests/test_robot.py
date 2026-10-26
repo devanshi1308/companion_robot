@@ -102,9 +102,11 @@ def test_camera_and_face():
     assert rgb.shape == (240, 320, 3) and dep.shape == (240, 320)
     assert np.isfinite(dep).all() and abs(dep[-1, 160] - S.CAM_Z / np.tan(np.radians(S.FOVY / 2))) < 0.03, "depth at the bottom image edge should match the camera geometry (1.15 m high, 29 deg below the horizon: 2.08 m)"
     r.set_mood("worried")
-    assert m.geom_rgba[m.geom("brow_l").id][3] == 1.0
+    assert m.geom_rgba[m.geom("brow_l").id][3] == 0.0, "the face shows no expressions: brows stay hidden"
+    assert tuple(m.geom_size[m.geom("eye_l").id]) == (0.003, 0.02, 0.02), "eyes stay the same size in every mood"
+    assert m.geom_rgba[m.geom("status_led").id][0] > 0.9, "the chest light turns amber"
     r.set_mood("watching")
-    assert m.geom_rgba[m.geom("brow_l").id][3] == 0.0
+    assert m.geom_rgba[m.geom("status_led").id][1] > 0.8, "and green again"
 
 
 def test_wide_view_looks_far_above_and_below():

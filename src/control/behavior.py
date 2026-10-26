@@ -103,6 +103,7 @@ class Companion:
         self.t_alert = None
         self.t_update = None
         self.sent_heads_up = False
+        self.on_speech = None                          # set by a live demo to speak the robot's words aloud (src/agent/speech.py); experiments leave it None
         self.front_range = LIDAR_RANGE
         self.front_unknown = self.front_known = LIDAR_RANGE
         self.blocked = False
@@ -161,6 +162,8 @@ class Companion:
         self.say(t, f'Robot says{" (louder)" if loud else ""}: "{text}"')
         self.last_utterance = (t, kind, text)
         self.utterances.append((round(float(t), 2), kind, text))
+        if self.on_speech is not None and audience in ("patient", "bystander"):
+            self.on_speech(text, loud)
         return text
 
     def speak_fixed(self, t, kind, text, audience="patient", loud=False):
@@ -168,6 +171,8 @@ class Companion:
         self.say(t, f'Robot says{" (louder)" if loud else ""}: "{text}"')
         self.last_utterance = (t, kind, text)
         self.utterances.append((round(float(t), 2), kind, text))
+        if self.on_speech is not None:
+            self.on_speech(text, loud)
         return text
 
     def go(self, t, state, mood=None, text=None):
