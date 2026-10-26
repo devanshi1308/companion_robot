@@ -217,7 +217,7 @@ def run_robot(ctx, out_dir, cfg=None):
             rows.append(dict(
                 t=round(t, 3), state=comp.state, detector=detector.state,
                 x=tp[0], y=tp[1], z=d.qpos[rb.qadr + 2], roll_deg=roll, pitch_deg=pitch, yaw=tp[2],
-                v_fwd=vtr[0], yaw_rate=vtr[1], est_x=rb.est[0], est_y=rb.est[1], est_yaw=rb.est[2],
+                vx=d.qvel[rb.vadr], vy=d.qvel[rb.vadr + 1], vz=d.qvel[rb.vadr + 2], v_fwd=vtr[0], yaw_rate=vtr[1], est_x=rb.est[0], est_y=rb.est[1], est_yaw=rb.est[2],
                 cmd_v=rb.last_cmd[0], cmd_w=rb.last_cmd[1], wheel_ctrl_l=d.ctrl[rb.a_l], wheel_ctrl_r=d.ctrl[rb.a_r],
                 pan_deg=rb.neck_angles_deg()[0], tilt_deg=rb.neck_angles_deg()[1], collision_force_N=f, contact_body=(f_who if f > 0.5 else ""), human_contact_N=fh, front_range_m=comp.front_range,
                 dist_to_hip_m=float(np.hypot(*(hip_true[:2] - tp[:2]))), dist_to_nearest_body_m=float(np.min(np.hypot(*(lms[:, :2] - tp[:2]).T))),

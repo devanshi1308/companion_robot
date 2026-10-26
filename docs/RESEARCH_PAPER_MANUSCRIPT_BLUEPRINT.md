@@ -45,19 +45,19 @@ $$M(q)\ddot{q} + C(q, \dot{q})\dot{q} + g(q) = \tau + J^T F_{\text{ext}}$$
 where $M(q)$ is the inertia matrix, $C(q, \dot{q})$ denotes Coriolis and centrifugal forces, $g(q)$ is the gravitational vector, $\tau$ represents generalized actuator efforts, and $J^T F_{\text{ext}}$ accounts for external contact forces.
 
 ### B. Autonomous Control Architecture
-The control script (`src/fall_detection_kinematics.py`) implements closed-loop trajectory tracking and dynamic obstacle evasion with explicit student implementation boundaries (`# TODO [Student Roll / Name]`).
+The control script (`src/control/behavior.py` and `src/vision/fall_detector.py`) implements closed-loop trajectory tracking and dynamic obstacle evasion.
 
 ---
 
 ## IV. Computer Science and Business Systems (CSBS) Technoeconomic Analysis
-In accordance with the CSBS curriculum, we formulate a strictly dimensionless technoeconomic model (`analytics/geriatric_care_economics.py`) evaluating operational efficiency and capital amortization:
+In accordance with the CSBS curriculum, we formulate a strictly dimensionless technoeconomic model (`analytics/healthcare_economics.py`) evaluating operational efficiency and capital amortization:
 $$\text{ROI Ratio} = \frac{\text{Net Operational Savings}}{\text{Total Equivalent Capital Expenditure}}$$
 The model eliminates currency-dependent distortions by normalizing parameters to operational labor hours and payback duration.
 
 ---
 
 ## V. Experimental Evaluation and Results
-Simulations were conducted across $N = 50$ randomized trials (`analytics/fall_triage_benchmark.csv`). Telemetry figures were generated at 300 DPI resolution (`analytics/generate_paper_figures.py`):
+Simulations were conducted across $N = 120$ seeded trials (`outputs/experiments/<split>/analysis`, produced by `src/experiments/analyze.py` from the seeded runs). Telemetry figures were generated at 300 DPI resolution (`analytics/generate_paper_figures.py`):
 * **Figure 1:** System architecture and physical kinematics (`docs/figures/figure1_system_architecture.png`).
 * **Figure 2:** Simulation kinematics and tracking error telemetry (`docs/figures/figure2_kinematic_telemetry.png`).
 * **Figure 3:** Comparative benchmark analysis against baseline workflows (`docs/figures/figure3_comparative_performance.png`).
