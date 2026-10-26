@@ -22,7 +22,7 @@ import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "robot"))
 import robot_spec as S  # noqa: E402
 
-HEAD_CAM = np.array([S.HEAD_D / 2 - 0.001, 0.0, 0.04 + S.HEAD_H / 2 - S.BEZEL_TOP / 2])   # camera in the head frame
+HEAD_CAM = np.array([S.CAM_X, 0.0, 0.04 + S.HEAD_H / 2 - S.BEZEL_TOP / 2])   # camera in the head frame
 TILT_REL_Z = S.TILT_Z - S.WHEEL_R                                                          # tilt axis above the body origin
 R_HEAD_CAM = np.array([[0.0, 0.0, -1.0], [-1.0, 0.0, 0.0], [0.0, 1.0, 0.0]])               # columns: camera x (right), y (up), z (back) in the head frame
 

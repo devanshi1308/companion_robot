@@ -14,7 +14,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
-from matplotlib.patches import Circle, FancyBboxPatch, Polygon, Rectangle, Wedge  # noqa: E402
+from matplotlib.patches import Circle, Ellipse, FancyBboxPatch, Polygon, Rectangle, Wedge  # noqa: E402
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 OUT = os.path.join(ROOT, "outputs", "robot_kinematic_sketch.png")
@@ -51,8 +51,12 @@ def side_view(ax):
     ax.add_patch(Rectangle((-0.02, S.DECK_Z0 + S.DECK_T), 0.04, S.PED_H, fc="#6b7078", ec=INK, lw=1.2, zorder=2))   # mast tube
     joint(ax, 0, S.NECK_Z, BLUE)                                                                          # J3 pan axis
     joint(ax, 0, S.TILT_Z, BLUE)                                                                          # J4 tilt axis
-    rbox(ax, 0.0, S.HEAD_Z, S.HEAD_D, S.HEAD_H, "#3a3f47", r=0.02, z=5)                                   # head
-    cam_x, cam_z = S.HEAD_D / 2, S.CAM_Z
+    ax.add_patch(Ellipse((-0.04, 0.57), 0.26, 0.60, fc="#f06a14", ec=INK, lw=1.2, alpha=0.55, zorder=1))   # torso shell (visual only)
+    ax.plot([-0.03, -0.18], [0.80, 0.48], color="#f06a14", lw=5, alpha=0.7, solid_capstyle="round", zorder=1)  # arm shell (visual only, fixed)
+    ax.add_patch(Circle((0.0, S.HEAD_Z), S.HEAD_SHELL_R, fc="#eeeef2", ec=INK, lw=1.4, zorder=4))          # round head shell
+    rbox(ax, 0.108, S.HEAD_Z + 0.005, 0.024, 0.068, "#1b1d24", r=0.008, z=5)                              # visor with the face screen
+    ax.add_patch(Circle((0.119, S.HEAD_Z + 0.005), 0.007, fc=CYAN, ec="none", zorder=6))                    # an eye
+    cam_x, cam_z = S.CAM_X, S.CAM_Z
     ax.add_patch(Circle((cam_x, cam_z), 0.008, fc=RED, ec="white", zorder=9))
     for a in (-S.FOVY / 2, S.FOVY / 2):                                                                    # field of view (camera level)
         ax.plot([cam_x, cam_x + 2.2 * np.cos(np.radians(a))], [cam_z, cam_z + 2.2 * np.sin(np.radians(a))], color=RED, lw=1, ls="--", zorder=1)
@@ -67,7 +71,7 @@ def side_view(ax):
     ax.text(0.07, zc, f"CoM {zc:.3f} m", fontsize=8.5, weight="bold", va="center")
     ax.annotate("", xy=(-0.30, 0), xytext=(-0.30, cam_z), arrowprops=dict(arrowstyle="<->", color=INK))
     ax.text(-0.33, cam_z / 2, f"camera {cam_z:.2f} m", rotation=90, fontsize=9, weight="bold", va="center", ha="right")
-    ax.text(0.16, S.HEAD_Z + 0.09, "head: face screen + camera (red)\nJ3 pan +/-90 deg, J4 tilt -45..+30 deg", fontsize=8, color=BLUE, weight="bold")
+    ax.text(0.16, S.HEAD_Z + 0.09, "round head: visor with eyes + camera (red)\nJ3 pan +/-90 deg, J4 tilt -45..+30 deg\ntorso shell and arms: visual only (no mass)", fontsize=8, color=BLUE, weight="bold")
     ax.text(0.05, 0.55, f"mast tube {S.PED_H:.2f} m", fontsize=8.5)
     ax.text(0.26, 0.015, f"front caster {S.CASTER_X:.2f} m ahead of the CoM", fontsize=8)
     ax.set_xlim(-0.6, 2.4)

@@ -39,10 +39,10 @@ def robot_body(x, y, yaw_deg, ind=2):
     pad = "  " * ind
     r = S.WHEEL_R
     z = lambda z_abs: z_abs - r                       # absolute height -> body-relative height
-    eye_y = 0.027
-    eye_x = S.HEAD_D / 2 + 0.0035
-    scr_h = S.HEAD_H - S.BEZEL_TOP - S.BEZEL_BOT
-    scr_z = 0.04 + (S.BEZEL_BOT - S.BEZEL_TOP) / 2    # screen centre relative to the head body (tilt axis)
+    eye_y = 0.042
+    eye_x = 0.1235                                    # the round visual head (r 0.115) carries a visor, screen and camera on its front
+    scr_h = 0.056
+    scr_z = 0.045                                     # screen centre relative to the head body (tilt axis)
     cam_z = 0.04 + S.HEAD_H / 2 - S.BEZEL_TOP / 2
     L_ = []
     a = L_.append
@@ -55,6 +55,12 @@ def robot_body(x, y, yaw_deg, ind=2):
       f'rgba="0.95 0.42 0.08 1" mass="{S.MASS["pedestal"]}"/>')                     # the 1.10 m mast tube (it does collide: tables and shelves are overhead obstacles)
     a(f'{pad}  <geom name="status_led" type="box" size="0.002 0.12 0.004" pos="{f(S.DECK_L / 2 + 0.001, 0, z(S.DECK_Z0 + S.DECK_T - 0.02))}" '
       f'rgba="0.2 0.9 0.4 1" contype="0" conaffinity="0" mass="0"/>')
+    # ---- look: a visual shell (no collision, no mass) so the guide's mass, centre of mass and braking numbers stay valid -------------------------
+    a(f'{pad}  <geom name="shell_torso" type="ellipsoid" size="0.13 0.19 0.30" pos="{f(-0.04, 0, z(0.57))}" rgba="0.95 0.42 0.08 1" contype="0" conaffinity="0" mass="0"/>')
+    for nm, sy in (("l", 1), ("r", -1)):
+        a(f'{pad}  <geom name="shell_arm_{nm}" type="capsule" size="0.026 0.16" pos="{f(-0.03, sy * 0.225, z(0.62))}" euler="{sy * -14} 0 0" '
+          f'rgba="0.95 0.42 0.08 1" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}  <geom name="shell_hand_{nm}" type="sphere" size="0.03" pos="{f(-0.03, sy * 0.265, z(0.46))}" rgba="0.93 0.93 0.95 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sx in (("caster_front", 1), ("caster_back", -1)):
         a(f'{pad}  <geom name="{nm}" type="sphere" size="{S.CASTER_R}" pos="{f(sx * S.CASTER_X, 0, z(S.CASTER_R))}" rgba="0.45 0.47 0.5 1" '
           f'mass="{S.MASS["casters"] / 2}" condim="1" priority="2" friction="0.001 0.001 0.001"/>')
@@ -69,14 +75,16 @@ def robot_body(x, y, yaw_deg, ind=2):
     a(f'{pad}    <geom name="neck_geom" type="cylinder" size="0.02 0.008" pos="0 0 0.008" rgba="0.2 0.22 0.25 1" mass="{S.MASS["neck"]}" contype="0" conaffinity="0"/>')
     a(f'{pad}    <body name="robot_head" pos="{f(0, 0, S.TILT_Z - S.NECK_Z)}">')
     a(f'{pad}      <joint name="head_tilt" type="hinge" axis="0 -1 0" range="{f(*S.TILT_WIDE_DEG)}" damping="0.3" armature="0.005"/>')
-    a(f'{pad}      <geom name="head_geom" type="box" size="{f(S.HEAD_D / 2, S.HEAD_W / 2, S.HEAD_H / 2)}" pos="0 0 0.04" rgba="0.23 0.25 0.29 1" mass="{S.MASS["head"]}"/>')
-    a(f'{pad}      <geom name="screen" type="box" size="0.002 {f(S.HEAD_W / 2 - S.BEZEL_SIDE, scr_h / 2)}" pos="{f(S.HEAD_D / 2 + 0.0015, 0, scr_z)}" rgba="0.03 0.04 0.05 1" contype="0" conaffinity="0" mass="0"/>')
+    a(f'{pad}      <geom name="head_geom" type="box" size="{f(S.HEAD_D / 2, S.HEAD_W / 2, S.HEAD_H / 2)}" pos="0 0 0.04" rgba="0.10 0.11 0.14 1" mass="{S.MASS["head"]}"/>')
+    a(f'{pad}      <geom name="shell_head" type="sphere" size="0.115" pos="{f(0, 0, 0.04)}" rgba="0.93 0.93 0.95 1" contype="0" conaffinity="0" mass="0"/>')
+    a(f'{pad}      <geom name="shell_visor" type="box" size="0.012 0.10 0.034" pos="{f(0.108, 0, scr_z)}" rgba="0.10 0.11 0.14 1" contype="0" conaffinity="0" mass="0"/>')
+    a(f'{pad}      <geom name="screen" type="box" size="0.002 {f(0.085, scr_h / 2)}" pos="{f(0.1215, 0, scr_z)}" rgba="0.03 0.04 0.05 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sy in (("l", 1), ("r", -1)):
-        a(f'{pad}      <geom name="eye_{nm}" type="box" size="0.0012 0.010 0.014" pos="{f(eye_x, sy * eye_y, scr_z)}" rgba="0.21 0.88 0.91 1" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}      <geom name="eye_{nm}" type="box" size="0.0012 0.016 0.020" pos="{f(eye_x, sy * eye_y, scr_z)}" rgba="0.21 0.88 0.91 1" contype="0" conaffinity="0" mass="0"/>')
         a(f'{pad}      <geom name="brow_{nm}" type="box" size="0.0012 0.012 0.0018" pos="{f(eye_x, sy * eye_y, scr_z + 0.024)}" euler="{sy * 18} 0 0" rgba="1 0.69 0 0" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}      <geom name="mic_array" type="box" size="0.012 0.02 0.001" pos="{f(-0.01, 0, 0.04 + S.HEAD_H / 2 + 0.001)}" rgba="0.1 0.1 0.1 1" contype="0" conaffinity="0" mass="0"/>')
-    a(f'{pad}      <camera name="robot_cam" pos="{f(S.HEAD_D / 2 - 0.001, 0, cam_z)}" xyaxes="0 -1 0 0 0 1" fovy="{S.FOVY}"/>')
-    a(f'{pad}      <site name="camera_optical_frame" pos="{f(S.HEAD_D / 2 - 0.001, 0, cam_z)}" size="0.003" rgba="1 0 0 0.6" group="5"/>')
+    a(f'{pad}      <camera name="robot_cam" pos="{f(S.CAM_X, 0, cam_z)}" xyaxes="0 -1 0 0 0 1" fovy="{S.FOVY}"/>')
+    a(f'{pad}      <site name="camera_optical_frame" pos="{f(S.CAM_X, 0, cam_z)}" size="0.003" rgba="1 0 0 0.6" group="5"/>')
     a(f'{pad}    </body>')
     a(f'{pad}  </body>')
     a(f'{pad}</body>')

@@ -11,6 +11,11 @@
       <geom name="deck" type="box" size="0.22 0.17 0.08" pos="0 0 0.04" rgba="0.95 0.42 0.08 1" mass="11.4" friction="0.3 0.005 0.0001"/>
       <geom name="pedestal" type="cylinder" size="0.02 0.42500000000000004" pos="0 0 0.545" rgba="0.95 0.42 0.08 1" mass="1.2"/>
       <geom name="status_led" type="box" size="0.002 0.12 0.004" pos="0.221 0 0.1" rgba="0.2 0.9 0.4 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_torso" type="ellipsoid" size="0.13 0.19 0.30" pos="-0.04 0 0.49" rgba="0.95 0.42 0.08 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_arm_l" type="capsule" size="0.026 0.16" pos="-0.03 0.225 0.54" euler="-14 0 0" rgba="0.95 0.42 0.08 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_hand_l" type="sphere" size="0.03" pos="-0.03 0.265 0.38" rgba="0.93 0.93 0.95 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_arm_r" type="capsule" size="0.026 0.16" pos="-0.03 -0.225 0.54" euler="14 0 0" rgba="0.95 0.42 0.08 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_hand_r" type="sphere" size="0.03" pos="-0.03 -0.265 0.38" rgba="0.93 0.93 0.95 1" contype="0" conaffinity="0" mass="0"/>
       <geom name="caster_front" type="sphere" size="0.03" pos="0.18 0 -0.05" rgba="0.45 0.47 0.5 1" mass="0.1" condim="1" priority="2" friction="0.001 0.001 0.001"/>
       <geom name="caster_back" type="sphere" size="0.03" pos="-0.18 0 -0.05" rgba="0.45 0.47 0.5 1" mass="0.1" condim="1" priority="2" friction="0.001 0.001 0.001"/>
       <body name="wheel_l" pos="0 0.19 0">
@@ -28,15 +33,17 @@
         <geom name="neck_geom" type="cylinder" size="0.02 0.008" pos="0 0 0.008" rgba="0.2 0.22 0.25 1" mass="0.05" contype="0" conaffinity="0"/>
         <body name="robot_head" pos="0 0 0.02">
           <joint name="head_tilt" type="hinge" axis="0 -1 0" range="-75 70" damping="0.3" armature="0.005"/>
-          <geom name="head_geom" type="box" size="0.05 0.06 0.05" pos="0 0 0.04" rgba="0.23 0.25 0.29 1" mass="1.25"/>
-          <geom name="screen" type="box" size="0.002 0.052 0.038" pos="0.0515 0 0.036" rgba="0.03 0.04 0.05 1" contype="0" conaffinity="0" mass="0"/>
-          <geom name="eye_l" type="box" size="0.0012 0.010 0.014" pos="0.0535 0.027 0.036" rgba="0.21 0.88 0.91 1" contype="0" conaffinity="0" mass="0"/>
-          <geom name="brow_l" type="box" size="0.0012 0.012 0.0018" pos="0.0535 0.027 0.06" euler="18 0 0" rgba="1 0.69 0 0" contype="0" conaffinity="0" mass="0"/>
-          <geom name="eye_r" type="box" size="0.0012 0.010 0.014" pos="0.0535 -0.027 0.036" rgba="0.21 0.88 0.91 1" contype="0" conaffinity="0" mass="0"/>
-          <geom name="brow_r" type="box" size="0.0012 0.012 0.0018" pos="0.0535 -0.027 0.06" euler="-18 0 0" rgba="1 0.69 0 0" contype="0" conaffinity="0" mass="0"/>
+          <geom name="head_geom" type="box" size="0.05 0.06 0.05" pos="0 0 0.04" rgba="0.10 0.11 0.14 1" mass="1.25"/>
+          <geom name="shell_head" type="sphere" size="0.115" pos="0 0 0.04" rgba="0.93 0.93 0.95 1" contype="0" conaffinity="0" mass="0"/>
+          <geom name="shell_visor" type="box" size="0.012 0.10 0.034" pos="0.108 0 0.045" rgba="0.10 0.11 0.14 1" contype="0" conaffinity="0" mass="0"/>
+          <geom name="screen" type="box" size="0.002 0.085 0.028" pos="0.1215 0 0.045" rgba="0.03 0.04 0.05 1" contype="0" conaffinity="0" mass="0"/>
+          <geom name="eye_l" type="box" size="0.0012 0.016 0.020" pos="0.1235 0.042 0.045" rgba="0.21 0.88 0.91 1" contype="0" conaffinity="0" mass="0"/>
+          <geom name="brow_l" type="box" size="0.0012 0.012 0.0018" pos="0.1235 0.042 0.069" euler="18 0 0" rgba="1 0.69 0 0" contype="0" conaffinity="0" mass="0"/>
+          <geom name="eye_r" type="box" size="0.0012 0.016 0.020" pos="0.1235 -0.042 0.045" rgba="0.21 0.88 0.91 1" contype="0" conaffinity="0" mass="0"/>
+          <geom name="brow_r" type="box" size="0.0012 0.012 0.0018" pos="0.1235 -0.042 0.069" euler="-18 0 0" rgba="1 0.69 0 0" contype="0" conaffinity="0" mass="0"/>
           <geom name="mic_array" type="box" size="0.012 0.02 0.001" pos="-0.01 0 0.091" rgba="0.1 0.1 0.1 1" contype="0" conaffinity="0" mass="0"/>
-          <camera name="robot_cam" pos="0.049 0 0.082" xyaxes="0 -1 0 0 0 1" fovy="58.0"/>
-          <site name="camera_optical_frame" pos="0.049 0 0.082" size="0.003" rgba="1 0 0 0.6" group="5"/>
+          <camera name="robot_cam" pos="0.108 0 0.082" xyaxes="0 -1 0 0 0 1" fovy="58.0"/>
+          <site name="camera_optical_frame" pos="0.108 0 0.082" size="0.003" rgba="1 0 0 0.6" group="5"/>
         </body>
       </body>
     </body>
