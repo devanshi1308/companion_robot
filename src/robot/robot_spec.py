@@ -33,5 +33,5 @@ CHASSIS_R = ((DECK_L / 2) ** 2 + (TRACK / 2 + WHEEL_T / 2) ** 2) ** 0.5   # m: f
 LIDAR_X = DECK_L / 2 + 0.02                                    # m: range-sensor rays start just in front of the chassis
 LIDAR_Z = 0.06                                                 # m above the floor (sees low obstacles: the robot vacuum, clutter)
 
-HEAD_SHELL_R = 0.115      # m: radius of the round visual head (no collision, no mass)
-CAM_X = 0.108             # m: camera forward offset in the head frame (on the front of the round head)
+HEAD_SHELL_R = 0.15      # m: radius of the round visual head (no collision, no mass)
+CAM_X = 0.153             # m: camera forward offset in the head frame (on the front of the round head)
