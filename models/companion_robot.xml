@@ -15,20 +15,23 @@
       <geom name="pedestal" type="cylinder" size="0.02 0.42500000000000004" pos="0 0 0.545" rgba="0.93 0.93 0.94 1" mass="1.2"/>
       <geom name="status_led" type="box" size="0.002 0.12 0.004" pos="0.221 0 0.1" rgba="0.2 0.9 0.4 1" contype="0" conaffinity="0" mass="0"/>
       <geom name="shell_body" type="mesh" mesh="shell_body" pos="0 0 -0.08" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_neck" type="cylinder" size="0.07 0.06" pos="-0.03 0 0.905" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
       <geom name="shell_slot" type="capsule" size="0.011 0.075" pos="0.248 0 0.28" euler="90 0 0" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>
       <geom name="shell_grille" type="box" size="0.003 0.07 0.012" pos="-0.27 0 0.28" rgba="0.55 0.55 0.58 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_arm_l" type="capsule" size="0.058 0.15" pos="-0.03 0.285 0.58" euler="-9 0 0" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_palm_l" type="ellipsoid" size="0.04 0.034 0.05" pos="-0.03 0.31 0.375" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_finger_l0" type="capsule" size="0.0105 0.026" pos="-0.052 0.31 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_finger_l1" type="capsule" size="0.0105 0.026" pos="-0.03 0.31 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_finger_l2" type="capsule" size="0.0105 0.026" pos="-0.008 0.31 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_thumb_l" type="capsule" size="0.0105 0.024" pos="0.015 0.31 0.35" euler="0 35 0" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_arm_r" type="capsule" size="0.058 0.15" pos="-0.03 -0.285 0.58" euler="9 0 0" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_palm_r" type="ellipsoid" size="0.04 0.034 0.05" pos="-0.03 -0.31 0.375" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_finger_r0" type="capsule" size="0.0105 0.026" pos="-0.052 -0.31 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_finger_r1" type="capsule" size="0.0105 0.026" pos="-0.03 -0.31 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_finger_r2" type="capsule" size="0.0105 0.026" pos="-0.008 -0.31 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
-      <geom name="shell_thumb_r" type="capsule" size="0.0105 0.024" pos="0.015 -0.31 0.35" euler="0 35 0" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_shoulder_l" type="sphere" size="0.062" pos="-0.03 0.15 0.75" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_arm_l" type="capsule" size="0.056" fromto="-0.03 0.15 0.75 -0.03 0.292 0.42" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_palm_l" type="ellipsoid" size="0.04 0.034 0.05" pos="-0.03 0.298 0.38" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_finger_l0" type="capsule" size="0.0105 0.026" pos="-0.052 0.298 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_finger_l1" type="capsule" size="0.0105 0.026" pos="-0.03 0.298 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_finger_l2" type="capsule" size="0.0105 0.026" pos="-0.008 0.298 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_thumb_l" type="capsule" size="0.0105 0.024" pos="0.015 0.298 0.35" euler="0 35 0" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_shoulder_r" type="sphere" size="0.062" pos="-0.03 -0.15 0.75" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_arm_r" type="capsule" size="0.056" fromto="-0.03 -0.15 0.75 -0.03 -0.292 0.42" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_palm_r" type="ellipsoid" size="0.04 0.034 0.05" pos="-0.03 -0.298 0.38" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_finger_r0" type="capsule" size="0.0105 0.026" pos="-0.052 -0.298 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_finger_r1" type="capsule" size="0.0105 0.026" pos="-0.03 -0.298 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_finger_r2" type="capsule" size="0.0105 0.026" pos="-0.008 -0.298 0.305" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
+      <geom name="shell_thumb_r" type="capsule" size="0.0105 0.024" pos="0.015 -0.298 0.35" euler="0 35 0" rgba="0.93 0.93 0.94 1" contype="0" conaffinity="0" mass="0"/>
       <geom name="caster_front" type="sphere" size="0.03" pos="0.18 0 -0.05" rgba="0.45 0.47 0.5 1" mass="0.1" condim="1" priority="2" friction="0.001 0.001 0.001"/>
       <geom name="caster_back" type="sphere" size="0.03" pos="-0.18 0 -0.05" rgba="0.45 0.47 0.5 1" mass="0.1" condim="1" priority="2" friction="0.001 0.001 0.001"/>
       <body name="wheel_l" pos="0 0.19 0">

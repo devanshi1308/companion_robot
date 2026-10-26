@@ -80,12 +80,15 @@ def robot_body(x, y, yaw_deg, ind=2):
     # ---- look: a soft white shell (visual only: no collision, no mass) so the guide's mass, centre of mass and braking numbers stay valid -----------
     W = "0.93 0.93 0.94 1"
     a(f'{pad}  <geom name="shell_body" type="mesh" mesh="shell_body" pos="0 0 {z(0.0):.5g}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
+    a(f'{pad}  <geom name="shell_neck" type="cylinder" size="0.07 0.06" pos="{f(-0.03, 0, z(0.985))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}  <geom name="shell_slot" type="capsule" size="0.011 0.075" pos="{f(0.248, 0, z(0.36))}" euler="90 0 0" rgba="0.05 0.05 0.06 1" contype="0" conaffinity="0" mass="0"/>')
     a(f'{pad}  <geom name="shell_grille" type="box" size="0.003 0.07 0.012" pos="{f(-0.27, 0, z(0.36))}" rgba="0.55 0.55 0.58 1" contype="0" conaffinity="0" mass="0"/>')
     for nm, sy in (("l", 1), ("r", -1)):
-        a(f'{pad}  <geom name="shell_arm_{nm}" type="capsule" size="0.058 0.15" pos="{f(-0.03, sy * 0.285, z(0.66))}" euler="{sy * -9} 0 0" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
-        hy = sy * 0.31
-        a(f'{pad}  <geom name="shell_palm_{nm}" type="ellipsoid" size="0.04 0.034 0.05" pos="{f(-0.03, hy, z(0.455))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
+        # the arm hangs from a shoulder ball that sits on the body surface (body radius 0.15 at 0.82 m) and ends in the palm: no gaps
+        a(f'{pad}  <geom name="shell_shoulder_{nm}" type="sphere" size="0.062" pos="{f(-0.03, sy * 0.15, z(0.83))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
+        a(f'{pad}  <geom name="shell_arm_{nm}" type="capsule" size="0.056" fromto="{f(-0.03, sy * 0.15, z(0.83), -0.03, sy * 0.292, z(0.50))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
+        hy = sy * 0.298
+        a(f'{pad}  <geom name="shell_palm_{nm}" type="ellipsoid" size="0.04 0.034 0.05" pos="{f(-0.03, hy, z(0.46))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
         for k, fx in enumerate((-0.022, 0.0, 0.022)):
             a(f'{pad}  <geom name="shell_finger_{nm}{k}" type="capsule" size="0.0105 0.026" pos="{f(-0.03 + fx, hy, z(0.385))}" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
         a(f'{pad}  <geom name="shell_thumb_{nm}" type="capsule" size="0.0105 0.024" pos="{f(-0.03 + 0.045, hy, z(0.43))}" euler="0 35 0" rgba="{W}" contype="0" conaffinity="0" mass="0"/>')
