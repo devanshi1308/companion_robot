@@ -1,0 +1,108 @@
+{
+ "note": "fitted on the dev split only (offline replay of recorded landmark streams); frozen before the test split",
+ "fall_config": {
+  "down_z": 0.45,
+  "pitch_min_deg": 60.0
+ },
+ "robot_dev_result": {
+  "tp": 14,
+  "fn": 1,
+  "fp": 2,
+  "f1": 0.9032258064516129,
+  "latency": 40.36845048792994
+ },
+ "robot_defaults_result": {
+  "tp": 13,
+  "fn": 2,
+  "fp": 3,
+  "f1": 0.8387096774193549,
+  "latency": 39.18355670319059
+ },
+ "robot_log": [
+  {
+   "step": "defaults",
+   "tp": 13,
+   "fn": 2,
+   "fp": 3,
+   "f1": 0.8387096774193549,
+   "latency": 39.18355670319059
+  },
+  {
+   "step": "down_z=0.45",
+   "tp": 14,
+   "fn": 1,
+   "fp": 3,
+   "f1": 0.8749999999999999,
+   "latency": 40.36845048792994
+  },
+  {
+   "step": "pitch_min_deg=60.0",
+   "tp": 14,
+   "fn": 1,
+   "fp": 2,
+   "f1": 0.9032258064516129,
+   "latency": 40.36845048792994
+  }
+ ],
+ "static_fall_config": {
+  "down_z": 0.45,
+  "pitch_min_deg": 40.0,
+  "quiet_move_m": 0.35
+ },
+ "static_dev_result": {
+  "tp": 11,
+  "fn": 4,
+  "fp": 0,
+  "f1": 0.846153846153846,
+  "latency": 5.520421294567943
+ },
+ "static_defaults_result": {
+  "tp": 11,
+  "fn": 4,
+  "fp": 0,
+  "f1": 0.846153846153846,
+  "latency": 5.623451597598245
+ },
+ "static_log": [
+  {
+   "step": "defaults",
+   "tp": 11,
+   "fn": 4,
+   "fp": 0,
+   "f1": 0.846153846153846,
+   "latency": 5.623451597598245
+  },
+  {
+   "step": "down_z=0.4",
+   "tp": 11,
+   "fn": 4,
+   "fp": 0,
+   "f1": 0.846153846153846,
+   "latency": 5.574966749113398
+  },
+  {
+   "step": "down_z=0.45",
+   "tp": 11,
+   "fn": 4,
+   "fp": 0,
+   "f1": 0.846153846153846,
+   "latency": 5.562845536992185
+  },
+  {
+   "step": "pitch_min_deg=40.0",
+   "tp": 11,
+   "fn": 4,
+   "fp": 0,
+   "f1": 0.846153846153846,
+   "latency": 5.544663718810368
+  },
+  {
+   "step": "quiet_move_m=0.35",
+   "tp": 11,
+   "fn": 4,
+   "fp": 0,
+   "f1": 0.846153846153846,
+   "latency": 5.520421294567943
+  }
+ ]
+}

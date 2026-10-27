@@ -1,0 +1,10 @@
+condition,zone,n,alarm,dispatch,median_lat_alarm
+robot,bedroom,20,10,8,68.7732077702917
+robot,hallway,20,16,10,49.63940264805173
+robot,living,20,15,11,8.618235304657139
+static,bedroom,20,2,2,2.5550986777919396
+static,hallway,20,0,0,
+static,living,20,2,0,1.7837705163130888
+static4,bedroom,20,13,11,3.0986584099058447
+static4,hallway,20,15,9,5.108882325537351
+static4,living,20,3,0,3.4148292041958292
