@@ -139,8 +139,16 @@ def medicine_answer(text):
     return None
 
 
+PREVENTION = ("Ways to lower the risk of falls: clear tripping hazards (loose rugs, cables, clutter), keep rooms and the way to the bathroom well lit at night, "
+              "fit handrails and non-slip mats in the bathroom and on stairs, wear well-fitting shoes with grip, keep daily gentle exercise that builds balance and leg strength "
+              "(for example a physiotherapist's programme or tai chi), get eyesight and hearing checked, rise slowly from bed or a chair, and ask the doctor or pharmacist to review "
+              "her medicines because some cause dizziness. A bed or chair that is easy to get out of helps too. " + CAUTION)
+
+
 def first_aid_answer(text):
     t = _norm(text)
+    if re.search(r"\b(prevent|avoid|stop|reduce|lower|tips?|safer|risk of)\b.*\b(fall|falls|falling|fallen)\b|\b(fall|falls|falling)\b.*\b(prevent|prevention|avoid|tips?)\b", t):
+        return PREVENTION
     best = None
     for name, (words, steps) in FIRST_AID.items():
         if any(w in t for w in words):

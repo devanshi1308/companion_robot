@@ -32,6 +32,8 @@ WINDOW_MIN = 6.0                  # cardiac-arrest survival window (AHA / ERC)
 
 def load_metrics(split):
     p = os.path.join(ROOT, "outputs", "experiments", split, "analysis", "metrics.json")
+    if not os.path.exists(p):                                   # a fresh clone has no outputs/: fall back to the committed results
+        p = os.path.join(ROOT, "results", "guide_robot_test" if split == "test" else f"{split}_test", "metrics.json")
     if not os.path.exists(p):
         return None
     return json.load(open(p))
@@ -127,7 +129,8 @@ def main(split="test"):
     BED_DAY_IN_ATTENDANT_DAYS = keep
     print_payback_table()
     print("\nAssumed constants are listed at the top of this file; the 78.5-minute long-lie figure still needs its citation verified.")
-    json.dump(out, open(os.path.join(ROOT, "outputs", "experiments", split, "analysis", "economics.json"), "w"), indent=1)
+    od = os.path.join(ROOT, "outputs", "experiments", split, "analysis"); os.makedirs(od, exist_ok=True)
+    json.dump(out, open(os.path.join(od, "economics.json"), "w"), indent=1)
     return out
 
 

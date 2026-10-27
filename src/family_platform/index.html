@@ -267,6 +267,7 @@ async function loginSubmit(ev){ev.preventDefault(); $("loginErr").textContent=""
 $("loginForm").addEventListener("submit",loginSubmit);
 $("btnOut").onclick=async()=>{await fetch("/api/logout",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}); showLogin()};
 async function sendChat(){const v=$("chatText").value.trim(); if(!v)return; $("chatText").value="";
+  $("wa").insertAdjacentHTML("beforeend",'<div class="bub me"><div>'+v.replace(/</g,"&lt;")+'</div></div><div class="bub in"><b style="font-size:12px;color:var(--ok)">Baymax</b><div><i>is thinking...</i></div></div>'); $("wa").scrollTop=$("wa").scrollHeight;
   const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:v})}); if(r.status===401)showLogin()}
 $("btnChat").onclick=sendChat; $("chatText").addEventListener("keydown",e=>{if(e.key==="Enter")sendChat()});
 function renderChat(){
@@ -277,6 +278,7 @@ function renderChat(){
     const mineMsg=e.type==="chat"&&e.who==="user"; const urgent=e.type==="sent"&&["emergency","siren_on"].includes(e.kind);
     const img=e.attachment?`<img src="/api/snapshot?view=emergency&n=${e.n}" alt="blurred picture">`:"";
     return `<div class="bub ${mineMsg?"me":"in"} ${urgent?"urgent":""}">${mineMsg?"":'<b style="font-size:12px;color:var(--ok)">Baymax</b>'}${img}<div>${e.text.replace(/</g,"&lt;")}</div><div class="meta"><span>${e.clock||""}</span></div></div>`}).join("");
+  if(thread[thread.length-1].who==="user") wa.insertAdjacentHTML("beforeend",'<div class="bub in"><b style="font-size:12px;color:var(--ok)">Baymax</b><div><i>is thinking... a question like this can take 10 to 20 seconds</i></div></div>');   // so it never looks as if he is not answering
   if(atBottom||thread[thread.length-1].who==="user") wa.scrollTop=wa.scrollHeight;
 }
 function render(){
