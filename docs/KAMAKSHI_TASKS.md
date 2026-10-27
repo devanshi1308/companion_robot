@@ -36,3 +36,6 @@ Work on her own computer, signed in to HER GitHub account, from a fresh clone: `
 7. [ ] Task 7 (needs her and a consenting person): real video through MediaPipe -> `feat: ...`
 8. [ ] Read, run and be able to explain the three items already prepared in her area: tests/test_fall_detector.py (4 new tests), docs/ALERT_SCHEMA.md with tests/test_alert_privacy.py, docs/PRODROME_NEGATIVE_RESULT.md. She does NOT push these again (they are already on main under Devanshi's account); she may add improvements in her own commits.
 Minimum for the course: at least 4 of items 1-7 as commits from her account, merged to main by pull request.
+
+## Data she needs (not on GitHub)
+The folder outputs/ is in .gitignore, so a clone has no experiment data. Devanshi gives her `Kamakshi_dev_data.zip` (the 40 dev trials of the compact-robot run, with frozen_config.json and a README). Unzip it into `outputs/experiments/dev` of her clone. She tunes and plots ONLY on this dev data; the 120-trial test split is not given to her, because it must stay frozen. The newer guide-robot dev run will be shared when it finishes.
