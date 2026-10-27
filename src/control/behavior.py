@@ -43,6 +43,8 @@ class Params:
     follow_dist = 1.3          # m: where the robot tries to stay behind her
     follow_near = 1.0
     follow_far = 1.6           # m: start driving when she is farther than this
+    approach_vmax = S.V_MAX    # m/s on the way to a fallen person (the 120-trial results used 0.50); a live demo can raise it, never above 0.80
+    search_vmax = 0.6          # m/s while searching (the 120-trial results used 0.60)
     follow_vmax = 0.8          # standards manual: at most 0.80 m/s among people
     follow_replan_s = 0.4
     patrol_s = 8.0             # waiting on the dock / not seeing her this long: go and look for her (patrol)
@@ -381,7 +383,7 @@ class Companion:
             if path is None:
                 return
             x, y, _ = self.goal
-        self.follower = PathFollower(path)
+        self.follower = PathFollower(path, v_max=min(self.p.approach_vmax, 0.80))
         self.t_replan = t
 
     def cancel(self, t):
@@ -713,7 +715,7 @@ class Companion:
         gi = self.grid._nearest_free(self.grid.blocked(discs), self.grid.to_cell(*target))
         self.search_goal = self.grid.to_xy(*gi) if gi is not None else tuple(self.rb.est[:2])
         path = self.grid.plan(self.rb.est[:2], self.search_goal, extra_discs=discs)
-        self.follower = PathFollower(path, v_max=0.6, a=1.2, v0=self.last_v) if path is not None and len(path) >= 2 else None
+        self.follower = PathFollower(path, v_max=min(self.p.search_vmax, 0.80), a=1.2, v0=self.last_v) if path is not None and len(path) >= 2 else None
         self.search_phase = "goto"
         self.say(t, f"Searching: going to {label}")
 
