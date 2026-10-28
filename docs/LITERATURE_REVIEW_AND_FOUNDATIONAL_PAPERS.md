@@ -5,6 +5,8 @@
 
 ---
 
+> **Correction notice (2026-10-28).** Each of the six PDFs was read against this file. The bibliographic data (authors, years, venues, DOIs) are correct. The 'Mathematical Formulations Extracted' were wrong for five of the six papers (the arccos joint angle for Kothari, the mast overturning formula for CLARA, the CSI phase difference for Ding, the 18.4 / 4.2 days and odds ratio 2.45 for Kubitza, the ellipse axis ratio for Chen) and the Wang and Deng thresholds were not in the paper. They have been replaced by what each paper actually states, with PDF page numbers. The original text appears to have been AI-generated: use this as a case for dossier Section 5.1.
+
 ## 1. Executive Summary of Foundational Literature
 
 This dossier establishes the comprehensive academic foundation for MDRIIA_GROUP_02. Rigorous engineering research requires grounding problem formulations, mathematical models, and performance metrics in peer-reviewed literature indexed across top-tier international venues.
@@ -22,12 +24,12 @@ This dossier provides:
 
 | Paper & Citation | Publication Venue & Indexing | Primary Methodology | Key Formulations Extracted | Critical Research Gap Addressed | Student Lead |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Wang & Deng (2024)**<br>`10.1177/20552076241233690` | *Digital Health* | Lightweight edge pose estimation utilizing MediaPipe/BlazePose skeletal landmarks with Random Forest classification on UR Fall and Le2i datasets. | Aspect ratio $AR = \frac{w_b}{h_b}$; vertical centroid velocity $v_z = \frac{z_c(t) - z_c(t-\Delta t)}{\Delta t}$; fall trigger threshold $v_z < -1.8\text{ m/s} \land AR > 1.3$. | Evaluated exclusively on fixed, ceiling-mounted RGB cameras; does not address mobile base ego-motion, camera mast jitter, or occlusion by living room furniture. | **Kamakshi Bahuguna (E007)** |
-| **Kothari & Chakurkar (2025)**<br>`10.1016/j.mex.2025.103623` | *MethodsX* | Two-stage perception architecture combining YOLO bounding-box detection with MediaPipe joint coordinate extraction for fall classification. | Keypoint angle $\theta = \arccos\left(\frac{\mathbf{v}_1 \cdot \mathbf{v}_2}{\|\mathbf{v}_1\| \|\mathbf{v}_2\|}\right)$; torso inclination angle with floor normal. | Lacks cyber-physical actuation; unable to physically navigate toward the fallen elder to verify responsiveness or provide emergency audio/visual link. | **Kamakshi Bahuguna (E007)** |
-| **Romero-Garces et al. (2022)**<br>`10.3390/designs6060125` | *Designs* | System engineering and physical design of an autonomous assistive robot tested in geriatric daycare facilities. | Mast center-of-mass height $h_{\text{mast}} \in [1.10, 1.20]\text{ m}$; overturning moment condition $M_{\text{stab}} = m_{\text{base}} g \frac{w_{\text{base}}}{2} > m_{\text{mast}} a_{\max} h_{\text{mast}}$. | Designed primarily for cognitive stimulation and social interaction; lacks fast reactive fall-triage and emergency dispatch within the golden 6-minute window. | **Devanshi Sachin Kambli (B029)** |
-| **Ding & Wang (2020)**<br>`10.1109/TCE.2020.3021398` | *IEEE Transactions on Consumer Electronics* | Non-intrusive fall detection utilizing Channel State Information (CSI) variance in WiFi subcarriers processed via RNN/LSTM. | CSI phase difference $\Delta \phi = \arg(H_i) - \arg(H_j)$; dynamic time warping distance metric across multi-path indoor reflections. | RF sensing provides zero visual confirmation, high false alarm rates from pet movement, and zero mobility to check vital signs or establish visual dispatch. | **Devanshi Sachin Kambli (B029)** |
-| **Kubitza et al. (2022)**<br>`10.1186/s12877-022-03258-2` | *BMC Geriatrics* | Clinical review detailing morbidity consequences (rhabdomyolysis, dehydration, hypothermia, acute renal failure) of remaining on the floor for > 1 hour. | Hospital stay duration $D_{\text{stay}} = 18.4\text{ days (long lie)} \text{ vs } 4.2\text{ days (immediate dispatch)}$; mortality odds ratio $OR = 2.45$ if unassisted > 1 hr. | Analyzes clinical pathology retrospectively; lacks an active robotic engineering intervention capable of compressing discovery latency to under 30 seconds. | **Devanshi Sachin Kambli (B029)** |
-| **Chen et al. (2021)**<br>`10.1109/ICET51757.2021.9450950` | *IEEE International Conference on Electronics Technology (ICET)* | Integration of mobile robot camera perspective with OpenCV background subtraction and ellipse fitting to detect recumbent human posture. | Major-to-minor axis ratio $\lambda = \frac{a}{b}$; center displacement velocity $\dot{c}_y = \frac{y(t) - y(t-\Delta t)}{\Delta t}$; fall alarm condition $\lambda < 0.85 \land \dot{c}_y > \tau_{\text{fall}}$. | Evaluated on flat 2D images without multi-body contact dynamics, domestic furniture obstacle avoidance, or simulated recovery confirmation. | **Kamakshi Bahuguna (E007) & Devanshi Sachin Kambli (B029)** |
+| **Wang & Deng (2024)**<br>`10.1177/20552076241233690` | *Digital Health* | Cascaded (dual-stage) random forests on five features from BlazePose's 33 landmarks: contour height, contour width, aspect ratio, centroid height and vertical velocity. UR Fall and part of the Le2i dataset; 89.99% accuracy, 29.7 FPS on a laptop CPU (PDF pp. 1, 6-7). | Width-to-height ratio r = w_contour / h_contour with w, h from the min and max of the 33 landmarks (eqs 1-3); centroid height h_centroid from the hip midpoint to the foot midpoint (eq 4); vertical velocity from the change of h_centroid per frame step (eq 5); classifier = random forests (eq 6). The paper gives NO fixed threshold such as v_z < -1.8 m/s or AR > 1.3: those are our own values, fitted on the dev split. | Evaluated exclusively on fixed, ceiling-mounted RGB cameras; does not address mobile base ego-motion, camera mast jitter, or occlusion by living room furniture. | **Kamakshi Bahuguna (E007)** |
+| **Kothari & Chakurkar (2025)**<br>`10.1016/j.mex.2025.103623` | *MethodsX* | YOLO person detection (confidence above 80%) followed by MediaPipe landmarks; body proportions from Euclidean distances between landmarks (upper-body height, leg height), activity ratio (sitting below 0.5, walking above 1.2) and bounding-box aspect ratio below 0.9; an SMS alert through Twilio. 96.06% accuracy, 100% recall (PDF pp. 2-3). | h_upper = d(shoulder,hip) summed over both sides, h_leg = d(hip,knee) summed over both sides, activity ratio = h_upper / h_leg, aspect_ratio from the YOLO box. The paper has NO joint-angle (arccos) formula. | Lacks cyber-physical actuation; unable to physically navigate toward the fallen elder to verify responsiveness or provide emergency audio/visual link. | **Kamakshi Bahuguna (E007)** |
+| **Romero-Garces et al. (2022)**<br>`10.3390/designs6060125` | *Designs* | Design and implementation phases of the socially assistive robot CLARA from 2016 to 2022 and its CORTEX cognitive architecture, used in hospital and care settings. The robot height was set at 1.2 m so the user is comfortable in human-robot interaction sessions (PDF p. 4). | None: the paper contains no mast stability or overturning formula. Our tip-over limit a_tip = g b / h is our own derivation, checked in tests/test_robot.py. | Designed primarily for cognitive stimulation and social interaction; lacks fast reactive fall-triage and emergency dispatch within the golden 6-minute window. | **Devanshi Sachin Kambli (B029)** |
+| **Ding & Wang (2020)**<br>`10.1109/TCE.2020.3021398` | *IEEE Transactions on Consumer Electronics* | Device-free WiFi sensing: CSI amplitude variation, discrete wavelet transform denoising and an LSTM-based recurrent network over six motions (jumping, walking, bending, falling, standing up, lying), with a web application for alerts (PDF pp. 3-9). | CSI amplitude f(t) of the subcarriers, discrete wavelet transform (approximation and detail coefficients), LSTM gates (forget, input, output). The paper uses amplitude, NOT a CSI phase difference or dynamic time warping. | RF sensing provides zero visual confirmation, high false alarm rates from pet movement, and zero mobility to check vital signs or establish visual dispatch. | **Devanshi Sachin Kambli (B029)** |
+| **Kubitza et al. (2022)**<br>`10.1186/s12877-022-03258-2` | *BMC Geriatrics* | Scoping review (Arksey and O'Malley six steps, PRISMA-ScR) of care options for long lies. One in eight older fallers lie on the floor for more than an hour; complications include fluid deficit and electrolyte disturbance, hypothermia, infections, skin damage with pressure ulcers, rhabdomyolysis and acute renal failure; hospitalisation and mortality rise in the first year; a one-year cohort cited in the paper reports that 60% of fallers with a long lie of at least one hour were readmitted and 29% moved to long-term care (PDF pp. 1, 7). | None: the paper has NO hospital-stay figure (18.4 or 4.2 days) and NO mortality odds ratio of 2.45. Those numbers must not be attributed to it. | Analyzes clinical pathology retrospectively; lacks an active robotic engineering intervention capable of compressing discovery latency to under 30 seconds. | **Devanshi Sachin Kambli (B029)** |
+| **Chen et al. (2021)**<br>`10.1109/ICET51757.2021.9450950` | *IEEE International Conference on Electronics Technology (ICET)* | NanoDet-Lite (ShuffleNetV2 0.5x backbone, FPN and PAN neck, Generalized Focal Loss) running on a Raspberry Pi 4B for a mobile robot, with a person-following module after detection. mAP 0.912, model size 2.17 MB; 22.03 FPS and mAP 0.902 in the ncnn framework (PDF pp. 1, 3-5). | Quality Focal Loss QFL = -|y - sigma|^beta ((1 - y) log(1 - sigma) + y log sigma) (eq 1, PDF p. 3). The paper has NO ellipse-fitting, axis-ratio or background-subtraction rule. | Evaluated on flat 2D images without multi-body contact dynamics, domestic furniture obstacle avoidance, or simulated recovery confirmation. | **Kamakshi Bahuguna (E007) & Devanshi Sachin Kambli (B029)** |
 
 ---
 
@@ -40,10 +42,10 @@ This dossier provides:
 * **Verified Active DOI:** [10.1177/20552076241233690](https://doi.org/10.1177/20552076241233690)
 
 #### Technical Methodology
-Lightweight edge pose estimation utilizing MediaPipe/BlazePose skeletal landmarks with Random Forest classification on UR Fall and Le2i datasets.
+Cascaded (dual-stage) random forests on five features from BlazePose's 33 landmarks: contour height, contour width, aspect ratio, centroid height and vertical velocity. UR Fall and part of the Le2i dataset; 89.99% accuracy, 29.7 FPS on a laptop CPU (PDF pp. 1, 6-7).
 
 #### Mathematical Formulations Extracted
-* Aspect ratio $AR = \frac{w_b}{h_b}$; vertical centroid velocity $v_z = \frac{z_c(t) - z_c(t-\Delta t)}{\Delta t}$; fall trigger threshold $v_z < -1.8\text{ m/s} \land AR > 1.3$.
+* Width-to-height ratio r = w_contour / h_contour with w, h from the min and max of the 33 landmarks (eqs 1-3); centroid height h_centroid from the hip midpoint to the foot midpoint (eq 4); vertical velocity from the change of h_centroid per frame step (eq 5); classifier = random forests (eq 6). The paper gives NO fixed threshold such as v_z < -1.8 m/s or AR > 1.3: those are our own values, fitted on the dev split.
 
 #### Direct Applicability to MDRIIA_GROUP_02 Implementation
 This publication establishes the empirical and theoretical benchmark for MDRIIA_GROUP_02. The algorithmic parameters and constraint formulations directly inform the controller design in `src/control/behavior.py` and `src/vision/fall_detector.py` and the validation framework in `outputs/experiments/<split>/analysis` (generated by `src/experiments/analyze.py` from the seeded runs).
@@ -57,10 +59,10 @@ This publication establishes the empirical and theoretical benchmark for MDRIIA_
 * **Verified Active DOI:** [10.1016/j.mex.2025.103623](https://doi.org/10.1016/j.mex.2025.103623)
 
 #### Technical Methodology
-Two-stage perception architecture combining YOLO bounding-box detection with MediaPipe joint coordinate extraction for fall classification.
+YOLO person detection (confidence above 80%) followed by MediaPipe landmarks; body proportions from Euclidean distances between landmarks (upper-body height, leg height), activity ratio (sitting below 0.5, walking above 1.2) and bounding-box aspect ratio below 0.9; an SMS alert through Twilio. 96.06% accuracy, 100% recall (PDF pp. 2-3).
 
 #### Mathematical Formulations Extracted
-* Keypoint angle $\theta = \arccos\left(\frac{\mathbf{v}_1 \cdot \mathbf{v}_2}{\|\mathbf{v}_1\| \|\mathbf{v}_2\|}\right)$; torso inclination angle with floor normal.
+* h_upper = d(shoulder,hip) summed over both sides, h_leg = d(hip,knee) summed over both sides, activity ratio = h_upper / h_leg, aspect_ratio from the YOLO box. The paper has NO joint-angle (arccos) formula.
 
 #### Direct Applicability to MDRIIA_GROUP_02 Implementation
 This publication establishes the empirical and theoretical benchmark for MDRIIA_GROUP_02. The algorithmic parameters and constraint formulations directly inform the controller design in `src/control/behavior.py` and `src/vision/fall_detector.py` and the validation framework in `outputs/experiments/<split>/analysis` (generated by `src/experiments/analyze.py` from the seeded runs).
@@ -74,10 +76,10 @@ This publication establishes the empirical and theoretical benchmark for MDRIIA_
 * **Verified Active DOI:** [10.3390/designs6060125](https://doi.org/10.3390/designs6060125)
 
 #### Technical Methodology
-System engineering and physical design of an autonomous assistive robot tested in geriatric daycare facilities.
+Design and implementation phases of the socially assistive robot CLARA from 2016 to 2022 and its CORTEX cognitive architecture, used in hospital and care settings. The robot height was set at 1.2 m so the user is comfortable in human-robot interaction sessions (PDF p. 4).
 
 #### Mathematical Formulations Extracted
-* Mast center-of-mass height $h_{\text{mast}} \in [1.10, 1.20]\text{ m}$; overturning moment condition $M_{\text{stab}} = m_{\text{base}} g \frac{w_{\text{base}}}{2} > m_{\text{mast}} a_{\max} h_{\text{mast}}$.
+* None: the paper contains no mast stability or overturning formula. Our tip-over limit a_tip = g b / h is our own derivation, checked in tests/test_robot.py.
 
 #### Direct Applicability to MDRIIA_GROUP_02 Implementation
 This publication establishes the empirical and theoretical benchmark for MDRIIA_GROUP_02. The algorithmic parameters and constraint formulations directly inform the controller design in `src/control/behavior.py` and `src/vision/fall_detector.py` and the validation framework in `outputs/experiments/<split>/analysis` (generated by `src/experiments/analyze.py` from the seeded runs).
@@ -91,10 +93,10 @@ This publication establishes the empirical and theoretical benchmark for MDRIIA_
 * **Verified Active DOI:** [10.1109/TCE.2020.3021398](https://doi.org/10.1109/TCE.2020.3021398)
 
 #### Technical Methodology
-Non-intrusive fall detection utilizing Channel State Information (CSI) variance in WiFi subcarriers processed via RNN/LSTM.
+Device-free WiFi sensing: CSI amplitude variation, discrete wavelet transform denoising and an LSTM-based recurrent network over six motions (jumping, walking, bending, falling, standing up, lying), with a web application for alerts (PDF pp. 3-9).
 
 #### Mathematical Formulations Extracted
-* CSI phase difference $\Delta \phi = \arg(H_i) - \arg(H_j)$; dynamic time warping distance metric across multi-path indoor reflections.
+* CSI amplitude f(t) of the subcarriers, discrete wavelet transform (approximation and detail coefficients), LSTM gates (forget, input, output). The paper uses amplitude, NOT a CSI phase difference or dynamic time warping.
 
 #### Direct Applicability to MDRIIA_GROUP_02 Implementation
 This publication establishes the empirical and theoretical benchmark for MDRIIA_GROUP_02. The algorithmic parameters and constraint formulations directly inform the controller design in `src/control/behavior.py` and `src/vision/fall_detector.py` and the validation framework in `outputs/experiments/<split>/analysis` (generated by `src/experiments/analyze.py` from the seeded runs).
@@ -108,10 +110,10 @@ This publication establishes the empirical and theoretical benchmark for MDRIIA_
 * **Verified Active DOI:** [10.1186/s12877-022-03258-2](https://doi.org/10.1186/s12877-022-03258-2)
 
 #### Technical Methodology
-Clinical review detailing morbidity consequences (rhabdomyolysis, dehydration, hypothermia, acute renal failure) of remaining on the floor for > 1 hour.
+Scoping review (Arksey and O'Malley six steps, PRISMA-ScR) of care options for long lies. One in eight older fallers lie on the floor for more than an hour; complications include fluid deficit and electrolyte disturbance, hypothermia, infections, skin damage with pressure ulcers, rhabdomyolysis and acute renal failure; hospitalisation and mortality rise in the first year; a one-year cohort cited in the paper reports that 60% of fallers with a long lie of at least one hour were readmitted and 29% moved to long-term care (PDF pp. 1, 7).
 
 #### Mathematical Formulations Extracted
-* Hospital stay duration $D_{\text{stay}} = 18.4\text{ days (long lie)} \text{ vs } 4.2\text{ days (immediate dispatch)}$; mortality odds ratio $OR = 2.45$ if unassisted > 1 hr.
+* None: the paper has NO hospital-stay figure (18.4 or 4.2 days) and NO mortality odds ratio of 2.45. Those numbers must not be attributed to it.
 
 #### Direct Applicability to MDRIIA_GROUP_02 Implementation
 This publication establishes the empirical and theoretical benchmark for MDRIIA_GROUP_02. The algorithmic parameters and constraint formulations directly inform the controller design in `src/control/behavior.py` and `src/vision/fall_detector.py` and the validation framework in `outputs/experiments/<split>/analysis` (generated by `src/experiments/analyze.py` from the seeded runs).
@@ -125,10 +127,10 @@ This publication establishes the empirical and theoretical benchmark for MDRIIA_
 * **Verified Active DOI:** [10.1109/ICET51757.2021.9450950](https://doi.org/10.1109/ICET51757.2021.9450950)
 
 #### Technical Methodology
-Integration of mobile robot camera perspective with OpenCV background subtraction and ellipse fitting to detect recumbent human posture.
+NanoDet-Lite (ShuffleNetV2 0.5x backbone, FPN and PAN neck, Generalized Focal Loss) running on a Raspberry Pi 4B for a mobile robot, with a person-following module after detection. mAP 0.912, model size 2.17 MB; 22.03 FPS and mAP 0.902 in the ncnn framework (PDF pp. 1, 3-5).
 
 #### Mathematical Formulations Extracted
-* Major-to-minor axis ratio $\lambda = \frac{a}{b}$; center displacement velocity $\dot{c}_y = \frac{y(t) - y(t-\Delta t)}{\Delta t}$; fall alarm condition $\lambda < 0.85 \land \dot{c}_y > \tau_{\text{fall}}$.
+* Quality Focal Loss QFL = -|y - sigma|^beta ((1 - y) log(1 - sigma) + y log sigma) (eq 1, PDF p. 3). The paper has NO ellipse-fitting, axis-ratio or background-subtraction rule.
 
 #### Direct Applicability to MDRIIA_GROUP_02 Implementation
 This publication establishes the empirical and theoretical benchmark for MDRIIA_GROUP_02. The algorithmic parameters and constraint formulations directly inform the controller design in `src/control/behavior.py` and `src/vision/fall_detector.py` and the validation framework in `outputs/experiments/<split>/analysis` (generated by `src/experiments/analyze.py` from the seeded runs).
@@ -152,7 +154,7 @@ This publication establishes the empirical and theoretical benchmark for MDRIIA_
 Prior computer vision models assume static overhead cameras. When placed on a moving domestic companion, camera ego-motion and mast vibrations trigger false alarms during routine navigation.
 
 ### GAP-2: The 'Long Lie' Resuscitation Latency Bottleneck
-Commercial pendant panic buttons require conscious activation, which is impossible in syncope or traumatic head injury. Unassisted falls exceed 1 hour in 50% of elder cases.
+Commercial pendant panic buttons require conscious activation, which is impossible in syncope or traumatic head injury. Per Kubitza et al. (2022, PDF p. 1) about one in eight older people who fall report lying on the floor for more than an hour, and more than half of older people living alone cannot get up or get help alone after a fall. (An earlier line here, '50% of elder cases', was not supported.)
 
 ### GAP-3: Absence of Physical Proximity Verification
 Remote telecare systems lack mobile base relocation to visually inspect breathing or establish clear bi-directional line-of-sight audio with the fallen senior.
@@ -162,7 +164,7 @@ Remote telecare systems lack mobile base relocation to visually inspect breathin
 
 ## 6. Proposed Architectural Innovation & Value Proposition
 
-Group 02 combines an ego-motion-compensated MediaPipe landmark classifier with a MuJoCo-simulated companion AMR featuring a 1.15 m elevated mast, dynamic obstacle avoidance, and automated SOS dispatch within 12.4 seconds of fall impact.
+Group 02 combines a threshold-based MediaPipe landmark detector (aspect ratio, hip descent, torso angle; no ego-motion compensation: the robot judges her response only while it stands still) with a MuJoCo-simulated companion robot with a 1.15 m camera on a 1.10 m mast, obstacle avoidance and simulated dispatch. Measured in 120 seeded trials (guide robot): median 48.8 s from floor contact to dispatch, every dispatch within 100 s (the earlier compact robot: median 40 s). The '12.4 seconds' in an earlier version of this file was not a measured value.
 
 ---
 
