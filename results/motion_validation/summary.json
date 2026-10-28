@@ -1,0 +1,46 @@
+{
+ "trials": 30,
+ "logging_rate_hz": 499.99999999999955,
+ "tracking_rmse_approach_m": {
+  "n": 12,
+  "mean": 0.124281818010411,
+  "sd": 0.32658704761605056,
+  "median": 0.02219453496431876
+ },
+ "tracking_rmse_follow_m": {
+  "n": 6,
+  "mean": 0.1678811164377514,
+  "sd": 0.3519937015990586,
+  "median": 0.026469035730973194
+ },
+ "tracking_rmse_all_paths_m": {
+  "n": 30,
+  "mean": 0.18470996603041442,
+  "sd": 0.3359733580121403,
+  "median": 0.05227019653442534
+ },
+ "control_effort_total_Nm2s": {
+  "n": 30,
+  "mean": 94.62645269252738,
+  "sd": 114.46800430165001,
+  "median": 70.74258499699928
+ },
+ "control_effort_approach_Nm2s": {
+  "n": 30,
+  "mean": 14.680369333936854,
+  "sd": 33.42196916603269,
+  "median": 0.0
+ },
+ "wheel_torque_max_Nm": {
+  "n": 30,
+  "mean": 3.0,
+  "sd": 0.0,
+  "median": 3.0
+ },
+ "wheel_torque_saturated_fraction": {
+  "n": 30,
+  "mean": 0.03263442368179667,
+  "sd": 0.03935213246471855,
+  "median": 0.01737082731754217
+ }
+}

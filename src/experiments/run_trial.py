@@ -225,6 +225,8 @@ def run_robot(ctx, out_dir, cfg=None):
                 vacuum_x=vacp[0], vacuum_y=vacp[1], vacuum_dist_m=float(np.hypot(*(vacp[:2] - tp[:2]))),
                 det_hip_z=detector.features.get("hip_z", float("nan")), det_pitch_deg=detector.features.get("pitch", float("nan")),
                 bytes_off_board=comp.disp.bytes_off_board))
+        if cfg.get("on_step"):
+            cfg["on_step"](t, comp, d, m, rb)                  # every physics step (500 Hz): used by the motion-validation run
         mujoco.mj_step(m, d)
         step += 1
         if comp.state == "ALERT" and t - comp.t_alert > cfg.get("post_alert_s", POST_ALERT_S):
