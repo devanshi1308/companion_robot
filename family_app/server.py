@@ -36,6 +36,9 @@ def make_handler(feed, users):
             pass
 
         def _user(self):
+            auth = self.headers.get("Authorization", "")
+            if auth.startswith("Bearer "):                         # the phone app sends the token it got at sign-in
+                return users.user_for(auth[7:].strip())
             c = SimpleCookie(self.headers.get("Cookie", ""))
             return users.user_for(c[COOKIE].value) if COOKIE in c else None
 
@@ -104,7 +107,10 @@ def make_handler(feed, users):
                 tok = users.login(req.get("user", ""), req.get("password", ""))
                 if tok is None:
                     return self._send(401, dict(error="wrong username or password (5 wrong tries lock the account for a minute)"))
-                return self._send(200, dict(user=users.user_for(tok)), headers={"Set-Cookie": f"{COOKIE}={tok}; HttpOnly; SameSite=Strict; Path=/"})
+                out = dict(user=users.user_for(tok))
+                if self.headers.get("X-Client") == "mobile":       # only the phone app gets the token in the body (the web page keeps it in an HttpOnly cookie)
+                    out["token"] = tok
+                return self._send(200, out, headers={"Set-Cookie": f"{COOKIE}={tok}; HttpOnly; SameSite=Strict; Path=/"})
             me = self._user()
             if u.path == "/api/logout":
                 c = SimpleCookie(self.headers.get("Cookie", ""))
@@ -133,8 +139,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument("--lan", action="store_true", help="listen on the local Wi-Fi so the phone app can connect (demo accounts only, no HTTPS: use on a network you trust)")
     ap.add_argument("--dir", default=DEFAULT_DIR)
     a = ap.parse_args()
+    if a.lan:
+        a.host = "0.0.0.0"
     feed = FamilyFeed(a.dir, reset=False)
     srv = ThreadingHTTPServer((a.host, a.port), make_handler(feed, Users()))
     print(f"Family platform on http://{a.host}:{a.port}  (feed: {a.dir}). Demo logins: rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo", flush=True)
