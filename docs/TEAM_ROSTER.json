@@ -10,7 +10,9 @@
       "name": "Kamakshi Bahuguna",
       "role": "Computer Vision, Pose Kinematics & Edge Inference Specialist",
       "assigned_branch": "feat/e007-vision-pose-kinematics",
-      "viva_focus": "MediaPipe skeletal landmark tracking, bounding-box aspect ratio inversion, vertical centroid velocity thresholding, and confusion matrix validation."
+      "viva_focus": "MediaPipe skeletal landmark tracking, bounding-box aspect ratio inversion, vertical centroid velocity thresholding, and confusion matrix validation.",
+      "github_handle": "Kamakshi0507",
+      "institutional_email": "TO_FILL (official @nmims.edu.in address)"
     },
     {
       "roll_no": "B029",
@@ -18,7 +20,9 @@
       "name": "Devanshi Sachin Kambli",
       "role": "MuJoCo Physics, Domestic Navigation & Healthcare Economics Lead",
       "assigned_branch": "feat/b029-mujoco-physics-navigation",
-      "viva_focus": "Differential mobile base physics, pan-tilt mast observation angles, post-fall approach trajectory, and 'long lie' clinical cost model."
+      "viva_focus": "Differential mobile base physics, pan-tilt mast observation angles, post-fall approach trajectory, and 'long lie' clinical cost model.",
+      "github_handle": "devanshi1308",
+      "institutional_email": "TO_FILL (official @nmims.edu.in address)"
     }
   ],
   "foundational_papers": [
