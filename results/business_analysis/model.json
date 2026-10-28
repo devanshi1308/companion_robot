@@ -1,0 +1,299 @@
+{
+ "assumptions": {
+  "falls_per_year": {
+   "value": 1.2,
+   "source": "A1 falls per fall-prone older adult per year [research guide, not independently verified]"
+  },
+  "bed_days_saved": {
+   "value": 14.2,
+   "source": "A2 bed-days saved per early-dispatched fall, 18.4 - 4.2 [titles sheet; NO primary source found]"
+  },
+  "bed_day_in_att_days": {
+   "value": 3.0,
+   "source": "A3 one hospital bed-day in attendant-days [assumption, varied 1 to 5]"
+  },
+  "adl_events": {
+   "value": 1825.0,
+   "source": "A4 look-alike daily events per year, about 5 a day [research guide]"
+  },
+  "fd_cost_bed_days": {
+   "value": 0.65,
+   "source": "A5 one unnecessary emergency dispatch in bed-day equivalents [research guide, assumed]"
+  },
+  "capex": {
+   "value": 0.25,
+   "source": "A6 capital cost of the robot in attendant-years = 3 attendant-months [titles sheet, upper bound; varied 2 to 4 months]"
+  },
+  "life": {
+   "value": 5.0,
+   "source": "A7 service life in years [assumption, varied 3 to 7]"
+  },
+  "opex_robot": {
+   "value": 0.2,
+   "source": "A8 robot running cost per year in attendant-years [assumption, varied 0.10 to 0.30; standards manual limit kappa <= 0.25]"
+  },
+  "vigil_h_week": {
+   "value": 168.0,
+   "source": "A9 continuous vigilance hours per week for one patient [research guide]"
+  },
+  "alpha": {
+   "value": 0.0,
+   "source": "A10 share of vigilance hours the robot really replaces [assumption; base 0 = clinical value only; varied 0 to 0.15]"
+  },
+  "cam_capex": {
+   "value": 0.025,
+   "source": "A11 capital cost of one fixed camera, 10% of the robot [assumption]"
+  },
+  "cam_opex": {
+   "value": 0.03,
+   "source": "A12 running cost of one fixed camera per year [assumption]"
+  },
+  "service_rate": {
+   "value": 12.0,
+   "source": "A13 alerts one caregiver can handle per hour, 5 minutes each [assumption]"
+  },
+  "hours_per_fte": {
+   "value": 2080.0,
+   "source": "A14 hours per full-time attendant-year [standards manual]"
+  }
+ },
+ "systems": {
+  "Baymax, guide robot (measured)": {
+   "sens": 0.6511627906976745,
+   "phi": 0.025974025974025976,
+   "tp": 28,
+   "falls": 43,
+   "fp": 2,
+   "neg": 77,
+   "clinical": 0.09119847085058934,
+   "labour": 0.0,
+   "cap_year": 0.05,
+   "opex": 0.2,
+   "false_dispatch": 0.2532467532467532,
+   "benefit": 0.09119847085058934,
+   "cost": 0.5032467532467533,
+   "net": -0.4120482823961639,
+   "roi": -0.8187798127614095,
+   "kappa": 0.45324675324675323,
+   "ncri": 0.5467532467532468,
+   "payback_months": 5.486935866983373,
+   "benefit_cost_ratio": 0.18122018723859043
+  },
+  "Compact robot (earlier run)": {
+   "sens": 0.8604651162790697,
+   "phi": 0.0,
+   "tp": 37,
+   "falls": 43,
+   "fp": 0,
+   "neg": 77,
+   "clinical": 0.1205122650525645,
+   "labour": 0.0,
+   "cap_year": 0.05,
+   "opex": 0.2,
+   "false_dispatch": 0.0,
+   "benefit": 0.1205122650525645,
+   "cost": 0.25,
+   "net": -0.12948773494743548,
+   "roi": -0.5179509397897419,
+   "kappa": 0.2,
+   "ncri": 0.8,
+   "payback_months": 3.75,
+   "benefit_cost_ratio": 0.482049060210258
+  },
+  "4 fixed cameras": {
+   "sens": 0.46511627906976744,
+   "phi": 0.0,
+   "tp": 20,
+   "falls": 43,
+   "fp": 0,
+   "neg": 77,
+   "clinical": 0.06514176489327811,
+   "labour": 0.0,
+   "cap_year": 0.02,
+   "opex": 0.12,
+   "false_dispatch": 0.0,
+   "benefit": 0.06514176489327811,
+   "cost": 0.13999999999999999,
+   "net": -0.07485823510672188,
+   "roi": -0.5347016793337277,
+   "kappa": 0.12,
+   "ncri": 0.88,
+   "payback_months": 1.3636363636363638,
+   "benefit_cost_ratio": 0.46529832066627225
+  },
+  "1 fixed camera": {
+   "sens": 0.046511627906976744,
+   "phi": 0.0,
+   "tp": 2,
+   "falls": 43,
+   "fp": 0,
+   "neg": 77,
+   "clinical": 0.00651417648932781,
+   "labour": 0.0,
+   "cap_year": 0.005,
+   "opex": 0.03,
+   "false_dispatch": 0.0,
+   "benefit": 0.00651417648932781,
+   "cost": 0.034999999999999996,
+   "net": -0.028485823510672185,
+   "roi": -0.8138806717334911,
+   "kappa": 0.03,
+   "ncri": 0.97,
+   "payback_months": 0.309278350515464,
+   "benefit_cost_ratio": 0.18611932826650887
+  }
+ },
+ "break_even": {
+  "alpha_star": 0.09810673390384855,
+  "false_dispatch_rate_for_kappa_025": 0.005128205128205128,
+  "bed_day_ratio_clinical_only": 8.223822099262241,
+  "capex_attendant_years_for_zero_net": 0.0,
+  "vigilance_fte": 4.2
+ },
+ "alpha_table": [
+  {
+   "alpha": 0,
+   "H_hours_per_day": 0,
+   "fte": 0.0,
+   "net": -0.4120482823961639,
+   "roi": -0.8187798127614095,
+   "net_no_false_dispatch": -0.15880152914941065,
+   "roi_no_fd": -0.6352061165976426
+  },
+  {
+   "alpha": 0.05,
+   "H_hours_per_day": 1.2000000000000002,
+   "fte": 0.21000000000000002,
+   "net": -0.20204828239616396,
+   "roi": -0.40148949018076446,
+   "net_no_false_dispatch": 0.05119847085058932,
+   "roi_no_fd": 0.20479388340235727
+  },
+  {
+   "alpha": 0.1,
+   "H_hours_per_day": 2.4000000000000004,
+   "fte": 0.42000000000000004,
+   "net": 0.007951717603836062,
+   "roi": 0.01580083239988069,
+   "net_no_false_dispatch": 0.26119847085058934,
+   "roi_no_fd": 1.0447938834023573
+  },
+  {
+   "alpha": 0.15,
+   "H_hours_per_day": 3.5999999999999996,
+   "fte": 0.63,
+   "net": 0.21795171760383591,
+   "roi": 0.43309115498052553,
+   "net_no_false_dispatch": 0.4711984708505892,
+   "roi_no_fd": 1.8847938834023568
+  },
+  {
+   "alpha": 0.25,
+   "H_hours_per_day": 6.0,
+   "fte": 1.05,
+   "net": 0.6379517176038361,
+   "roi": 1.2676718001418161,
+   "net_no_false_dispatch": 0.8911984708505893,
+   "roi_no_fd": 3.5647938834023574
+  }
+ ],
+ "monte_carlo": {
+  "Baymax, guide robot (measured)": {
+   "p_pos": 0.2227,
+   "p_kappa": 0.0476,
+   "q": [
+    -0.8216208826917837,
+    -0.22575214825339193,
+    0.20487629343252142
+   ],
+   "roi_med": -0.3961416340812913
+  },
+  "Compact robot (earlier run)": {
+   "p_pos": 0.5274,
+   "p_kappa": 0.33755,
+   "q": [
+    -0.3601241210656417,
+    0.01755199578679456,
+    0.36915634015115045
+   ],
+   "roi_med": 0.04906216644389415
+  },
+  "4 fixed cameras": {
+   "p_pos": 0.65095,
+   "p_kappa": 0.6476,
+   "q": [
+    -0.2833536229483635,
+    0.09825729066362947,
+    0.44406885560877185
+   ],
+   "roi_med": 0.4156833173757276
+  },
+  "1 fixed camera": {
+   "p_pos": 0.7642,
+   "p_kappa": 0.8311,
+   "q": [
+    -0.20930361616760187,
+    0.16689792420731925,
+    0.5028103308204651
+   ],
+   "roi_med": 1.3407696764102042
+  }
+ },
+ "mc_clinical_only_p_pos": {
+  "Baymax, guide robot (measured)": 0.0,
+  "Compact robot (earlier run)": 0.00075,
+  "4 fixed cameras": 0.0014,
+  "1 fixed camera": 0.0003
+ },
+ "tornado": {
+  "value of a bed-day (1 to 5 attendant-days)": [
+   -0.30401609413205466,
+   -0.5200804706602732
+  ],
+  "share of vigilance replaced (0 to 0.15)": [
+   -0.4120482823961639,
+   0.21795171760383591
+  ],
+  "robot running cost (0.30 to 0.10)": [
+   -0.5120482823961638,
+   -0.3120482823961639
+  ],
+  "capital cost (4 to 2 attendant-months)": [
+   -0.42871494906283053,
+   -0.3953816157294972
+  ],
+  "falls per year (0.6 to 1.5)": [
+   -0.4576475178214586,
+   -0.3892486646835166
+  ],
+  "bed-days saved per fall (6 to 14.2)": [
+   -0.4647121880986169,
+   -0.4120482823961639
+  ],
+  "service life (3 to 7 years)": [
+   -0.44538161572949714,
+   -0.3977625681104496
+  ]
+ },
+ "capacity": {
+  "alerts_per_patient_hour": 0.020922533715620684,
+  "service_rate": 12.0,
+  "desk": [
+   {
+    "caregivers": 1,
+    "patients_per_desk": 95,
+    "rho": 0.16563672524866377
+   },
+   {
+    "caregivers": 2,
+    "patients_per_desk": 468,
+    "rho": 0.4079894074546033
+   },
+   {
+    "caregivers": 3,
+    "patients_per_desk": 923,
+    "rho": 0.5364305172088303
+   }
+  ]
+ }
+}
