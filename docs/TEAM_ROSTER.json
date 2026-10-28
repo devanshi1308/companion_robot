@@ -8,7 +8,7 @@
       "roll_no": "E007",
       "sap_id": "70362400022",
       "name": "Kamakshi Bahuguna",
-      "role": "Computer Vision, Kinematic Pose Estimation & Alert Pipeline Lead",
+      "role": "Computer Vision, Pose Kinematics & Edge Inference Specialist",
       "assigned_branch": "feat/e007-vision-pose-kinematics",
       "viva_focus": "MediaPipe skeletal landmark tracking, bounding-box aspect ratio inversion, vertical centroid velocity thresholding, and confusion matrix validation."
     },
@@ -16,7 +16,7 @@
       "roll_no": "B029",
       "sap_id": "70362400037",
       "name": "Devanshi Sachin Kambli",
-      "role": "MuJoCo Mobile Base Modeler, Telemetry & CSBS Healthcare Economics Specialist",
+      "role": "MuJoCo Physics, Domestic Navigation & Healthcare Economics Lead",
       "assigned_branch": "feat/b029-mujoco-physics-navigation",
       "viva_focus": "Differential mobile base physics, pan-tilt mast observation angles, post-fall approach trajectory, and 'long lie' clinical cost model."
     }
@@ -85,5 +85,5 @@
     "submission_status": "PENDING",
     "submission_instructions": "Paste your published LinkedIn post URL into 'linkedin_url' and submit a Pull Request"
   },
-  "verification_note": "Roles taken from the course titles sheet and dossier. Papers read against their PDFs on 2026-10-28; see docs/LITERATURE_REVIEW_AND_FOUNDATIONAL_PAPERS.md (correction notice). linkedin_url stays PENDING_SUBMISSION until the post is published."
+  "verification_note": "Roles kept as in the course scaffold. Papers read against their PDFs on 2026-10-28; see docs/LITERATURE_REVIEW_AND_FOUNDATIONAL_PAPERS.md (correction notice). linkedin_url stays PENDING_SUBMISSION until the post is published."
 }
