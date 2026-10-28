@@ -1,0 +1,10 @@
+{
+  "name": "Baymax family app",
+  "short_name": "Baymax",
+  "description": "See how she is, live, and get alerts from Baymax (simulation demo).",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f8fb",
+  "theme_color": "#2b5fd9",
+  "icons": [{"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]
+}

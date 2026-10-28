@@ -1,0 +1,8 @@
+trial,subtype,t_event,false_alarm,t_first_suspect,frames_with_no_person,mean_hip_vis_when_seen,mean_shoulder_vis_when_seen,gross_error_samples,mean_hip_vis_at_gross_error
+dev_001,sit_sofa_abrupt,7.6,False,,0.79,0.36,0.98,0,
+dev_007,sit_sofa_abrupt,9.8,False,,0.58,0.9,0.98,35,0.99
+dev_012,sit_sofa_abrupt,8.7,False,,1.0,,,0,
+dev_019,sit_sofa_slow,9.1,False,,1.0,,,0,
+dev_020,sit_sofa_slow,7.7,True,6.1,0.53,0.96,0.99,59,0.95
+dev_022,sit_sofa_slow,10.2,False,,1.0,,,0,
+dev_027,sit_sofa_abrupt,10.1,False,,1.0,,,0,

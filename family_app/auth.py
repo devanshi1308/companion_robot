@@ -5,7 +5,7 @@ Logins for the family platform: each family member has their own username and pa
     token = users.login("rohan", "...")     # None if wrong; 5 wrong tries lock that user out for 60 s
     user  = users.user_for(token)           # dict(id, display) or None
 
-Demo accounts (made by `python src/family_platform/auth.py`, passwords are for this demo only): rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo.
+Demo accounts (made by `python family_app/auth.py`, passwords are for this demo only): rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo.
 Sessions live in memory (restarting the server signs everybody out) and travel in an HttpOnly, SameSite=Strict cookie.
 This is demo-grade: no HTTPS, no password reset; do not expose it beyond this computer.
 """
@@ -16,7 +16,7 @@ import os
 import secrets
 import time
 
-ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 DEFAULT_PATH = os.path.join(ROOT, "config", "family_users.json")
 DEMO = [("rohan", "Rohan (son)", "rohan-demo"), ("meera", "Meera (daughter)", "meera-demo"), ("iyer", "Mrs. Iyer (neighbour)", "iyer-demo")]
 ROUNDS = 200_000
