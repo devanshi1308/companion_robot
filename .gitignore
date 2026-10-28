@@ -30,3 +30,6 @@ GEMINI.md
 QODER.md
 CODEBUDDY.md
 opencode.jsonc
+
+# Local copies of published papers (licensed IEEE downloads must not be redistributed)
+docs/literature/papers/*.pdf
