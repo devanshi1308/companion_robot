@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg"><meta name="theme-color" content="#2b5fd9">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Family view: Baymax</title>
@@ -75,9 +76,13 @@ img#snap{max-width:100%;border-radius:10px;border:1px solid var(--line);display:
 @media (prefers-color-scheme: dark){.bub.in{background:#202c33;color:#e9edef}}
 .bub.me{align-self:flex-end}
 .sirenbox{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bad-bg);color:var(--bad);font-weight:650}
+#alerts{position:fixed;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;z-index:20;max-width:360px}
+.toast{background:#fff;border:1px solid #d9deea;border-left:5px solid #2b5fd9;border-radius:10px;padding:10px 12px;box-shadow:0 6px 18px rgba(0,0,0,.15);font-size:14px}
+.toast.urgent{border-left-color:#d6453d;background:#fff4f3}.toast b{display:block;margin-bottom:2px}
 </style>
 </head>
 <body>
+<div id="alerts" aria-live="assertive"></div>
 <div id="login"><form class="box" id="loginForm">
   <h1>Family view: Baymax</h1>
   <div class="note">Sign in to see how she is and to chat with Baymax.</div>
@@ -90,7 +95,7 @@ img#snap{max-width:100%;border-radius:10px;border:1px solid var(--line);display:
 <header>
   <div><h1 id="who">Family view</h1><div class="sub" id="sub">Waiting for the robot</div></div>
   <div class="spacer"></div>
-  <span class="chip" id="conn">not connected</span>
+  <span class="chip" id="conn">not connected</span><button id="btnNotify" style="padding:4px 10px">Turn on alerts</button><span class="note" id="lastUpd"></span>
   <span class="note" id="me"></span><button id="btnOut" style="padding:4px 10px">Sign out</button>
   <span class="clock" id="clock"></span>
 </header>
@@ -263,7 +268,7 @@ function showLogin(){$("login").style.display="flex"; me=null}
 async function loginSubmit(ev){ev.preventDefault(); $("loginErr").textContent="";
   const r=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user:$("lu").value,password:$("lp").value})}); const j=await r.json();
   if(!r.ok){$("loginErr").textContent=j.error||"sign-in failed";return}
-  me=j.user; $("lp").value=""; $("login").style.display="none"; events=[]; nEv=0; trail=[]; $("me").textContent="Signed in as "+me.display; poll()}
+  me=j.user; $("lp").value=""; $("login").style.display="none"; events=[]; nEv=0; trail=[]; alertsReady=false; $("me").textContent="Signed in as "+me.display; poll()}
 $("loginForm").addEventListener("submit",loginSubmit);
 $("btnOut").onclick=async()=>{await fetch("/api/logout",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}); showLogin()};
 async function sendChat(){const v=$("chatText").value.trim(); if(!v)return; $("chatText").value="";
@@ -310,10 +315,34 @@ async function poll(){
     if(!layout) layout=await (await fetch("/api/layout")).json();
     st=await (await fetch("/api/state")).json();
     const ev=await (await fetch("/api/events?since="+nEv)).json();
-    if(ev.events&&ev.events.length){events=events.concat(ev.events); renderEvents()} nEv=ev.next;
+    if(ev.events&&ev.events.length){handleNewEvents(ev.events); events=events.concat(ev.events); renderEvents()} nEv=ev.next; alertsReady=true; $("lastUpd").textContent="updated "+new Date().toLocaleTimeString();
     render(); renderChat();
   }catch(e){ $("conn").textContent="platform not reachable"; $("conn").className="chip bad" }
 }
+
+// ---- alerts: a banner on the page, a system notification and a beep when something is sent to this person ----
+let alertsReady=false, notifyOn=false, swReg=null;
+try{ notifyOn=localStorage.getItem("baymax_alerts")==="1" }catch(e){}
+if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").then(r=>{swReg=r}).catch(()=>{});
+function beep(urgent){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(), o=a.createOscillator(), g=a.createGain(); o.connect(g); g.connect(a.destination);
+  o.type="sine"; o.frequency.value=urgent?880:660; g.gain.value=0.08; o.start(); o.stop(a.currentTime+(urgent?0.6:0.25)) }catch(e){} }
+function pushAlert(title,body,urgent){
+  const box=$("alerts"), d=document.createElement("div"); d.className="toast"+(urgent?" urgent":""); d.innerHTML="<b></b><span></span>"; d.children[0].textContent=title; d.children[1].textContent=body; box.appendChild(d);
+  setTimeout(()=>d.remove(),urgent?60000:12000); beep(urgent);
+  if(notifyOn && "Notification" in window && Notification.permission==="granted"){
+    const o={body:body,icon:"/icon.svg",tag:"baymax-"+(urgent?"urgent":"info"),requireInteraction:!!urgent};
+    try{ swReg?swReg.showNotification(title,o):new Notification(title,o) }catch(e){} } }
+function handleNewEvents(list){
+  if(!alertsReady) return;                                  // the history that arrives at sign-in is not new
+  for(const e of list){
+    if(e.type==="sent"){ const urgent=["emergency","ambulance_call","siren_on"].includes(e.kind); pushAlert(urgent?"URGENT: Baymax":"Baymax", String(e.text||"").slice(0,220), urgent) }
+    else if(e.type==="momo" && e.kind==="first_aid_bystander"){ pushAlert("Baymax is calling for help near her", String(e.text||"").slice(0,160), true) } } }
+$("btnNotify").onclick=async()=>{
+  if(!("Notification" in window)){ pushAlert("Alerts","This browser cannot show system notifications; alerts still appear here.",false); return }
+  const r=await Notification.requestPermission(); notifyOn=(r==="granted");
+  try{ localStorage.setItem("baymax_alerts",notifyOn?"1":"0") }catch(e){}
+  $("btnNotify").textContent=notifyOn?"Alerts on":"Turn on alerts"; pushAlert("Alerts",notifyOn?"You will be notified here and on this device when Baymax sends something (simulation: nothing real is sent).":"Alerts stay on this page only.",false) };
+if(notifyOn && "Notification" in window && Notification.permission==="granted") $("btnNotify").textContent="Alerts on";
 setInterval(poll,500); setInterval(draw,50); poll();
 </script>
 </body>

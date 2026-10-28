@@ -1,8 +1,8 @@
 """
 Family platform: a small web page where signed-in family members see how she is, chat with Baymax (the companion robot) and ask it to do things.
 
-    python src/family_platform/server.py            then open http://127.0.0.1:8765 and sign in (start a simulation that writes the feed, see run_platform_demo.py)
-    demo accounts: rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo      (src/family_platform/auth.py)
+    python family_app/server.py            then open http://127.0.0.1:8765 and sign in (start a simulation that writes the feed, see run_platform_demo.py)
+    demo accounts: rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo      (family_app/auth.py)
 
 What you can do after signing in: read how she is (room, what she is doing, last seen, tablet taken or not and whether the robot SAW it, alerts, the siren), read
 the messages Baymax sent YOU, chat with Baymax (ask questions, ask it to remind her, check on her, tell her something, look up or down, send a picture, silence the
@@ -25,6 +25,7 @@ from publisher import LAYOUT  # noqa: E402
 
 COMMANDS = {"say", "remind", "check", "look", "snapshot", "siren_off"}
 COOKIE = "momo_session"
+STATIC = {"/manifest.webmanifest": ("manifest.webmanifest", "application/manifest+json"), "/sw.js": ("sw.js", "text/javascript"), "/icon.svg": ("icon.svg", "image/svg+xml")}
 
 
 def make_handler(feed, users):
@@ -61,6 +62,9 @@ def make_handler(feed, users):
             u = urlparse(self.path)
             if u.path == "/":
                 return self._send(200, page, "text/html; charset=utf-8")
+            if u.path in STATIC:                                   # the installable-app files carry no personal data, so they need no sign-in
+                name, ctype = STATIC[u.path]
+                return self._send(200, open(os.path.join(HERE, name), "rb").read(), ctype)
             me = self._user()
             if u.path == "/api/me":
                 return self._send(200, dict(user=me))

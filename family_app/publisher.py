@@ -14,7 +14,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 for sub in ("sim", "control", "agent"):
-    sys.path.insert(0, os.path.join(HERE, "..", sub))
+    sys.path.insert(0, os.path.join(HERE, "..", "src", sub))
 import apartment_layout as L  # noqa: E402
 from dispatch import clock  # noqa: E402
 
