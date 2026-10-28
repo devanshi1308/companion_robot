@@ -14,7 +14,7 @@ import json
 import os
 import time
 
-DEFAULT_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "outputs", "platform"))
+DEFAULT_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "outputs", "platform"))
 
 
 class FamilyFeed:

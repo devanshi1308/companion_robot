@@ -1,8 +1,8 @@
 """
 Family platform: a small web page where signed-in family members see how she is, chat with Baymax (the companion robot) and ask it to do things.
 
-    python src/family_platform/server.py            then open http://127.0.0.1:8765 and sign in (start a simulation that writes the feed, see run_platform_demo.py)
-    demo accounts: rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo      (src/family_platform/auth.py)
+    python family_app/server.py            then open http://127.0.0.1:8765 and sign in (start a simulation that writes the feed, see run_platform_demo.py)
+    demo accounts: rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo      (family_app/auth.py)
 
 What you can do after signing in: read how she is (room, what she is doing, last seen, tablet taken or not and whether the robot SAW it, alerts, the siren), read
 the messages Baymax sent YOU, chat with Baymax (ask questions, ask it to remind her, check on her, tell her something, look up or down, send a picture, silence the
@@ -25,6 +25,7 @@ from publisher import LAYOUT  # noqa: E402
 
 COMMANDS = {"say", "remind", "check", "look", "snapshot", "siren_off"}
 COOKIE = "momo_session"
+STATIC = {"/manifest.webmanifest": ("manifest.webmanifest", "application/manifest+json"), "/sw.js": ("sw.js", "text/javascript"), "/icon.svg": ("icon.svg", "image/svg+xml")}
 
 
 def make_handler(feed, users):
@@ -35,6 +36,9 @@ def make_handler(feed, users):
             pass
 
         def _user(self):
+            auth = self.headers.get("Authorization", "")
+            if auth.startswith("Bearer "):                         # the phone app sends the token it got at sign-in
+                return users.user_for(auth[7:].strip())
             c = SimpleCookie(self.headers.get("Cookie", ""))
             return users.user_for(c[COOKIE].value) if COOKIE in c else None
 
@@ -61,6 +65,9 @@ def make_handler(feed, users):
             u = urlparse(self.path)
             if u.path == "/":
                 return self._send(200, page, "text/html; charset=utf-8")
+            if u.path in STATIC:                                   # the installable-app files carry no personal data, so they need no sign-in
+                name, ctype = STATIC[u.path]
+                return self._send(200, open(os.path.join(HERE, name), "rb").read(), ctype)
             me = self._user()
             if u.path == "/api/me":
                 return self._send(200, dict(user=me))
@@ -100,7 +107,10 @@ def make_handler(feed, users):
                 tok = users.login(req.get("user", ""), req.get("password", ""))
                 if tok is None:
                     return self._send(401, dict(error="wrong username or password (5 wrong tries lock the account for a minute)"))
-                return self._send(200, dict(user=users.user_for(tok)), headers={"Set-Cookie": f"{COOKIE}={tok}; HttpOnly; SameSite=Strict; Path=/"})
+                out = dict(user=users.user_for(tok))
+                if self.headers.get("X-Client") == "mobile":       # only the phone app gets the token in the body (the web page keeps it in an HttpOnly cookie)
+                    out["token"] = tok
+                return self._send(200, out, headers={"Set-Cookie": f"{COOKIE}={tok}; HttpOnly; SameSite=Strict; Path=/"})
             me = self._user()
             if u.path == "/api/logout":
                 c = SimpleCookie(self.headers.get("Cookie", ""))
@@ -129,8 +139,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument("--lan", action="store_true", help="listen on the local Wi-Fi so the phone app can connect (demo accounts only, no HTTPS: use on a network you trust)")
     ap.add_argument("--dir", default=DEFAULT_DIR)
     a = ap.parse_args()
+    if a.lan:
+        a.host = "0.0.0.0"
     feed = FamilyFeed(a.dir, reset=False)
     srv = ThreadingHTTPServer((a.host, a.port), make_handler(feed, Users()))
     print(f"Family platform on http://{a.host}:{a.port}  (feed: {a.dir}). Demo logins: rohan / rohan-demo, meera / meera-demo, iyer / iyer-demo", flush=True)

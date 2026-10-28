@@ -5,7 +5,7 @@ Live demo of the family platform: the simulation runs (about real time) and writ
     MUJOCO_GL=glfw python src/sim/run_platform_demo.py --scenario cardiac --sound
     options: --agent (Baymax as a Strands agent; uses ANTHROPIC_API_KEY / OLLAMA_HOST / AWS credentials if present, else offline wording)
              --consent (she agrees to face-blurred snapshots)   --pace 1.0 (simulated seconds per wall second, 0 = as fast as possible)
-             --no-serve (write the feed only; start src/family_platform/server.py yourself)
+             --no-serve (write the feed only; start family_app/server.py yourself)
 
 Scenarios (DEMO ONLY, not part of the measured experiment set):
     medicine  she sits on the sofa; at 08:00 Baymax reminds her, she says OK, and takes the tablet (hand to mouth): the family page shows 'taken, seen'
@@ -21,8 +21,10 @@ import threading
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+DEMO_START = (-1.05, -1.10, 180.0)     # where the live demos start: from here the robot sees her fall side-on (the experiments start from random places)
 ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
-for sub in ("experiments", "family_platform", "agent", "control", "sim"):
+sys.path.insert(0, os.path.join(ROOT, "family_app"))
+for sub in ("experiments", "agent", "control", "sim"):
     sys.path.insert(0, os.path.join(ROOT, "src", sub))
 import apartment_layout as L  # noqa: E402
 import dispatch  # noqa: E402
@@ -44,10 +46,10 @@ def make_spec(name):
                     conscious=True, reply_latency=4.0), (-1.05, -1.10, 150.0)
     if name == "cardiac":
         return dict(BASE, id="demo_cardiac", kind="fall", subtype="cardiac", route="bed_to_living", path=L.ROUTES["bed_to_living"].tolist(), speed=0.8,
-                    prodrome_start_s=6.0, prodrome_s=9.0, chest_side="right", omega=0.6, tau=0.12, side=1.0, lateral=False, conscious=False, reply_latency=3.0), L.ROBOT_DOCK
+                    prodrome_start_s=6.0, prodrome_s=9.0, chest_side="right", omega=0.6, tau=0.12, side=1.0, lateral=False, conscious=False, reply_latency=3.0), DEMO_START
     if name == "fall":
         return dict(BASE, id="demo_fall", kind="fall", subtype="trip", route="bed_to_living", path=L.ROUTES["bed_to_living"].tolist(), speed=0.75, fall_s=8.0,
-                    omega=1.9, tau=0.45, conscious=True, reply_latency=4.5), L.ROBOT_DOCK
+                    omega=1.9, tau=0.45, conscious=True, reply_latency=4.5), DEMO_START
     raise ValueError(name)
 
 

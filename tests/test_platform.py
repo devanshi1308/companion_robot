@@ -15,7 +15,8 @@ import mujoco
 import numpy as np
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-for sub in ("family_platform", "agent", "sim", "experiments", "control"):
+sys.path.insert(0, os.path.join(ROOT, "family_app"))
+for sub in ("agent", "sim", "experiments", "control"):
     sys.path.insert(0, os.path.join(ROOT, "src", sub))
 from feed import FamilyFeed  # noqa: E402
 import server as SV  # noqa: E402
