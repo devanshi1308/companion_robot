@@ -84,7 +84,7 @@ def main():
     pp = os.path.join(ROOT, "outputs", "experiments", "frozen_prodrome.json")
     if os.path.exists(pp):
         pcfg = json.load(open(pp))["prodrome_config"]
-    params = dict(vertical_sweep=True, siren=True, cardiac_cues=True, prodrome_cfg=pcfg, snapshot_consent=a.consent)
+    params = dict(approach_vmax=float(os.environ.get('COMPANION_SPEED', '0.75')), search_vmax=float(os.environ.get('COMPANION_SPEED', '0.75')), vertical_sweep=True, siren=True, cardiac_cues=True, prodrome_cfg=pcfg, snapshot_consent=a.consent)
 
     if not a.no_serve:
         from http.server import ThreadingHTTPServer
