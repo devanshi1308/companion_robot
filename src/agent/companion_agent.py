@@ -67,7 +67,7 @@ def pick_model():
         if os.environ.get("OLLAMA_HOST"):
             from strands.models.ollama import OllamaModel
             mid = os.environ.get("COMPANION_OLLAMA_MODEL", "llama3.2")
-            return OllamaModel(os.environ["OLLAMA_HOST"], model_id=mid), f"Ollama {mid} (local)", False
+            return OllamaModel(os.environ["OLLAMA_HOST"], model_id=mid, keep_alive="30m", max_tokens=140, temperature=0.4), f"Ollama {mid} (local)", False
         import boto3
         if boto3.Session().get_credentials() is not None:
             from strands.models import BedrockModel

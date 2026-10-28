@@ -26,6 +26,7 @@ def _doses(f):
 
 
 def answer(text, f):
+    answer.fixed = False                                       # set True when the reply is fixed, reviewed text that no model may re-word
     t = text.lower().strip()
     p, pe, rb, al = f.get("patient", "She"), f.get("person", {}), f.get("robot", {}), f.get("alert", {})
     actions = []
@@ -34,13 +35,16 @@ def answer(text, f):
     status_q = bool(re.search(r"has she|did she|was she|taken|is she", t))
     if any(k in t for k in URGENT) and not re.search(r"has she|did she|was she|taken|tablet", t):
         steps = health_lookup(text)
+        answer.fixed = True                                       # the call-108 answer is never re-worded
         return ("If someone has chest pain, cannot breathe, is unconscious or badly hurt, call 108 now. I cannot place calls on request. "
                 + (f"The ambulance has already been called for {p}. " if al.get("emergency") else (al.get("title", "") + " "))
                 + (steps or "")).strip(), actions
     if not status_q:
         kb = health_lookup(text)                                  # CPR and other first aid, medicine facts: fixed, reviewed text
         if kb:
+            answer.fixed = True                                   # the page must NOT let a model re-word this
             return kb, actions
+    answer.fixed = False
     m = re.search(r"\b(?:tell|say to|say)\b (?:her |asha )?(?:that )?(.+)", text, re.I)
     if re.search(r"\b(tell|say) ", t) and m and not t.startswith(("say how", "say where")):
         msg = m.group(1).strip().rstrip(".") if re.search(r"\b(tell|say)\b.* ", t) else ""

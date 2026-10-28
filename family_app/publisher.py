@@ -101,6 +101,8 @@ class FamilyPublisher:
                     reply = ("I can answer questions about her and about me, and do things like remind her or tell her something. "
                              "For other questions I need a language model connected (set GROQ_API_KEY or GEMINI_API_KEY for a free tier, or run a local model with OLLAMA_HOST) and none is connected right now. "
                              + HELP_SHORT)
+            elif getattr(answer, 'fixed', False):
+                pass                                              # first aid and medicine facts are fixed, reviewed text: sent as written
             elif self.agent is not None and getattr(self.agent, "agent", None) is not None:
                 reply = self.agent.phrase("chat_reply", dict(answer=reply, patient=self.patient), reply, audience="family", t=t)
             note = ""
