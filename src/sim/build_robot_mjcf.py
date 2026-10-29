@@ -28,6 +28,7 @@ import apartment_layout as L  # noqa: E402
 SCENE_IN = os.path.join(ROOT, "models", "scene_with_human.xml")
 SCENE_OUT = os.path.join(ROOT, "models", "scene_full.xml")
 ROBOT_OUT = os.path.join(ROOT, "models", "companion_robot.xml")
+BASE_OUT = os.path.join(ROOT, "models", "elderly_companion_base.xml")   # sir's starter name: the same robot (wheels, actuators, camera) on a plane
 
 
 def f(*v):
@@ -182,8 +183,9 @@ def build():
 {body.replace(f'pos="{f(x, y, S.WHEEL_R)}" euler="0 0 {yaw}"', f'pos="{f(0, 0, S.WHEEL_R)}" euler="0 0 0"')}
   </worldbody>{ACTUATORS_AND_SENSORS}</mujoco>
 """
-    with open(ROBOT_OUT, "w") as fh:
-        fh.write(solo)
+    for out in (ROBOT_OUT, BASE_OUT):
+        with open(out, "w") as fh:
+            fh.write(solo)
     print("wrote", os.path.relpath(SCENE_OUT, ROOT), "and", os.path.relpath(ROBOT_OUT, ROOT))
 
 
