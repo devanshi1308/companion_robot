@@ -6,8 +6,8 @@
     "profile": "elderly, lives alone"
   },
   "family": [
-    {"name": "Rohan (son)", "relation": "son", "channels": ["app_push", "sms"], "priority": 1},
-    {"name": "Meera (daughter)", "relation": "daughter", "channels": ["app_push", "voice_call"], "priority": 1},
+    {"name": "Rohan (son)", "relation": "son", "channels": ["sms"], "priority": 1},
+    {"name": "Meera (daughter)", "relation": "daughter", "channels": ["sms", "voice_call"], "priority": 1},
     {"name": "Mrs. Iyer (neighbour)", "relation": "neighbour", "channels": ["sms"], "priority": 2}
   ],
   "ambulance": {"service": "108 (simulated emergency line)", "channel": "automated_call"}
