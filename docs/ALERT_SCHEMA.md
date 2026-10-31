@@ -8,10 +8,10 @@ What may leave the robot, and only AFTER the first alert. Before the first alert
 | t | number | simulation time of the send, s |
 | clock | string | wall-clock style time shown to the family |
 | to | string | recipient name from config/family_contacts.json (fictional) |
-| channel | string | app_push, sms or phone (all simulated) |
+| channel | string | sms or phone (all simulated) |
 | kind | string | heads_up, emergency, ambulance_call, update, all_clear, missed_reminder, medicine_report, siren |
 | text | string | the message text (a fixed template, optionally re-worded by the agent, but never the ambulance script) |
-| attachment | string or null | path of ONE face-blurred snapshot, only on an emergency (and only with her consent in the family platform) |
+| attachment | string or null | path of ONE face-blurred snapshot, only on an emergency (and only with her consent) |
 | telemetry | object (emergency only) | the structured payload below |
 
 ## Telemetry object (emergency)
