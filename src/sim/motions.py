@@ -29,7 +29,7 @@ from human_motion import Pose, Track, blend91, smooth  # noqa: E402
 
 DT = 0.016                      # clip sampling (62.5 Hz; the simulation interpolates)
 FALL_TYPES = ("trip", "slip", "syncope", "cardiac")
-DEMO_ADL_TYPES = ("take_tablet",)          # used by the family-platform demo only (not in the measured experiment set)
+DEMO_ADL_TYPES = ("take_tablet",)          # used by the demos only (not in the measured experiment set)
 ADL_TYPES = ("sit_sofa_abrupt", "sit_sofa_slow", "lie_bed", "tie_shoelaces", "drop_keys", "sit_floor", "lie_floor")
 
 # where each daily activity happens: the route she walks first, and the stand point at its end
@@ -296,6 +296,8 @@ def record_adl(m, rig, spec, rng):
         t += DT
     if "t_intake" in meta:
         meta["t_intake"] += t_start
+    if "t_hurt" in meta:
+        meta["t_hurt"] += t_start
     meta.update(kind="adl", subtype=kind, t_event=t_start + meta["t_activity"], t_event_end=t_start + meta["t_activity_end"], t_floor=None)
     return frames, meta
 

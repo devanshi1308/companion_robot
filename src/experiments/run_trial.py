@@ -132,7 +132,7 @@ def run_robot(ctx, out_dir, cfg=None):
     params = Params()
     params.follow = True
     for k, v in cfg.get("params", {}).items():
-        setattr(params, k, v)                                  # e.g. siren, cardiac_cues, vertical_sweep, snapshot_consent (family-platform demo)
+        setattr(params, k, v)                                  # e.g. siren, cardiac_cues, vertical_sweep
     fcfg = fall_config(cfg)
     fcfg.fs = 1.0 / PERC_DT                                  # the filter is designed for this camera's rate
     detector = FallDetector(fcfg)

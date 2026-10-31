@@ -21,7 +21,7 @@ TOTAL_MASS = sum(MASS.values())
 FOVY = 58.0                                                    # guide: vertical field of view (deg)
 PAN_RANGE_DEG = (-90.0, 90.0)                                  # guide
 TILT_RANGE_DEG = (-45.0, 30.0)                                 # guide (negative = looking down)
-TILT_WIDE_DEG = (-75.0, 70.0)                                  # 'wide view' option for the family platform; the head joint is built with this range
+TILT_WIDE_DEG = (-75.0, 70.0)                                  # 'wide view' option for looking up and down; the head joint is built with this range
 
 V_MAX = 0.50           # m/s cruise (guide); standards manual limit is 0.80 m/s
 A_COMFORT = 1.00       # m/s2 normal braking (guide: the controller clamps braking to 1.00 m/s2)

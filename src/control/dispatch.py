@@ -103,8 +103,8 @@ class Dispatcher:
         out = []
         for c in self.cfg["family"]:
             for ch in c["channels"]:
-                out.append(self._send(t, c["name"], ch, "emergency", family_text, attachment=snap_path if ch in ("app_push", "sms") else None,
-                                      size=snap_bytes if ch in ("app_push", "sms") else 0, telemetry=telemetry))
+                out.append(self._send(t, c["name"], ch, "emergency", family_text, attachment=snap_path if ch in ("sms",) else None,
+                                      size=snap_bytes if ch in ("sms",) else 0, telemetry=telemetry))
         amb = self.cfg["ambulance"]
         call_text = (f"Automated call to {amb['service']}: elderly woman living alone collapsed at {clock(t_impact)}, not responding for "
                      f"{unresponsive_s:.0f} s. Address: {addr}, in the {room}. Robot is with her. Suspected cardiac emergency. "
@@ -151,6 +151,12 @@ class Dispatcher:
         base = f"[Companion robot] A loud alarm ({level_db:.0f} dB at 1 m) is sounding in {p}'s flat, {room}, to attract help. She has collapsed and is not responding." + (" She pressed a hand to her chest just before." if cardiac_cue else "")
         text = self._say("siren_neighbour", t, dict(room=room, cardiac_cue=cardiac_cue), base)
         return [self._send(t, c["name"], c["channels"][0], "siren_on", text) for c in self.cfg["family"]]
+
+    def stand_down(self, t):
+        """The robot went to the place a 'person down' was reported and found nobody there: tell the family the heads-up was a false detection."""
+        p = self.cfg["patient"]["display_name"]
+        text = f"[Companion robot] Update: the possible-fall report was a false detection, nobody was on the floor where the robot looked. It is looking for {p} now."
+        return [self._send(t, c["name"], c["channels"][0], "update", text) for c in self.cfg["family"] if c["priority"] == 1]
 
     def update(self, t, since_s):
         p = self.cfg["patient"]["display_name"]

@@ -1,6 +1,6 @@
 """The robot's voice: what the robot says out loud (check-in, first-aid guidance, reminders) is spoken with the computer's own text-to-speech.
 
-macOS: the built-in `say` command (offline, nothing leaves the machine). Other systems: no sound, the text still appears in the log and on the family page.
+macOS: the built-in `say` command (offline, nothing leaves the machine). Other systems: no sound, the text still appears in the log.
 Voice: COMPANION_VOICE (default: an installed male Enhanced/Premium voice, else Rishi (Indian English, male)); rate COMPANION_RATE words per minute (default 150, slow and calm); volume COMPANION_VOLUME 0-1 (default 0.7). For the most natural sound download an Enhanced or Premium voice in System Settings, Accessibility, Spoken Content, System Voice, Manage Voices.
 Simulation only: this plays through the laptop speakers; it is never a real call. Experiments never use it (the harness leaves the speaker unset).
 

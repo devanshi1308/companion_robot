@@ -2,7 +2,7 @@
 
 All lines are original wording written for this project (the robot's name and manner are inspired by the film character; no dialogue is copied).
 Safety lines (first aid, CPR, the ambulance script) live in src/control/first_aid.py and are never re-worded by a language model.
-Only the patient-facing and bystander-facing lines are spoken aloud; family texts stay text on the family page.
+Only the patient-facing and bystander-facing lines are spoken aloud; family texts stay text.
 """
 
 NAME = "Baymax"

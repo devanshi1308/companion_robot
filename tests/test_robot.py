@@ -110,7 +110,7 @@ def test_camera_and_face():
 
 
 def test_wide_view_looks_far_above_and_below():
-    """Family-platform option: the camera tilts from -75 (almost straight down) to +70 deg; the default stays at the guide's -45..+30."""
+    """Wide-view option: the camera tilts from -75 (almost straight down) to +70 deg; the default stays at the guide's -45..+30."""
     from robot_interface import RobotInterface
     m, d, _ = _robot()
     r = RobotInterface(m, d, wide_view=True)

@@ -10,6 +10,7 @@ import argparse
 import csv
 import json
 import os
+import subprocess
 import sys
 import time
 
@@ -51,7 +52,7 @@ def highlight_robot(scene, pos, mood):
 
 
 def run(out_dir, make_gif=True, gif_every=3, max_t=60.0, post_alert=12.0, seed=0, obstacle_speed=L.VACUUM_SPEED,
-        speed=0.8, dock=None, quiet=False, params=None, detector=None, responds_at=None, view=False, scenario="follow"):
+        speed=0.8, dock=None, quiet=False, params=None, detector=None, responds_at=None, view=False, scenario="follow", diagnostics=False):
     t0_wall = time.time()
     os.makedirs(out_dir, exist_ok=True)
     if params is None:
@@ -93,6 +94,27 @@ def run(out_dir, make_gif=True, gif_every=3, max_t=60.0, post_alert=12.0, seed=0
         viewer.cam.lookat[:] = [0.0, -0.3, 0.3]
         viewer.cam.distance, viewer.cam.azimuth, viewer.cam.elevation = 9.1, 90.0, -63.0
         comp.on_event = lambda te, text: print(f"[{te:6.2f} s] {text}", flush=True)
+    live = diag_proc = None
+    if diagnostics:                                               # integrated diagnostics window: its own process, fed through a JSONL file
+        live_path = os.path.join(out_dir, "live_diagnostics.jsonl")
+        live = open(live_path, "w")
+        py, script = os.path.join(sys.prefix, "bin", "python"), os.path.join(HERE, "diagnostics_window.py")
+        if sys.platform == "darwin":                                # a child started from mjpython exits at once; Terminal (via open) keeps the window alive
+            cmd_file = os.path.join(out_dir, "open_diagnostics.command")
+            with open(cmd_file, "w") as f:
+                f.write(f"#!/bin/zsh\ncd '{ROOT}'\nexec '{py}' '{script}' --live '{live_path}'\n")
+            os.chmod(cmd_file, 0o755)
+            diag_proc = subprocess.Popen(["open", cmd_file])
+        else:
+            diag_proc = subprocess.Popen([py, script, "--live", live_path], start_new_session=True)
+        prev = comp.on_event
+
+        def on_event(te, text):
+            if prev is not None:
+                prev(te, text)
+            live.write(json.dumps(dict(t=round(te, 2), event=text)) + "\n")
+            live.flush()
+        comp.on_event = on_event
 
     t_fall = w.default_trip_time()
     hold = None
@@ -150,10 +172,13 @@ def run(out_dir, make_gif=True, gif_every=3, max_t=60.0, post_alert=12.0, seed=0
                 cmd_v=rb.last_cmd[0], cmd_w=rb.last_cmd[1], wheel_ctrl_l=d.ctrl[rb.a_l], wheel_ctrl_r=d.ctrl[rb.a_r],
                 pan_deg=rb.neck_angles_deg()[0], tilt_deg=rb.neck_angles_deg()[1], collision_force_N=f, front_range_m=comp.front_range,
                 dist_to_hip_m=float(np.hypot(*(hip_true[:2] - tp[:2]))), dist_to_nearest_body_m=float(np.min(np.hypot(*(lms[:, :2] - tp[:2]).T))),
-                human_hip_z=hip_true[2], seen=int(comp.obs is not None), n_landmarks=0 if comp.obs is None else comp.obs.n_valid,
+                human_hip_z=hip_true[2], human_x=hip_true[0], human_y=hip_true[1], seen=int(comp.obs is not None), n_landmarks=0 if comp.obs is None else comp.obs.n_valid,
                 vacuum_x=vacp[0], vacuum_y=vacp[1], vacuum_dist_m=float(np.hypot(*(vacp[:2] - tp[:2]))),
                 det_hip_z=comp.detector.features.get("hip_z", float("nan")), det_pitch_deg=comp.detector.features.get("pitch", float("nan")),
                 det_aspect=comp.detector.features.get("aspect", float("nan")), det_drift_m=comp.detector.features.get("drift") if comp.detector.features.get("drift") is not None else float("nan"), bytes_off_board=comp.disp.bytes_off_board))
+        if live is not None and step % int(round(0.05 / dt)) == 0 and rows:
+            live.write(json.dumps({k: (None if isinstance(v, float) and v != v else v) for k, v in rows[-1].items()}) + "\n")
+            live.flush()
         mujoco.mj_step(m, d)
         step += 1
         if comp.state == "ALERT" and t - comp.t_alert > post_alert:
@@ -163,6 +188,10 @@ def run(out_dir, make_gif=True, gif_every=3, max_t=60.0, post_alert=12.0, seed=0
     t_final = step * dt
     if viewer is not None:
         viewer.close()
+    if live is not None:
+        live.close()
+        if diag_proc is not None and not quiet:
+            print("Diagnostics window stays open: close it when you are done.")
 
     # ---- summary ----------------------------------------------------------------------------------------------------
     sent = comp.disp.sent
@@ -213,5 +242,6 @@ if __name__ == "__main__":
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--view", action="store_true", help="live window (macOS: use mjpython); implies --no-gif")
     ap.add_argument("--obstacle-speed", type=float, default=L.VACUUM_SPEED)
+    ap.add_argument("--no-diag", action="store_true", help="with --view: do not open the integrated diagnostics window")
     a = ap.parse_args()
-    run(a.out, make_gif=not (a.no_gif or a.view), gif_every=a.gif_every, max_t=a.max_t, seed=a.seed, obstacle_speed=a.obstacle_speed, view=a.view, scenario=a.scenario, speed=a.speed)
+    run(a.out, make_gif=not (a.no_gif or a.view), gif_every=a.gif_every, max_t=a.max_t, seed=a.seed, obstacle_speed=a.obstacle_speed, view=a.view, scenario=a.scenario, speed=a.speed, diagnostics=a.view and not a.no_diag)

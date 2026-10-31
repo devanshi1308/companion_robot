@@ -63,28 +63,26 @@ class Params:
     move_hold_s = 1.0
     approach_timeout_s = 40.0
     vertical_sweep = True      # while looking around, nod the camera up and down (the guide's robot looks from 1.15 m: a person on the floor is far below the horizon)
-    siren = False              # collapse + no answer: sound a loud alarm to attract people (family-platform demo; off in the measured experiments)
+    siren = False              # collapse + no answer: sound a loud alarm to attract people (demo; off in the measured experiments)
     siren_level_db = 95.0      # sound level at 1 m
     siren_cardiac_db = 100.0   # ... when a chest-clutch pattern was seen just before the collapse
     siren_max_s = 180.0
     cardiac_cues = False       # run the pre-collapse cue monitor (src/vision/prodrome.py) and mention a chest-clutch pattern in the alert
-    snapshot_consent = False   # the patient allows a face-blurred snapshot to be sent to the family on request
+    verify_person = bool(int(os.environ.get("COMPANION_VERIFY", "0")))   # at the standoff the range sensor must see a body; if nothing is there the 'person' was a phantom: drop it
+    verify_wait_s = 2.5        # aimed at the estimate for this long without any range return -> phantom
+    phantom_s = 60.0           # ignore lying detections within phantom_r of a phantom for this long
+    phantom_r = 1.2
 
 
 class Companion:
     def __init__(self, m, d, robot, grid, observer, detector, dispatcher, params=None, voice=None):
         self.voice = voice if voice is not None else PlainVoice()      # the agent that phrases everything the robot says (src/agent)
         self.checkin_started_t = None
-        self.look_override = None            # (until_t, tilt_deg): the family asked the camera to look up / down
+        self.phantoms = []                   # (x, y, until_t): places where a 'person' was detected but the range sensor found nobody
         self.siren = None                    # dict(t_on, level_db, cardiac_cue, t_off, reason) while / after a siren
         self.prodrome = None
-        self.snapshot_request = False
-        self.family_snapshot = None
-        self.look_plan = []                  # pictures the family asked for above / below: [dict(view, tilt, t0)]
-        self.family_views = {}               # view -> (PIL image, t): face-blurred pictures from the up / down camera views
         self.last_utterance = None
-        self.utterances = []                 # (t, kind, text) everything the robot said or texted, for the family platform
-        self.commands_done = []
+        self.utterances = []                 # (t, kind, text) everything the robot said or texted, 
         self.m, self.d, self.rb, self.grid = m, d, robot, grid
         self.observer, self.detector, self.disp = observer, detector, dispatcher
         self.p = params or Params()
@@ -242,6 +240,10 @@ class Companion:
         obs = self.observer.observe(rgb, depth, self.rb.est, pan, tilt)
         if obs is not None and obs.hip is not None and not (L.X0 - 0.3 < obs.hip[0] < L.X1 + 0.3 and L.Y0 - 0.3 < obs.hip[1] < L.Y1 + 0.3):
             obs = None                                          # a 'person' outside the flat (seen through a window or a depth error) is not her
+        if obs is not None and obs.hip is not None and self.phantoms:
+            self.phantoms = [ph for ph in self.phantoms if ph[2] > t]
+            if any(np.hypot(obs.hip[0] - ph[0], obs.hip[1] - ph[1]) < self.p.phantom_r for ph in self.phantoms):
+                obs = None                                      # that spot was checked: nobody there
         self.obs = obs
         if obs is not None and obs.hip is not None:
             self.t_seen = t
@@ -259,10 +261,6 @@ class Companion:
         self.watch_medicine(t, obs)
         if self.prodrome is not None:
             self.prodrome.update(t, obs)
-        if self.snapshot_request:
-            self.serve_snapshot(t, rgb, obs)
-        if self.look_plan:
-            self.step_look_plan(t, rgb, obs)
         det_state = self.detector.update(t, obs)
         if det_state == "normal":
             self.suppress = False
@@ -560,7 +558,16 @@ class Companion:
                     w = 0.0
                     self.fine_since = self.fine_since if self.fine_since is not None else t
                     pr = self.person_range
-                    if pr is None or t - self.fine_since > 8.0:
+                    if pr is None and self.p.verify_person and self.purpose == "fall":
+                        if t - self.fine_since > self.p.verify_wait_s:
+                            self.say(t, "Nothing in front of me at the standoff: the 'person down' was a false detection, standing down")
+                            self.phantoms.append((float(hip[0]), float(hip[1]), t + self.p.phantom_s))
+                            self.detector.reset()
+                            self.hip_track, self.body_hist, self.person_hip = [], [], None
+                            if self.sent_heads_up:
+                                self.disp.stand_down(t)
+                            self.cancel(t)
+                    elif pr is None or t - self.fine_since > 8.0:
                         self.begin_check_in(t)                       # cannot measure her distance: stay here
                     elif pr > STANDOFF_HI:
                         if self.free_for_creep(est, +0.18):
@@ -839,97 +846,6 @@ class Companion:
             self.speak_fixed(t, "first_aid_coach", COACH[self.coach_i % len(COACH)], audience="bystander")      # keeps a helper going (do not stop compressions)
             self.coach_i += 1
 
-    # ---- the family platform can ask the robot to do things (src/platform) ----------------------------------------
-    def serve_snapshot(self, t, rgb, obs):
-        self.snapshot_request = False
-        if not self.p.snapshot_consent:
-            self.say(t, "Snapshot request declined: she has not agreed to camera pictures being sent")
-            return
-        if obs is None:
-            self.say(t, "Snapshot request: she is not in view right now")
-            return
-        face = [i for i in range(11) if obs.vis[i] > 0.3]
-        if not face:
-            self.snapshot_request = True            # try again on the next frame
-            return
-        self.take_snapshot(rgb, obs)
-        self.family_snapshot = self.snapshot
-        self.snapshot = None
-        self.say(t, "Snapshot sent to the family (face blurred, only because she agreed)")
-
-    def step_look_plan(self, t, rgb, obs):
-        """Tilt the camera to the requested view (above / below), wait until it points there, then keep one picture. If she is in the picture her face is
-        blurred first; if she is in view but her face cannot be located the picture is NOT sent."""
-        step = self.look_plan[0]
-        if step["t0"] is None:
-            step["t0"] = t
-        self.look_override = (t + 1.0, step["tilt"])
-        tilt = self.rb.neck_angles_deg()[1]
-        if (abs(tilt - step["tilt"]) > 6.0 or t - step["t0"] < 0.8) and t - step["t0"] < 5.0:
-            return
-        from PIL import Image
-        img = Image.fromarray(rgb)
-        if obs is not None:
-            face = [i for i in range(11) if obs.vis[i] > 0.3]
-            if face:
-                self.take_snapshot(rgb, obs)
-                img, self.snapshot = self.snapshot, None
-            else:
-                img = None
-                self.say(t, f"Picture {step['view']}: she is in view but her face cannot be located, so it is not sent")
-        if img is not None:
-            self.family_views[step["view"]] = (img, t)
-            self.say(t, f"Picture {step['view']} sent to the family" + (" (face blurred)" if obs is not None else ""))
-        self.look_plan.pop(0)
-        if not self.look_plan:
-            self.look_override = None
-
-    def handle_command(self, t, cmd):
-        """cmd = dict(cmd=..., args=...) from the family. The robot never obeys a command that would endanger her (no driving in an emergency)."""
-        c, a = cmd.get("cmd"), cmd.get("args") or {}
-        busy = self.state in ("SUSPECT", "APPROACH", "CHECK_IN", "ALERT")
-        ok, note = True, ""
-        if c == "say":
-            text = str(a.get("text", ""))[:200]
-            self.feel(t, "family_message")
-            self.utter(t, "family_message_to_patient", dict(default=text), text, audience="patient")
-            self.screen_text = text[:28]
-        elif c == "remind":
-            if busy or self.purpose == "reminder":
-                ok, note = False, "robot is busy with something more important"
-            else:
-                ok = self.start_reminder(t, a.get("label", "your tablet"))
-                note = "" if ok else "cannot find her right now"
-        elif c == "check":
-            if busy or self.purpose == "reminder":
-                ok, note = False, "robot is busy with something more important"
-            else:
-                ok = self.start_reminder(t, "a check-in", welfare=True)
-                note = "" if ok else "cannot find her right now"
-        elif c == "look":
-            d = a.get("direction", "level")
-            tilt = {"up": 55.0, "down": -60.0, "level": 5.0}.get(d, 5.0)
-            self.look_override = (t + 8.0, tilt)
-            self.say(t, f"Family asked the camera to look {d}")
-        elif c == "snapshot":
-            view = a.get("view", "ahead")
-            if view in ("above", "below", "both"):
-                if not self.p.snapshot_consent:
-                    ok, note = False, "she has not agreed to camera pictures being sent"
-                    self.say(t, "Family asked for pictures above and below: declined, she has not agreed")
-                else:
-                    self.look_plan = [dict(view=v, tilt={"above": 55.0, "below": -60.0}[v], t0=None) for v in (["above", "below"] if view == "both" else [view])]
-                    self.say(t, f"Family asked for a picture of what is {'above and below' if view == 'both' else view}: looking there")
-            else:
-                self.snapshot_request = True
-                self.say(t, "Family asked for a snapshot")
-        elif c == "siren_off":
-            self.stop_siren(t, "silenced by the family")
-        else:
-            ok, note = False, f"unknown command {c}"
-        self.commands_done.append(dict(t=round(float(t), 2), cmd=c, ok=ok, note=note))
-        return ok, note
-
     # ---- head ----------------------------------------------------------------------------------
     def drive_neck(self, t, dt):
         rb = self.rb
@@ -947,9 +863,7 @@ class Companion:
             tilt_t = np.degrees(np.arctan2(max(0.4 * self.person_hip[2], 0.2) - S.CAM_Z, max(np.hypot(dx, dy), 0.3)))
         else:
             pan_t, tilt_t = 55.0 * np.sin(2 * np.pi * 0.10 * t), 8.0                     # slow look-around
-        if self.look_override is not None and t < self.look_override[0]:
-            tilt_t = self.look_override[1]                                              # the family asked the camera to look up / down
-        elif self.p.vertical_sweep and not fresh and self.state in ("WATCH", "SEARCH", "OBSERVE"):
+        if self.p.vertical_sweep and not fresh and self.state in ("WATCH", "SEARCH", "OBSERVE"):
             lo, hi = rb.tilt_range
             tilt_t = 0.5 * (lo + hi) - 5.0 + 0.35 * (hi - lo) * np.sin(2 * np.pi * 0.12 * t)       # nod up and down while looking around (a 1.15 m camera must look DOWN to see her on the floor)
         rate = 150.0 * dt

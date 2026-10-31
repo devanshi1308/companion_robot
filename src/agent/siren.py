@@ -5,8 +5,8 @@ a personal alarm) with a harsh upper partial so it carries through walls, plus a
     python src/agent/siren.py                    writes outputs/siren_demo.wav (6 s, safe to play at normal volume: the file is scaled to -6 dBFS)
     python src/agent/siren.py --play             also plays it through the speakers (needs the sounddevice package)
 
-In the simulation nothing is played unless a live demo asks for it (run_platform_demo.py --sound); the siren's start, stop and level are logged
-and shown on the family platform. The level (dB at 1 m) is a design figure for a small speaker, not a measurement.
+In the simulation nothing is played unless a live demo asks for it; the siren's start, stop and level are logged.
+The level (dB at 1 m) is a design figure for a small speaker, not a measurement.
 """
 import argparse
 import os
